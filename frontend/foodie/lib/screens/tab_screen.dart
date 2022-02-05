@@ -18,19 +18,23 @@ class _TabScreenState extends State<TabScreen> {
   ];
 
   int _selectedTabsIndex = 0;
+  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   void _selectTab(int index) {
-    setState(() {
-      _selectedTabsIndex = index;
-    });
+    if (index == 3) {
+      _drawerKey.currentState?.openDrawer();
+    } else {
+      setState(() {
+        _selectedTabsIndex = index;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Foodie'),
-      ),
+      key: _drawerKey,
+      drawer: const Drawer(),
       body: _tabs[_selectedTabsIndex],
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: false,
@@ -44,22 +48,28 @@ class _TabScreenState extends State<TabScreen> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home,
+              size: 30,
             ),
             label: 'home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
+            icon: Icon(
+              Icons.shopping_cart,
+              size: 30,
+            ),
             label: 'cart',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.search,
+              size: 30,
             ),
             label: 'search',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.menu,
+              size: 30,
             ),
             label: 'menu',
           ),
