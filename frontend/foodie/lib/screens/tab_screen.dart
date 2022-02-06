@@ -18,23 +18,32 @@ class _TabScreenState extends State<TabScreen> {
   ];
 
   int _selectedTabsIndex = 0;
-  final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   void _selectTab(int index) {
-    if (index == 3) {
-      _drawerKey.currentState?.openDrawer();
-    } else {
-      setState(() {
-        _selectedTabsIndex = index;
-      });
-    }
+    setState(() {
+      _selectedTabsIndex = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _drawerKey,
+      // extendBodyBehindAppBar: true,
       drawer: const Drawer(),
+      appBar: AppBar(
+        leading: Builder(builder: (context) {
+          return IconButton(
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            icon: const Icon(
+              Icons.menu,
+              size: 30,
+            ),
+          );
+        }),
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.grey),
+        elevation: 0,
+      ),
       body: _tabs[_selectedTabsIndex],
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: false,
@@ -65,13 +74,6 @@ class _TabScreenState extends State<TabScreen> {
               size: 30,
             ),
             label: 'search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.menu,
-              size: 30,
-            ),
-            label: 'menu',
           ),
         ],
       ),
