@@ -14,7 +14,7 @@ class _TabScreenState extends State<TabScreen> {
   final List _tabs = [
     const HomeScreen(),
     const CartScreen(),
-    const SearchScreen(),
+    const OfferScreen(),
   ];
 
   int _selectedTabsIndex = 0;
@@ -29,21 +29,21 @@ class _TabScreenState extends State<TabScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // extendBodyBehindAppBar: true,
-      drawer: const Drawer(),
-      appBar: AppBar(
-        leading: Builder(builder: (context) {
-          return IconButton(
-            onPressed: () => Scaffold.of(context).openDrawer(),
-            icon: const Icon(
-              Icons.menu,
-              size: 30,
-            ),
-          );
-        }),
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.grey),
-        elevation: 0,
-      ),
+      // drawer: const Drawer(),
+      // appBar: AppBar(
+      //   leading: Builder(builder: (context) {
+      //     return IconButton(
+      //       onPressed: () => Scaffold.of(context).openDrawer(),
+      //       icon: const Icon(
+      //         Icons.menu,
+      //         size: 30,
+      //       ),
+      //     );
+      //   }),
+      //   backgroundColor: Colors.transparent,
+      //   iconTheme: const IconThemeData(color: Colors.grey),
+      //   elevation: 0,
+      // ),
       body: _tabs[_selectedTabsIndex],
       bottomNavigationBar: BottomNavigationBar(
         showUnselectedLabels: false,
@@ -70,7 +70,7 @@ class _TabScreenState extends State<TabScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.search,
+              Icons.local_offer,
               size: 30,
             ),
             label: 'search',
