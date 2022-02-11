@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+
 import './home_screen.dart';
 import './search_screen.dart';
 import './cart_screen.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({Key? key}) : super(key: key);
+  static const routeName = '/tabs';
 
   @override
   _TabScreenState createState() => _TabScreenState();
