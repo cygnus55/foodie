@@ -23,15 +23,16 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Image.asset('assets/images/login.png', fit: BoxFit.cover),
             ),
             Container(
-              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+              margin: const EdgeInsets.fromLTRB(0, 40,5,0),
               child: Align(
                 alignment: Alignment.topRight,
                 child: TextButton(
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(3.0),
                         primary: Colors.white,
                         textStyle: const TextStyle(fontSize: 20),
-                        shadowColor: Color(0x666565),
+                        backgroundColor: const Color(0xFF666565),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                       ),
                       onPressed: () {},
                       child: const Text('Skip'),
@@ -67,6 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           initialCountryCode: 'NP',
                           onChanged: (phone) {
+                              // ignore: avoid_print
                               print(phone.completeNumber);
                           },
                       )
@@ -89,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 15,),
         
             SignInButton(
-              Buttons.Google,
+              Buttons.GoogleDark,
               onPressed: () {},
               ),
             SignInButton(
