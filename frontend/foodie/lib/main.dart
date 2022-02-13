@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import './screens/login_screen.dart';
 import './screens/tab_screen.dart';
+import './color.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Foodie APP',
         theme: ThemeData(
-          primarySwatch: Colors.red,
+          primarySwatch: buildMaterialColor(const Color(0xFFD42323)),
         ),
         // home: const MyHomePage(title: 'Foodie'),
         routes: {
