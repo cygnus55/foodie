@@ -14,7 +14,6 @@ from rest_framework.status import (
 from .models import User
 from . import otp_verify
 
-# Create your views here.
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -25,7 +24,7 @@ def send_otp_code(request):
         mobile = reqBody['mobile']
         otp_verify.send(mobile)
         data['msg'] = "OTP sent!"
-        data['mobile'] = 'mobile'
+        data['mobile'] = mobile
         return Response(data, status=HTTP_200_OK)
     else:
         data['error'] = "Mobile number not provided."
@@ -37,7 +36,7 @@ def send_otp_code(request):
 def account_login(request):
     data = {}
     reqBody = json.loads(request.body)
-    if 'mobile' and 'otp_code' in reqBody:
+    if 'mobile' and 'otp' in reqBody:
         mobile = reqBody['mobile']
         otp_code = reqBody['otp']
         if not otp_verify.check(mobile, otp_code):
