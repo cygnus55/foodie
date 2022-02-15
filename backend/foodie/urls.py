@@ -17,8 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
+    path("admin/", admin.site.urls),
+    path("", include("api.urls")),
+    path("accounts/", include("accounts.urls")),
+    path("restaurants/", include("restaurants.urls")),
+    path("foods/", include("foods.urls")),
 ]
 
 # Admin Site Configurations
