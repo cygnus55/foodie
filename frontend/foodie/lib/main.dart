@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import './screens/login_screen.dart';
 import './screens/tab_screen.dart';
+import './screens/profile_screen.dart';
+
 import './color.dart';
 
 void main() {
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
         ),
         // home: const MyHomePage(title: 'Foodie'),
         routes: {
-          '/': (ctx) => const LoginScreen(),
+          '/': (ctx) => const ProfileScreen(),
           TabScreen.routeName: (ctx) => const TabScreen(),
         });
   }
