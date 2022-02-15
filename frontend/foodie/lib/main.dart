@@ -19,6 +19,8 @@ class MyApp extends StatelessWidget {
         title: 'Foodie APP',
         theme: ThemeData(
           primarySwatch: buildMaterialColor(const Color(0xFFD42323)),
+          iconTheme: const IconThemeData(color: Colors.black),
+          dividerColor: Colors.black,
         ),
         // home: const MyHomePage(title: 'Foodie'),
         routes: {
