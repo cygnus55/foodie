@@ -5,7 +5,7 @@ import './search_screen.dart';
 import './cart_screen.dart';
 
 class TabScreen extends StatefulWidget {
-  const TabScreen({Key? key}) : super(key: key);
+  const TabScreen({Key? key, String? phoneNumber}) : super(key: key);
   static const routeName = '/tabs';
 
   @override
