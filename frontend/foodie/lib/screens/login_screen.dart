@@ -111,7 +111,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           initialCountryCode: 'NP',
                           onChanged: (phone) {
-                            controller:
                             numbercontroller.text = phone.completeNumber;
                             // ignore: avoid_print
                             phoneNumber = phone.completeNumber;
