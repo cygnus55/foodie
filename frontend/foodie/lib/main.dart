@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import './screens/login_screen.dart';
 import './screens/tab_screen.dart';
 import './screens/profile_screen.dart';
+import './screens/otpverification_screen.dart';
 
 import './color.dart';
 
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         ),
         // home: const MyHomePage(title: 'Foodie'),
         routes: {
-          '/': (ctx) => const ProfileScreen(),
+          '/': (ctx) => const OtpVerificationScreen(),
           TabScreen.routeName: (ctx) => const TabScreen(),
         });
   }
