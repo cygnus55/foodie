@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     var status = response.statusCode;
     if (status == 200) {
-      Navigator.of(context).pushReplacementNamed(OtpVerificationScreen.routeName, arguments: phoneNumber);
+      Navigator.of(context).pushNamed(OtpVerificationScreen.routeName, arguments: phoneNumber);
     }
     print(response.body);
   }

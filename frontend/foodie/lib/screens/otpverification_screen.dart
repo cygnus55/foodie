@@ -30,7 +30,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     );
     var status = response.statusCode;
     if (status == 200) {
-      Navigator.of(context).pushNamed(TabScreen.routeName);
+      Navigator.of(context).pushReplacementNamed(TabScreen.routeName);
     }
     
     print(response.body);
