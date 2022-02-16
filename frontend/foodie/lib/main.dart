@@ -25,8 +25,11 @@ class MyApp extends StatelessWidget {
         ),
         // home: const MyHomePage(title: 'Foodie'),
         routes: {
-          '/': (ctx) => const OtpVerificationScreen(),
+          '/': (ctx) => const LoginScreen(),
           TabScreen.routeName: (ctx) => const TabScreen(),
+          LoginScreen.routeName: (ctx) => const LoginScreen(),
+          OtpVerificationScreen.routeName: (ctx) => const OtpVerificationScreen(),
+
         });
   }
 }

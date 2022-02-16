@@ -1,17 +1,41 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:foodie/screens/otpverification_screen.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:http/http.dart' as http;
 
 import '../screens/tab_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
+  static const routeName = '/login';
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String? phoneNumber;
+  final numbercontroller = TextEditingController();
+  Future <void> submit() async {
+     var url = Uri.http('127.0.0.1:8000', 'accounts/send-otp/');
+    // // ignore: unused_local_variable
+    print(json.encode({
+        'mobile': phoneNumber,
+      }));
+    final http.Response response = await http.post(
+      url,
+      body: json.encode({
+        'mobile': phoneNumber,
+        
+      }),
+      
+    );
+    print(response.body);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -88,7 +112,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           initialCountryCode: 'NP',
                           onChanged: (phone) {
+                            controller: numbercontroller.text = phone.completeNumber;
                             // ignore: avoid_print
+                            phoneNumber = phone.completeNumber;
                             print(phone.completeNumber);
                           },
                         )),
@@ -96,7 +122,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding: const EdgeInsets.all(15),
                       width: double.infinity,
                       child: ElevatedButton(
-                          onPressed: () {},
+                          // ignore: avoid_print
+                          onPressed: () {
+                             submit();
+                             Navigator.of(context)
+                              .pushNamed(OtpVerificationScreen.routeName);
+                          },
                           child: const Padding(
                               padding: EdgeInsets.all(15),
                               child: Text(

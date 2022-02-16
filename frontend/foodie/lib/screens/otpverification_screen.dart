@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({Key? key}) : super(key: key);
+  static const routeName = '/login-otp';
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
