@@ -17,14 +17,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String? phoneNumber;
+ String phoneNumber= '';
   final numbercontroller = TextEditingController();
   Future <void> submit() async {
      var url = Uri.http('127.0.0.1:8000', 'accounts/send-otp/');
     // // ignore: unused_local_variable
-    print(json.encode({
-        'mobile': phoneNumber,
-      }));
     final http.Response response = await http.post(
       url,
       body: json.encode({
@@ -33,6 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
       }),
       
     );
+    var status = response.statusCode;
+    if (status == 200) {
+      Navigator.of(context).pushReplacementNamed(OtpVerificationScreen.routeName, arguments: phoneNumber);
+    }
     print(response.body);
   }
 
@@ -125,8 +126,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           // ignore: avoid_print
                           onPressed: () {
                              submit();
-                             Navigator.of(context)
-                              .pushNamed(OtpVerificationScreen.routeName);
                           },
                           child: const Padding(
                               padding: EdgeInsets.all(15),
