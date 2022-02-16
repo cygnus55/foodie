@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:foodie/screens/home_screen.dart';
 
+import './screens/home_screen.dart';
 import './screens/login_screen.dart';
 import './screens/tab_screen.dart';
 import './screens/profile_screen.dart';
@@ -29,9 +29,9 @@ class MyApp extends StatelessWidget {
           '/': (ctx) => const LoginScreen(),
           TabScreen.routeName: (ctx) => const TabScreen(),
           LoginScreen.routeName: (ctx) => const LoginScreen(),
-          OtpVerificationScreen.routeName: (ctx) => const OtpVerificationScreen(),
+          OtpVerificationScreen.routeName: (ctx) =>
+              const OtpVerificationScreen(),
           HomeScreen.routeName: (ctx) => const HomeScreen(),
-
         });
   }
 }

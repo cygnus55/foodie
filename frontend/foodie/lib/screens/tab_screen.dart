@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/screens/profile_screen.dart';
 
 import './home_screen.dart';
-import './search_screen.dart';
+import './offer_screen.dart';
 import './cart_screen.dart';
+import './profile_screen.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({Key? key, String? phoneNumber}) : super(key: key);
@@ -17,6 +19,7 @@ class _TabScreenState extends State<TabScreen> {
     const HomeScreen(),
     const CartScreen(),
     const OfferScreen(),
+    ProfileScreen(),
   ];
 
   int _selectedTabsIndex = 0;
@@ -75,7 +78,14 @@ class _TabScreenState extends State<TabScreen> {
               Icons.local_offer,
               size: 30,
             ),
-            label: 'search',
+            label: 'offer',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              size: 30,
+            ),
+            label: 'account',
           ),
         ],
       ),
