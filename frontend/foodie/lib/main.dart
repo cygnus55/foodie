@@ -5,6 +5,7 @@ import './screens/login_screen.dart';
 import './screens/tab_screen.dart';
 import './screens/profile_screen.dart';
 import './screens/otpverification_screen.dart';
+import './screens/splash_screen.dart';
 
 import './color.dart';
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         ),
         // home: const MyHomePage(title: 'Foodie'),
         routes: {
-          '/': (ctx) => const LoginScreen(),
+          '/': (ctx) => const SplashScreen(),
           TabScreen.routeName: (ctx) => const TabScreen(),
           LoginScreen.routeName: (ctx) => const LoginScreen(),
           OtpVerificationScreen.routeName: (ctx) =>
