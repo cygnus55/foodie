@@ -24,6 +24,8 @@ class Food(models.Model):
         on_delete=models.CASCADE
     )
     is_veg = models.BooleanField(default=False)
+    created = models.TimeField(auto_now_add=True)
+    updated = models.TimeField(auto_now=True)
 
     class Meta:
         ordering = ('-is_available', '-discount_percent', 'name',)
