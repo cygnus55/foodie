@@ -4,7 +4,7 @@ from accounts.models import User
 
 
 class Restaurant(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name="restaurant", on_delete=models.CASCADE)
     website_link = models.URLField(max_length=200, blank=True)
     facebook_link = models.URLField(max_length=200, blank=True)
     logo = models.URLField(blank=True)

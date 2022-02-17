@@ -11,9 +11,12 @@ class APIRoot(GenericAPIView):
         return Response(
             {
                 "accounts": {
-                    "login": reverse("accounts:login", request=request),
+                    "login": reverse("accounts:customer_login", request=request),
                     "logout": reverse("accounts:logout", request=request),
                     "send-otp": reverse("accounts:send_otp", request=request) 
+                },
+                "customer": {
+                    "customer-name": reverse("accounts:customer_name", request=request)
                 },
                 "restaurants": reverse("restaurants:restaurant_list", request=request),
                 "foods": reverse("foods:food_list", request=request)
