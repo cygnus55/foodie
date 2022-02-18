@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+
 import './login_screen.dart';
+// import '../providers/auth_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({Key? key}) : super(key: key);
@@ -193,15 +196,18 @@ class ProfileScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
               ),
+
               TextButton(
                 onPressed: () {
                   Navigator.of(context)
                       .pushReplacementNamed(LoginScreen.routeName);
+                  // Provider.of<Auth>(context, listen: false).logout();
                 },
                 child: Text(
                   'Logout',
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
+
               ),
             ],
           ),

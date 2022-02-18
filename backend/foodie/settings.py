@@ -30,7 +30,8 @@ SECRET_KEY = 'django-insecure-dzz2^qh@le!pu2jrt0ygyh_vusd6f((cye10#oe^fcp*-m05-l
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '10.0.2.2'
+    '10.0.2.2',
+    '127.0.0.1'
 ]
 
 
@@ -176,7 +177,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication'
+        'api.customauthentication.CsrfExemptSessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
