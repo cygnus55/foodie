@@ -15,7 +15,7 @@ class OtpVerificationScreen extends StatefulWidget {
 }
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
-  final bool _isEnabled = false;
+  bool _isloading = false;
   // final otpController = TextEditingController();
   final TextEditingController _first = TextEditingController();
   final TextEditingController _second = TextEditingController();
@@ -25,31 +25,44 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final TextEditingController _sixth = TextEditingController();
 
   Future<void> submit(String phoneNumber) async {
-    var url = Uri.http('10.0.2.2:8000', 'accounts/login/');
-    // // ignore: unused_local_variable
-    final http.Response response = await http.post(
-      url,
-      body: json.encode(
-        {
-          'mobile': phoneNumber,
-          'otp': _first.text +
-              _second.text +
-              _third.text +
-              _forth.text +
-              _fifth.text +
-              _sixth.text,
-        },
-      ),
-    );
-    var status = response.statusCode;
-    if (status == 200) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (BuildContext context) => const TabScreen()),
-        ModalRoute.withName(TabScreen.routeName),
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'accounts/login/');
+      setState(() {
+        _isloading = true;
+      });
+      // // ignore: unused_local_variable
+      final http.Response response = await http.post(
+        url,
+        body: json.encode(
+          {
+            'mobile': phoneNumber,
+            'otp': _first.text +
+                _second.text +
+                _third.text +
+                _forth.text +
+                _fifth.text +
+                _sixth.text,
+          },
+        ),
       );
+      var status = response.statusCode;
+      if (status == 200) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (BuildContext context) => const TabScreen()),
+          ModalRoute.withName(TabScreen.routeName),
+        );
+      } else {
+        setState(() {
+          _isloading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Invalid OTP"),
+        ));
+      }
+    } catch (e) {
+      print(e);
     }
-
-    print(response.body);
   }
 
   @override
@@ -127,15 +140,19 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   TextButton(onPressed: () {}, child: const Text('Resend'))
                 ],
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.7,
-                child: ElevatedButton(
-                  onPressed: _sixth.text.isEmpty
-                      ? null
-                      : () => submit(phoneNumber.toString()),
-                  child: const Text('Proceed'),
-                ),
-              )
+              _isloading
+                  ? const CircularProgressIndicator(
+                      strokeWidth: 3,
+                    )
+                  : SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: ElevatedButton(
+                        onPressed: _sixth.text.isEmpty
+                            ? null
+                            : () => submit(phoneNumber.toString()),
+                        child: const Text('Proceed'),
+                      ),
+                    ),
             ],
           ),
         ),
