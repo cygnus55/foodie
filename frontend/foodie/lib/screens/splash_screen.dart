@@ -12,7 +12,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   void test() {
     Future.delayed(
-        const Duration(seconds: 15),
+        const Duration(seconds: 3),
         () =>
             Navigator.of(context).pushReplacementNamed(LoginScreen.routeName));
   }
