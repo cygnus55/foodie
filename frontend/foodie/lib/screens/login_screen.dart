@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:http/http.dart' as http;
 
-import '../screens/otpverification_screen.dart';
-import '../screens/tab_screen.dart';
+import './tab_screen.dart';
+import '../http.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -18,22 +16,22 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String phoneNumber = '';
   final numbercontroller = TextEditingController();
-  Future<void> submit() async {
-    var url = Uri.http('10.0.2.2:8000', 'accounts/send-otp/');
-    // // ignore: unused_local_variable
-    final http.Response response = await http.post(
-      url,
-      body: json.encode({
-        'mobile': phoneNumber,
-      }),
-    );
-    var status = response.statusCode;
-    if (status == 200) {
-      Navigator.of(context)
-          .pushNamed(OtpVerificationScreen.routeName, arguments: phoneNumber);
-    }
-    print(response.body);
-  }
+  // Future<void> submit() async {
+  //   var url = Uri.http('10.0.2.2:8000', 'accounts/send-otp/');
+  //   // // ignore: unused_local_variable
+  //   final http.Response response = await http.post(
+  //     url,
+  //     body: json.encode({
+  //       'mobile': phoneNumber,
+  //     }),
+  //   );
+  //   var status = response.statusCode;
+  //   if (status == 200) {
+  //     Navigator.of(context)
+  //         .pushNamed(OtpVerificationScreen.routeName, arguments: phoneNumber);
+  //   }
+  //   print(response.body);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: ElevatedButton(
                           // ignore: avoid_print
                           onPressed: () {
-                            submit();
+                            submitNumber(phoneNumber, context);
                           },
                           child: const Padding(
                               padding: EdgeInsets.all(15),

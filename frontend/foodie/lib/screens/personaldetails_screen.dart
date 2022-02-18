@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import './tab_screen.dart';
+
 class PersonalDetails extends StatelessWidget {
   const PersonalDetails({Key? key}) : super(key: key);
+  static const routeName = "/name";
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,15 @@ class PersonalDetails extends StatelessWidget {
             SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
-                    onPressed: () {}, child: const Text('Continue')))
+                    onPressed: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const TabScreen()),
+                        ModalRoute.withName(TabScreen.routeName),
+                      );
+                    },
+                    child: const Text('Continue')))
           ],
         ),
       ),

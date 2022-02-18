@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:foodie/screens/profile_screen.dart';
 import 'package:provider/provider.dart';
 
-import './screens/home_screen.dart';
 import './screens/login_screen.dart';
 import './screens/tab_screen.dart';
-// import './screens/profile_screen.dart';
 import './screens/otpverification_screen.dart';
 import './screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,12 +44,11 @@ class MyApp extends StatelessWidget {
               //home:auth.isAuth ? TabScreen() : LoginScreen(),
               // home: const MyHomePage(title: 'Foodie'),
               routes: {
-            '/': (ctx) => const PersonalDetails(),
+            '/': (ctx) => const LoginScreen(),
             TabScreen.routeName: (ctx) => const TabScreen(),
-            LoginScreen.routeName: (ctx) => const LoginScreen(),
+            PersonalDetails.routeName: (ctx) => const PersonalDetails(),
             OtpVerificationScreen.routeName: (ctx) =>
                 const OtpVerificationScreen(),
-            HomeScreen.routeName: (ctx) => const HomeScreen(),
           }),
     )
         // ,)

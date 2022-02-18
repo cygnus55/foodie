@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:foodie/http.dart';
 import 'package:http/http.dart' as http;
 
-import '../screens/tab_screen.dart';
-
+import './personaldetails_screen.dart';
 import '../widgets/one_number.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
@@ -49,11 +49,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       );
       var status = response.statusCode;
       if (status == 200) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) => const TabScreen()),
-          ModalRoute.withName(TabScreen.routeName),
-        );
+        // Navigator.of(context).pushAndRemoveUntil(
+        //   MaterialPageRoute(
+        //       builder: (BuildContext context) => const TabScreen()),
+        //   ModalRoute.withName(TabScreen.routeName),
+        // );
+        Navigator.of(context).pushNamed(PersonalDetails.routeName);
       } else {
         setState(() {
           _isloading = false;
@@ -152,7 +153,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 children: [
                   const Text("Didn't receive a code ?"),
                   TextButton(
-                      onPressed: _didnotreceive ? () {} : null,
+                      onPressed: _didnotreceive
+                          ? () {
+                              submitNumber(phoneNumber as String, context);
+                            }
+                          : null,
                       child: const Text('Resend'))
                 ],
               ),
