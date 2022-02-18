@@ -16,6 +16,7 @@ class OtpVerificationScreen extends StatefulWidget {
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   bool _isloading = false;
+  bool _didnotreceive = false;
   // final otpController = TextEditingController();
   final TextEditingController _first = TextEditingController();
   final TextEditingController _second = TextEditingController();
@@ -27,6 +28,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   Future<void> submit(String phoneNumber) async {
     try {
       var url = Uri.http('10.0.2.2:8000', 'accounts/login/');
+
       setState(() {
         _isloading = true;
       });
@@ -65,6 +67,17 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     }
   }
 
+  void enableResendButton() {
+    Future.delayed(const Duration(seconds: 30),
+        () => setState(() => {_didnotreceive = true}));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    enableResendButton();
+  }
+
   @override
   Widget build(BuildContext context) {
     final phoneNumber = ModalRoute.of(context)!.settings.arguments;
@@ -72,6 +85,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.white,
           title: const Text('OTP Vertifcation'),
           centerTitle: true,
         ),
@@ -137,7 +151,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Didn't receive a code ?"),
-                  TextButton(onPressed: () {}, child: const Text('Resend'))
+                  TextButton(
+                      onPressed: _didnotreceive ? () {} : null,
+                      child: const Text('Resend'))
                 ],
               ),
               _isloading
