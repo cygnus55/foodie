@@ -1,0 +1,28 @@
+# Send OTP
+POST http://localhost:8000/accounts/send-otp/
+Content-Type: application/json
+
+{
+    "mobile": "+9779863471945"
+}
+
+###
+
+# Login
+POST http://localhost:8000/accounts/login/
+Content-Type: application/json
+
+{
+    "mobile": "+97798000000",
+    "otp" : "123456"
+}
+
+###
+
+# Logout
+GET http://localhost:8000/accounts/logout/
+Authorization: Token c49efcab7d466c70f27a79d0dc91bca868628914
+
+
+###
+

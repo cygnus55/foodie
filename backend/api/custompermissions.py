@@ -1,4 +1,3 @@
-from email import message
 from rest_framework import permissions
 
 class IsCurrentUserCustomer(permissions.BasePermission):
