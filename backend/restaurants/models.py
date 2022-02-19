@@ -1,5 +1,7 @@
 from django.db import models
 
+from taggit.managers import TaggableManager
+
 from accounts.models import User
 
 
@@ -14,6 +16,8 @@ class Restaurant(models.Model):
     is_available = models.BooleanField(default=True)
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
+
+    tags = TaggableManager()
 
     class Meta:
         ordering = ('-is_available',)
