@@ -25,47 +25,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final TextEditingController _fifth = TextEditingController();
   final TextEditingController _sixth = TextEditingController();
 
-  Future<void> submit(String phoneNumber) async {
-    try {
-      var url = Uri.http('10.0.2.2:8000', 'accounts/login/');
-
-      setState(() {
-        _isloading = true;
-      });
-      // // ignore: unused_local_variable
-      final http.Response response = await http.post(
-        url,
-        body: json.encode(
-          {
-            'mobile': phoneNumber,
-            'otp': _first.text +
-                _second.text +
-                _third.text +
-                _forth.text +
-                _fifth.text +
-                _sixth.text,
-          },
-        ),
-      );
-      var status = response.statusCode;
-      if (status == 200) {
-        // Navigator.of(context).pushAndRemoveUntil(
-        //   MaterialPageRoute(
-        //       builder: (BuildContext context) => const TabScreen()),
-        //   ModalRoute.withName(TabScreen.routeName),
-        // );
-        Navigator.of(context).pushNamed(PersonalDetails.routeName);
-      } else {
-        setState(() {
-          _isloading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Invalid OTP"),
-        ));
-      }
-    } catch (e) {
-      print(e);
-    }
+  void clearInput() {
+    _first.clear();
+    _second.clear();
+    _third.clear();
+    _forth.clear();
+    _fifth.clear();
+    _sixth.clear();
   }
 
   void enableResendButton() {
@@ -81,6 +47,63 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> submit(String phoneNumber) async {
+      try {
+        var url = Uri.http('10.0.2.2:8000', 'accounts/login/');
+
+        setState(() {
+          _isloading = true;
+        });
+        // // ignore: unused_local_variable
+        final http.Response response = await http.post(
+          url,
+          body: json.encode(
+            {
+              'mobile': phoneNumber,
+              'otp': _first.text +
+                  _second.text +
+                  _third.text +
+                  _forth.text +
+                  _fifth.text +
+                  _sixth.text,
+            },
+          ),
+        );
+        var status = response.statusCode;
+        if (status == 200) {
+          // Navigator.of(context).pushAndRemoveUntil(
+          //   MaterialPageRoute(
+          //       builder: (BuildContext context) => const TabScreen()),
+          //   ModalRoute.withName(TabScreen.routeName),
+          // );
+          Navigator.of(context).pushNamed(PersonalDetails.routeName);
+        } else {
+          setState(() {
+            _isloading = false;
+          });
+          showDialog(
+              context: context,
+              builder: (c) {
+                return AlertDialog(
+                  title: const Text('Invalid OTP'),
+                  content: const Text('You enterned an invalid otp.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(c).pop();
+                        clearInput();
+                      },
+                      child: const Text('OK'),
+                    )
+                  ],
+                );
+              });
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+
     final phoneNumber = ModalRoute.of(context)!.settings.arguments;
 
     return SafeArea(
