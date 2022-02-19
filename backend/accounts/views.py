@@ -1,22 +1,26 @@
 import json
+from hashlib import md5
 
 from django.contrib.auth import login, logout
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.status import (
     HTTP_403_FORBIDDEN,
     HTTP_200_OK,
-    HTTP_401_UNAUTHORIZED
+    HTTP_401_UNAUTHORIZED,
+    HTTP_400_BAD_REQUEST,
 )
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.views import APIView
 
-from api.custompermissions import IsCurrentUserCustomer
-from .models import User
-from . import otp_verify
+from accounts.models import User
+from accounts import otp_verify
+from customers.models import Customer
+from accounts.serializers import UserSerializer
+from accounts.custompermissions import IsCurrentUserOwner
+from api import customauthentication
 
 
 @api_view(['POST'])
@@ -53,9 +57,11 @@ def customer_login(request):
             data['success'] = "User Login"
         except User.DoesNotExist:
             # register user
-            user = User.objects.create(username=mobile, mobile=mobile, is_customer=True)
+            user = User.objects.create(username=mobile, mobile=mobile, is_customer=True, is_verified=True)
             user.set_unusable_password()
             user.save()
+            customer = Customer.objects.create(user=user)
+            customer.save()
             token = Token.objects.create(user=user)
             data['success'] = "New user created"
 
@@ -85,27 +91,54 @@ def account_logout(request):
     return Response(data, status=HTTP_200_OK)
 
 
-# customer name view
-@api_view(['GET', 'POST'])
-@permission_classes([IsCurrentUserCustomer, IsAuthenticated])
-def customer_name(request):
-    if request.method == 'GET':
-        data = {}
-        name = request.user.full_name
-        if name:
-            data['name'] = request.user.full_name
-        else:
-            data['name'] = None
-        return Response(data, status=HTTP_200_OK)
-    elif request.method == 'POST':
-        data = {}
-        reqBody = json.loads(request.body)
-        if 'name' in reqBody:
-            name = reqBody['name']
-            request.user.full_name = name
-            request.user.save()
-            data['success'] = "Name updated"
-            return Response(data, status=HTTP_200_OK)
-        else:
-            data['error'] = "Name not provided."
-            return Response(data, status=HTTP_403_FORBIDDEN)
+class AccountDetails(APIView):
+    permission_classes = [
+        IsAuthenticated,
+        IsCurrentUserOwner
+    ]
+    authentication_classes = [
+        TokenAuthentication,
+        customauthentication.CsrfExemptSessionAuthentication
+    ]
+
+    def get(self, request, format=None):
+        user = request.user
+        serializers = UserSerializer(user)
+        return Response(serializers.data, status=HTTP_200_OK)
+
+    def put(self, request, format=None):
+        user = request.user
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            if "full_name" in request.data:
+                change_profile_pic(request)
+            return Response(serializer.data, status=HTTP_200_OK)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, format=None):
+        user = request.user
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            if "full_name" in request.data:
+                change_profile_pic(request)
+            return Response(serializer.data, status=HTTP_200_OK)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+def change_profile_pic(request):
+    import random
+    colors = ["b88232", "3632b8", "b3452d", "b32d46", "88b02c", "4531b5", "2eab47"]
+    color = random.choice(colors)
+    name = str(request.user.full_name).replace(" ", "+")
+    if request.user.is_customer:
+        customer = request.user.customer
+        if ("ui-avatars" in customer.profile_picture)or (not customer.profile_picture):
+            customer.profile_picture = f"https://ui-avatars.com/api/?background={color}&rounded=true&name={name}"
+            customer.save()
+    elif request.user.is_restaurant:
+        restaurant = request.user.restaurant
+        if ("ui-avatars" in restaurant.logo) or (not restaurant.logo):
+            restaurant.logo = f"https://ui-avatars.com/api/?background={color}&rounded=true&name={name}"
+            restaurant.save()

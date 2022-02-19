@@ -1,0 +1,42 @@
+# Get restaurants
+GET http://localhost:8000/restaurants/
+
+###
+
+# Create restaurant
+POST http://localhost:8000/restaurants/
+Authorization: Token 4bd26b07cb18f8f6aa770f2a655d4266296c0f17
+Content-Type: application/json
+
+
+{
+    "website_link": "https://www.google.com",
+    "facebook_link": "https://www.facebook.com",
+    "logo": "https://www.google.com",
+    "description": "lorem ipsum",
+    "open_hour": "10:00",
+    "close_hour": "22:00",
+    "is_available": true
+}
+
+###
+
+#Update Restaurant
+PUT http://localhost:8000/restaurants/2/
+Authorization: Token c49efcab7d466c70f27a79d0dc91bca868628914
+Content-Type: application/json
+
+
+{
+    "website_link": "https://www.google.com",
+    "facebook_link": "https://www.facebook.com",
+    "logo": "https://www.google.com",
+    "description": "lorem ipsum",
+    "open_hour": "10:00",
+    "close_hour": "18:00",
+    "is_available": true
+}
+
+# Delete Restaurant
+DELETE http://localhost:8000/restaurants/2/
+Authorization: Token c49efcab7d466c70f27a79d0dc91bca868628914
