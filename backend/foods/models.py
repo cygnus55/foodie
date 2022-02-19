@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import Decimal
 
+from taggit.managers import TaggableManager
+
 from restaurants.models import Restaurant
 
 
@@ -26,6 +28,7 @@ class Food(models.Model):
     is_veg = models.BooleanField(default=False)
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
+    tags = TaggableManager()
 
     class Meta:
         ordering = ('-is_available', '-discount_percent', 'name',)
