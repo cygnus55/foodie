@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'taggit',
     
 
     # local apps
@@ -58,7 +59,6 @@ INSTALLED_APPS = [
     'foods',
     'customers',
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,23 +71,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
-
-CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:8000',
-]
-CORS_ALLOW_METHODS = [
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
-]
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    'http://localhost:8000/',
-]
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True 
 
 ROOT_URLCONF = 'foodie.urls'
 
@@ -129,6 +112,8 @@ DATABASES = {
         'USER': os.environ.get("DATABASE_USER"),
         'HOST': os.environ.get("DATABASE_HOST"),
         'PASSWORD': os.environ.get("DATABASE_PASSWORD"),
+        'PORT': os.environ.get("DATABASE_PORT"),
+        'OPTIONS': {'sslmode': os.environ.get("DATABASE_SSLMODE")},
     }
 }
 
@@ -175,6 +160,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Custom Authentication User Model
+AUTH_USER_MODEL = 'accounts.User'
+
 # Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -186,4 +174,23 @@ REST_FRAMEWORK = {
     ]
 }
 
-AUTH_USER_MODEL = 'accounts.User'
+# Corsheaders
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:8000',
+]
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    'http://localhost:8000/',
+]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True 
+
+# Django Taggit
+TAGGIT_CASE_INSENSITIVE = True

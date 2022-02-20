@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:foodie/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import './personaldetails_screen.dart';
 import '../widgets/one_number.dart';
+import '../providers/auth_provider.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({Key? key}) : super(key: key);
@@ -24,6 +26,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final TextEditingController _forth = TextEditingController();
   final TextEditingController _fifth = TextEditingController();
   final TextEditingController _sixth = TextEditingController();
+  String otp = '';
 
   void clearInput() {
     _first.clear();
@@ -32,6 +35,90 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     _forth.clear();
     _fifth.clear();
     _sixth.clear();
+  }
+
+  Future<void> submit(String phoneNumber) async {
+    try {
+      // var url = Uri.http('10.0.2.2:8000', 'accounts/login/');
+      otp = _first.text +
+          _second.text +
+          _third.text +
+          _forth.text +
+          _fifth.text +
+          _sixth.text;
+
+      setState(() {
+        _isloading = true;
+      });
+      await Provider.of<Auth>(context, listen: false).signup(phoneNumber, otp);
+      if (Provider.of<Auth>(context, listen: false).isAuth) {
+        Navigator.of(context).pushReplacementNamed(
+          PersonalDetails.routeName,
+        );
+        setState(() {
+          _isloading = false;
+        });
+      } else {
+        setState(() {
+          _isloading = false;
+        });
+
+        showDialog(
+            context: context,
+            builder: (c) {
+              return AlertDialog(
+                title: const Text('Invalid OTP'),
+                content: const Text('You enterned an invalid otp.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(c).pop();
+                      clearInput();
+                    },
+                    child: const Text('OK'),
+                  )
+                ],
+              );
+            });
+      }
+    } catch (error) {
+      print("error3");
+      print(error);
+    }
+    // // ignore: unused_local_variable
+    // final http.Response response = await http.post(
+    //   url,
+    //   body: json.encode(
+    //     {
+    //       'mobile': phoneNumber,
+    //       'otp': _first.text +
+    //           _second.text +
+    //           _third.text +
+    //           _forth.text +
+    //           _fifth.text +
+    //           _sixth.text,
+    //     },
+    //   ),
+    // );
+    // var status = response;
+    // if (status == 200) {
+    //   // Navigator.of(context).pushAndRemoveUntil(
+    //   //   MaterialPageRoute(
+    //   //       builder: (BuildContext context) => const TabScreen()),
+    //   //   ModalRoute.withName(TabScreen.routeName),
+    //   // );
+    //   Navigator.of(context).pushNamed(PersonalDetails.routeName);
+    //   // print(response.body);
+    // } else {
+    setState(() {
+      _isloading = false;
+    });
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //     content: Text("Invalid OTP"),
+    //   ));
+    // }
+    // } catch (e) {
+    // print(e);
   }
 
   void enableResendButton() {
@@ -47,71 +134,22 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> submit(String phoneNumber) async {
-      try {
-        var url = Uri.http('10.0.2.2:8000', 'accounts/login/');
-
-        setState(() {
-          _isloading = true;
-        });
-        // // ignore: unused_local_variable
-        final http.Response response = await http.post(
-          url,
-          body: json.encode(
-            {
-              'mobile': phoneNumber,
-              'otp': _first.text +
-                  _second.text +
-                  _third.text +
-                  _forth.text +
-                  _fifth.text +
-                  _sixth.text,
-            },
-          ),
-        );
-        var status = response.statusCode;
-        if (status == 200) {
-          // Navigator.of(context).pushAndRemoveUntil(
-          //   MaterialPageRoute(
-          //       builder: (BuildContext context) => const TabScreen()),
-          //   ModalRoute.withName(TabScreen.routeName),
-          // );
-          Navigator.of(context).pushNamed(PersonalDetails.routeName);
-        } else {
-          setState(() {
-            _isloading = false;
-          });
-          showDialog(
-              context: context,
-              builder: (c) {
-                return AlertDialog(
-                  title: const Text('Invalid OTP'),
-                  content: const Text('You enterned an invalid otp.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(c).pop();
-                        clearInput();
-                      },
-                      child: const Text('OK'),
-                    )
-                  ],
-                );
-              });
-        }
-      } catch (e) {
-        print(e);
-      }
-    }
-
     final phoneNumber = ModalRoute.of(context)!.settings.arguments;
 
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: const Text('OTP Vertifcation'),
+          iconTheme: Theme.of(context).iconTheme,
+          backgroundColor: Colors.transparent,
+          title: Text(
+            'OTP Vertifcation',
+            style: Theme.of(context)
+                .textTheme
+                .subtitle1
+                ?.copyWith(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
           centerTitle: true,
+          elevation: 0,
         ),
         body: Center(
           child: Column(
