@@ -23,36 +23,45 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // ChangeNotifierProvider.value(
-        //   value: Auth(),
-        // ),
+        ChangeNotifierProvider.value(
+          value: Auth(),
+        ),
         ChangeNotifierProvider.value(
           value: Food(),
         ),
       ],
-      child:
-          // Customer<Auth>(
-          //   builder: (ctx,auth,_) =>
-          MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Foodie APP',
-              theme: ThemeData(
-                primarySwatch: buildMaterialColor(const Color(0xFFD42323)),
-                iconTheme: const IconThemeData(color: Colors.black),
-                dividerColor: Colors.black,
-              ),
-              //home:auth.isAuth ? TabScreen() : LoginScreen(),
-              // home: const MyHomePage(title: 'Foodie'),
-              routes: {
-            '/': (ctx) => const LoginScreen(),
-            TabScreen.routeName: (ctx) => const TabScreen(),
-            PersonalDetails.routeName: (ctx) => const PersonalDetails(),
-            OtpVerificationScreen.routeName: (ctx) =>
-                const OtpVerificationScreen(),
-          }),
-    )
-        // ,)
-        ;
+      child: Consumer<Auth>(
+        builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Foodie APP',
+          theme: ThemeData(
+            primarySwatch: buildMaterialColor(const Color(0xFFD42323)),
+            iconTheme: const IconThemeData(color: Colors.black),
+            dividerColor: Colors.black,
+          ),
+          home: auth.isAuth
+              ? const TabScreen()
+              : FutureBuilder(
+                  future: auth.tryAutoLogin(),
+                  builder: (ctx, authResltSnapsot) =>
+                      authResltSnapsot.connectionState ==
+                              ConnectionState.waiting
+                          ? const SplashScreen()
+                          : const LoginScreen()),
+                  // home: const MyHomePage(title: 'Foodie'),
+                  routes: {
+                      // '/': (ctx) => const LoginScreen(),
+                      LoginScreen.routeName: (ctx) => const LoginScreen(),
+                      // SplashScreen.routeName: (ctx) => const SplashScreen(),
+                      TabScreen.routeName: (ctx) => const TabScreen(),
+                      PersonalDetails.routeName: (ctx) =>
+                          const PersonalDetails(),
+                      OtpVerificationScreen.routeName: (ctx) =>
+                          const OtpVerificationScreen(),
+                    }),
+        ),
+      
+    );
   }
 }
 

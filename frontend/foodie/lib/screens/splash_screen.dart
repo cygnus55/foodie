@@ -4,23 +4,24 @@ import './login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
+  // static const routeName = '/splash_screen';
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  void test() {
-    Future.delayed(
-        const Duration(seconds: 3),
-        () =>
-            Navigator.of(context).pushReplacementNamed(LoginScreen.routeName));
-  }
+  // void test() {
+  //   Future.delayed(
+  //       const Duration(seconds: 3),
+  //       () =>
+  //           Navigator.of(context).pushReplacementNamed(LoginScreen.routeName));
+  // }
 
   @override
   void initState() {
     super.initState();
-    test();
+    // test();
   }
 
   @override
