@@ -70,7 +70,7 @@ def customer_login(request):
         if user.is_active:
             login(request, user)
             data['token'] = token.key
-            data['id'] = id
+            data['mobile'] = mobile
             return Response(data, status=HTTP_200_OK)
 
         else:
