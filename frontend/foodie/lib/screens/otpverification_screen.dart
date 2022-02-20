@@ -98,6 +98,90 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     // print(e);
   }
 
+  Future<void> submit(String phoneNumber) async {
+    try {
+      // var url = Uri.http('10.0.2.2:8000', 'accounts/login/');
+      otp = _first.text +
+          _second.text +
+          _third.text +
+          _forth.text +
+          _fifth.text +
+          _sixth.text;
+
+      setState(() {
+        _isloading = true;
+      });
+      await Provider.of<Auth>(context, listen: false).signup(phoneNumber, otp);
+      if (Provider.of<Auth>(context, listen: false).isAuth) {
+        Navigator.of(context).pushReplacementNamed(
+          PersonalDetails.routeName,
+        );
+        setState(() {
+          _isloading = false;
+        });
+      } else {
+        setState(() {
+          _isloading = false;
+        });
+
+        showDialog(
+            context: context,
+            builder: (c) {
+              return AlertDialog(
+                title: const Text('Invalid OTP'),
+                content: const Text('You enterned an invalid otp.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(c).pop();
+                      clearInput();
+                    },
+                    child: const Text('OK'),
+                  )
+                ],
+              );
+            });
+      }
+    } catch (error) {
+      print("error3");
+      print(error);
+    }
+    // // ignore: unused_local_variable
+    // final http.Response response = await http.post(
+    //   url,
+    //   body: json.encode(
+    //     {
+    //       'mobile': phoneNumber,
+    //       'otp': _first.text +
+    //           _second.text +
+    //           _third.text +
+    //           _forth.text +
+    //           _fifth.text +
+    //           _sixth.text,
+    //     },
+    //   ),
+    // );
+    // var status = response;
+    // if (status == 200) {
+    //   // Navigator.of(context).pushAndRemoveUntil(
+    //   //   MaterialPageRoute(
+    //   //       builder: (BuildContext context) => const TabScreen()),
+    //   //   ModalRoute.withName(TabScreen.routeName),
+    //   // );
+    //   Navigator.of(context).pushNamed(PersonalDetails.routeName);
+    //   // print(response.body);
+    // } else {
+    setState(() {
+      _isloading = false;
+    });
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //     content: Text("Invalid OTP"),
+    //   ));
+    // }
+    // } catch (e) {
+    // print(e);
+  }
+
   void enableResendButton() {
     Future.delayed(const Duration(seconds: 30),
         () => setState(() => {_didnotreceive = true}));
@@ -116,9 +200,17 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: const Text('OTP Vertifcation'),
+          iconTheme: Theme.of(context).iconTheme,
+          backgroundColor: Colors.transparent,
+          title: Text(
+            'OTP Vertifcation',
+            style: Theme.of(context)
+                .textTheme
+                .subtitle1
+                ?.copyWith(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
           centerTitle: true,
+          elevation: 0,
         ),
         body: Center(
           child: Column(

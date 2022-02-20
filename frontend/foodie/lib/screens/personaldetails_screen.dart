@@ -11,7 +11,7 @@ class PersonalDetails extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         title: Text(
           'Personal Details',
           style: Theme.of(context)
@@ -20,6 +20,7 @@ class PersonalDetails extends StatelessWidget {
               ?.copyWith(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
