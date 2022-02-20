@@ -10,6 +10,14 @@ class IsCurrentUserCustomer(permissions.BasePermission):
         return request.user.is_customer
 
 
+class AllowOnlyCustomer(permissions.BasePermission):
+
+    message = "You must be a customer to access this resource."
+
+    def has_permission(self, request, view):
+        return request.user.is_customer
+
+
 class IsCurrentUserRestaurant(permissions.BasePermission):
 
     message = "You must be a restaurant to access this resource."
