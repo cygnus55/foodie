@@ -13,7 +13,7 @@ POST http://localhost:8000/accounts/login/
 Content-Type: application/json
 
 {
-    "mobile": "+97798000000",
+    "mobile": "+9779863471",
     "otp" : "123456"
 }
 
@@ -26,3 +26,19 @@ Authorization: Token c49efcab7d466c70f27a79d0dc91bca868628914
 
 ###
 
+# Account Detail
+
+GET http://localhost:8000/accounts/details/
+Authorization: Token 9d233a35a859e9b7024794a00b3d50e23d99db15
+
+
+###
+
+# Patch Account
+PATCH http://localhost:8000/accounts/details/
+Authorization: Token 9d233a35a859e9b7024794a00b3d50e23d99db15
+Content-Type: application/json
+
+{
+    "full_name": "Hari Bahadur"
+}

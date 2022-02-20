@@ -1,5 +1,7 @@
+from hmac import digest
 import json
 from hashlib import md5
+import random, string
 
 from django.contrib.auth import login, logout
 from rest_framework.decorators import api_view, permission_classes
@@ -68,14 +70,14 @@ def customer_login(request):
         if user.is_active:
             login(request, user)
             data['token'] = token.key
-            data['mobile'] = mobile
+            data['id'] = id
             return Response(data, status=HTTP_200_OK)
 
         else:
             data['error'] = "User is not active"
             return Response(data, status=HTTP_403_FORBIDDEN)
     else:
-        data['error'] = "Mobile number not provided."
+        data['error'] = "Mobile number or OTP code not provided."
         return Response(data, status=HTTP_403_FORBIDDEN)
 
 # logout view
@@ -128,17 +130,19 @@ class AccountDetails(APIView):
 
 
 def change_profile_pic(request):
-    import random
-    colors = ["b88232", "3632b8", "b3452d", "b32d46", "88b02c", "4531b5", "2eab47"]
-    color = random.choice(colors)
-    name = str(request.user.full_name).replace(" ", "+")
     if request.user.is_customer:
         customer = request.user.customer
         if ("ui-avatars" in customer.profile_picture)or (not customer.profile_picture):
+            colors = ["b88232", "3632b8", "b3452d", "b32d46", "88b02c", "4531b5", "2eab47"]
+            color = random.choice(colors)
+            name = str(request.user.full_name.title()).replace(" ", "+")
             customer.profile_picture = f"https://ui-avatars.com/api/?background={color}&rounded=true&name={name}"
             customer.save()
     elif request.user.is_restaurant:
+        strg = request.user.full_name.lower()
+        strg.join(random.choice(string.ascii_letters) for i in range(10))
+        digest = md5(strg.encode('utf-8')).hexdigest()
         restaurant = request.user.restaurant
-        if ("ui-avatars" in restaurant.logo) or (not restaurant.logo):
-            restaurant.logo = f"https://ui-avatars.com/api/?background={color}&rounded=true&name={name}"
+        if ("gravatar" in restaurant.logo) or (not restaurant.logo):
+            restaurant.logo = f"https://www.gravatar.com/avatar/{digest}?d=identicon"
             restaurant.save()
