@@ -17,6 +17,7 @@ class Auth with ChangeNotifier {
   String? _token;
   String? _userId;
   // ignore: prefer_typing_uninitialized_variables
+  var authToken;
   var authtoken;
   var isNewusertoken = false;
 
@@ -63,6 +64,7 @@ class Auth with ChangeNotifier {
         final _token = extractedData['token'];
         final _userId = extractedData['mobile'];
         authtoken = token(_token);
+        authToken=_token;
         print(authtoken);
         print(_token);
         isAuth;
@@ -89,6 +91,7 @@ class Auth with ChangeNotifier {
         final _token = extractedData['token'];
         final _userId = extractedData['mobile'];
         authtoken = token(_token);
+        authToken=_token;
         print(authtoken);
         print(_token);
         isAuth;
@@ -161,7 +164,7 @@ class Auth with ChangeNotifier {
         print(prefs.getString('token'));
         final extractedUserData = prefs.getString('token')!;
         print(extractedUserData);
-        authtoken = extractedUserData;
+        authToken = extractedUserData;
         // _userId = extractedUserData['userId'] as String;
         notifyListeners();
         return true;
@@ -175,10 +178,11 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logout() async {
-    print('tokrn' + authtoken);
+    print( authtoken);
+    print(authToken);
     var url = Uri.http('10.0.2.2:8000', 'accounts/logout/');
     await http.get(url, headers: {
-      'Authorization': 'Token ' + authtoken,
+      'Authorization': 'Token ' + authToken,
     });
     // print(authtoken);
     authtoken = null;
