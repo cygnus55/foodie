@@ -1,7 +1,8 @@
+from dataclasses import fields
 from rest_framework import serializers
 from taggit.serializers import (TagListSerializerField, TaggitSerializer)
 
-from foods.models import Food
+from foods.models import Food, FoodTemplate
 from restaurants.serializers import RestaurantSerializer
 
 
@@ -9,6 +10,17 @@ class FoodSerializer(TaggitSerializer, serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="foods:food_details")
     restaurant = RestaurantSerializer(read_only=True)
     tags = TagListSerializerField()
+    selling_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+
     class Meta:
         model = Food
-        exclude = ('created', 'updated')
+        exclude = ("created", "updated")
+
+
+class FoodTemplateSerializer(TaggitSerializer, serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="foods:food_template_details")
+    tags = TagListSerializerField()
+
+    class Meta:
+        model = FoodTemplate
+        exclude = ("created", "updated")
