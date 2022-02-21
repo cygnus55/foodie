@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Food(),
         ),
-        // ChangeNotifierProvider(create: (context) => Foods()),
+        ChangeNotifierProvider(create: (context) => Foods()),
         ChangeNotifierProvider(create: (context) => Restaurants()),
       ],
       child: Consumer<Auth>(
