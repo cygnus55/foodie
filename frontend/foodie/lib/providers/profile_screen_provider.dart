@@ -33,10 +33,10 @@ class Profile with ChangeNotifier {
           'Authorization': 'Token ' + authToken,
         },
       );
-      
+
       final responseData = json.decode(response.body);
       print(responseData);
-      _userName= responseData['full_name'];
+      _userName = responseData['full_name'];
       notifyListeners();
       print(_userName);
     } catch (error) {

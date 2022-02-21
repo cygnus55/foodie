@@ -51,6 +51,14 @@ class _TabScreenState extends State<TabScreen> {
           ProfileScreen()
         ];
       });
+    } else {
+      setState(() {
+        _auth = false;
+        _tabs = [
+          const HomeScreen(),
+          const LoginScreen(),
+        ];
+      });
     }
   }
 
