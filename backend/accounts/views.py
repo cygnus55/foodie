@@ -60,9 +60,9 @@ def customer_login(request):
         except User.DoesNotExist:
             # register user
             user = User.objects.create(username=mobile, mobile=mobile, is_verified=True)
-            if reqBody["is_restaurant"]:
+            if reqBody.get("is_restaurant"):
                 user.is_restaurant = True
-            elif reqBody["is_delivery_person"]:
+            elif reqBody.get("is_delivery_person"):
                 user.is_delivery_person = True
             else:
                 user.is_customer = True
