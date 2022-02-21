@@ -25,30 +25,30 @@ from accounts.custompermissions import IsCurrentUserOwner
 from api import customauthentication
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def send_otp_code(request):
     data = {}
     reqBody = json.loads(request.body)
-    if 'mobile' in reqBody:
-        mobile = reqBody['mobile']
+    if "mobile" in reqBody:
+        mobile = reqBody["mobile"]
         otp_verify.send(mobile)
-        data['msg'] = "OTP sent!"
-        data['mobile'] = mobile
+        data["msg"] = "OTP sent!"
+        data["mobile"] = mobile
         return Response(data, status=HTTP_200_OK)
     else:
-        data['error'] = "Mobile number not provided."
+        data["error"] = "Mobile number not provided."
         return Response(data, status=HTTP_403_FORBIDDEN)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def customer_login(request):
     data = {}
     reqBody = json.loads(request.body)
-    if 'mobile' and 'otp' in reqBody:
-        mobile = reqBody['mobile']
-        otp_code = reqBody['otp']
+    if "mobile" and "otp" in reqBody:
+        mobile = reqBody["mobile"]
+        otp_code = reqBody["otp"]
         if not otp_verify.check(mobile, otp_code):
             data["error"] = "Invalid OTP"
             return Response(data, status=HTTP_401_UNAUTHORIZED)
@@ -56,40 +56,46 @@ def customer_login(request):
         try:
             user = User.objects.get(mobile=mobile)
             token, _ = Token.objects.get_or_create(user=user)
-            data['success'] = "User Login"
+            data["success"] = "User Login"
         except User.DoesNotExist:
             # register user
-            user = User.objects.create(username=mobile, mobile=mobile, is_customer=True, is_verified=True)
+            user = User.objects.create(username=mobile, mobile=mobile, is_verified=True)
+            if reqBody["is_restaurant"]:
+                user.is_restaurant = True
+            elif reqBody["is_delivery_person"]:
+                user.is_delivery_person = True
+            else:
+                user.is_customer = True
             user.set_unusable_password()
             user.save()
             customer = Customer.objects.create(user=user)
             customer.save()
             token = Token.objects.create(user=user)
-            data['success'] = "New user created"
+            data["success"] = "New user created"
 
         if user.is_active:
             login(request, user)
-            data['token'] = token.key
-            data['mobile'] = mobile
+            data["token"] = token.key
+            data["mobile"] = mobile
             return Response(data, status=HTTP_200_OK)
 
         else:
-            data['error'] = "User is not active"
+            data["error"] = "User is not active"
             return Response(data, status=HTTP_403_FORBIDDEN)
     else:
-        data['error'] = "Mobile number or OTP code not provided."
+        data["error"] = "Mobile number or OTP code not provided."
         return Response(data, status=HTTP_403_FORBIDDEN)
 
 # logout view
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def account_logout(request):
     Token.delete(request.user.auth_token)
     logout(request)
     data = {}
-    data['success'] = "User logged out"
+    data["success"] = "User logged out"
     return Response(data, status=HTTP_200_OK)
 
 
@@ -132,7 +138,7 @@ class AccountDetails(APIView):
 def change_profile_pic(request):
     if request.user.is_customer:
         customer = request.user.customer
-        if ("ui-avatars" in customer.profile_picture)or (not customer.profile_picture):
+        if "ui-avatars" in customer.profile_picture or not customer.profile_picture:
             colors = ["b88232", "3632b8", "b3452d", "b32d46", "88b02c", "4531b5", "2eab47"]
             color = random.choice(colors)
             name = str(request.user.full_name.title()).replace(" ", "+")
@@ -141,8 +147,8 @@ def change_profile_pic(request):
     elif request.user.is_restaurant:
         strg = request.user.full_name.lower()
         strg.join(random.choice(string.ascii_letters) for i in range(10))
-        digest = md5(strg.encode('utf-8')).hexdigest()
+        digest = md5(strg.encode("utf-8")).hexdigest()
         restaurant = request.user.restaurant
-        if ("gravatar" in restaurant.logo) or (not restaurant.logo):
+        if "gravatar" in restaurant.logo or not restaurant.logo:
             restaurant.logo = f"https://www.gravatar.com/avatar/{digest}?d=identicon"
             restaurant.save()
