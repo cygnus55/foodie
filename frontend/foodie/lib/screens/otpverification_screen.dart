@@ -54,6 +54,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       });
       await Provider.of<Auth>(context, listen: false).signup(phoneNumber, otp);
       if (Provider.of<Auth>(context, listen: false).isAuth) {
+
         if (Provider.of<Auth>(context, listen: false).isNewuser) {
           Navigator.of(context).pushReplacementNamed(
             PersonalDetails.routeName,
@@ -73,6 +74,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
         }
        else {
+
         setState(() {
           _isloading = false;
         });

@@ -18,7 +18,9 @@ class Auth with ChangeNotifier {
   String? _userId;
   // ignore: prefer_typing_uninitialized_variables
   var authtoken;
+
   var isNewusertoken = false;
+
 
   bool token(String _token) {
     if (_token == '') {
@@ -31,9 +33,11 @@ class Auth with ChangeNotifier {
     return _userId;
   }
 
+
   bool get isNewuser {
     return isNewusertoken;
   }
+
 
   bool get isAuth {
     return authtoken != null;
@@ -82,6 +86,7 @@ class Auth with ChangeNotifier {
         }
         return true;
       }
+
       if (response.body.toString().contains('New user created')) {
         final prefs = await SharedPreferences.getInstance();
         final extractedData = json.decode(response.body);
@@ -113,6 +118,7 @@ class Auth with ChangeNotifier {
       }
       if (response.body.toString().contains('Invalid OTP')) {
         return true;
+
       } else {
         print("error1");
         throw Exception('Something went wrong');
@@ -159,8 +165,10 @@ class Auth with ChangeNotifier {
       }
       if (prefs.containsKey('token')) {
         print(prefs.getString('token'));
+
         final extractedUserData = prefs.getString('token')!;
         print(extractedUserData);
+
         authtoken = extractedUserData;
         // _userId = extractedUserData['userId'] as String;
         notifyListeners();
@@ -175,12 +183,14 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logout() async {
+
     print('tokrn' + authtoken);
     var url = Uri.http('10.0.2.2:8000', 'accounts/logout/');
     await http.get(url, headers: {
       'Authorization': 'Token ' + authtoken,
     });
     // print(authtoken);
+
     authtoken = null;
     _userId = null;
     notifyListeners();
