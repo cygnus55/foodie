@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/providers/restaurants_provider.dart';
 import 'package:provider/provider.dart';
 
 import './screens/login_screen.dart';
@@ -10,6 +11,7 @@ import './screens/personaldetails_screen.dart';
 
 import './providers/food_provider.dart';
 import './providers/auth_provider.dart';
+import './providers/foods_provider.dart';
 
 import './color.dart';
 
@@ -29,38 +31,38 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Food(),
         ),
+        ChangeNotifierProvider(create: (context) => Foods()),
+        ChangeNotifierProvider(create: (context) => Restaurants()),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Foodie APP',
-          theme: ThemeData(
-            primarySwatch: buildMaterialColor(const Color(0xFFD42323)),
-            iconTheme: const IconThemeData(color: Colors.black),
-            dividerColor: Colors.black,
-          ),
-          home: auth.isAuth
-              ? const TabScreen()
-              : FutureBuilder(
-                  future: auth.tryAutoLogin(),
-                  builder: (ctx, authResltSnapsot) =>
-                      authResltSnapsot.connectionState ==
-                              ConnectionState.waiting
-                          ? const SplashScreen()
-                          : const LoginScreen()),
-                  // home: const MyHomePage(title: 'Foodie'),
-                  routes: {
-                      // '/': (ctx) => const LoginScreen(),
-                      LoginScreen.routeName: (ctx) => const LoginScreen(),
-                      // SplashScreen.routeName: (ctx) => const SplashScreen(),
-                      TabScreen.routeName: (ctx) => const TabScreen(),
-                      PersonalDetails.routeName: (ctx) =>
-                          const PersonalDetails(),
-                      OtpVerificationScreen.routeName: (ctx) =>
-                          const OtpVerificationScreen(),
-                    }),
-        ),
-      
+            debugShowCheckedModeBanner: false,
+            title: 'Foodie APP',
+            theme: ThemeData(
+              primarySwatch: buildMaterialColor(const Color(0xFFD42323)),
+              iconTheme: const IconThemeData(color: Colors.black),
+              dividerColor: Colors.black,
+            ),
+            home: auth.isAuth
+                ? const TabScreen()
+                : FutureBuilder(
+                    future: auth.tryAutoLogin(),
+                    builder: (ctx, authResltSnapsot) =>
+                        authResltSnapsot.connectionState ==
+                                ConnectionState.waiting
+                            ? const SplashScreen()
+                            : const LoginScreen()),
+            // home: const MyHomePage(title: 'Foodie'),
+            routes: {
+              // '/': (ctx) => const LoginScreen(),
+              LoginScreen.routeName: (ctx) => const LoginScreen(),
+              // SplashScreen.routeName: (ctx) => const SplashScreen(),
+              TabScreen.routeName: (ctx) => const TabScreen(),
+              PersonalDetails.routeName: (ctx) => const PersonalDetails(),
+              OtpVerificationScreen.routeName: (ctx) =>
+                  const OtpVerificationScreen(),
+            }),
+      ),
     );
   }
 }
