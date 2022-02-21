@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/auth_provider.dart';
 import './tab_screen.dart';
 
 class PersonalDetails extends StatelessWidget {
   const PersonalDetails({Key? key}) : super(key: key);
   static const routeName = "/name";
-
+ 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController name = TextEditingController();
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -36,12 +39,13 @@ class PersonalDetails extends StatelessWidget {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.03,
             ),
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              decoration: const InputDecoration(
                 hintText: 'Enter Your Name ',
                 border: OutlineInputBorder(),
               ),
               autofocus: true,
+              controller: name,
               keyboardType: TextInputType.text,
             ),
             SizedBox(
@@ -51,6 +55,8 @@ class PersonalDetails extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
                     onPressed: () {
+                      Provider.of<Auth>(context, listen: false)
+                          .submitName(name.text);
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (BuildContext context) =>

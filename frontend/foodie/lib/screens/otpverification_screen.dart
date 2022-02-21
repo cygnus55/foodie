@@ -56,17 +56,21 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       if (Provider.of<Auth>(context, listen: false).isAuth) {
 
         if (Provider.of<Auth>(context, listen: false).isNewuser) {
-          Navigator.of(context).pushReplacementNamed(
-            PersonalDetails.routeName,
-          );
+           Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+            builder: (BuildContext context) => const PersonalDetails()),
+        ModalRoute.withName(PersonalDetails.routeName),
+      );
           setState(() {
             _isloading = false;
           });
         }
         else{
-          Navigator.of(context).pushReplacementNamed(
-            TabScreen.routeName,
-          );
+          Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+            builder: (BuildContext context) => const TabScreen()),
+        ModalRoute.withName(TabScreen.routeName),
+      );
           setState(() {
             _isloading = false;
           });
@@ -118,11 +122,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     // );
     // var status = response;
     // if (status == 200) {
-    //   // Navigator.of(context).pushAndRemoveUntil(
-    //   //   MaterialPageRoute(
-    //   //       builder: (BuildContext context) => const TabScreen()),
-    //   //   ModalRoute.withName(TabScreen.routeName),
-    //   // );
+      // Navigator.of(context).pushAndRemoveUntil(
+      //   MaterialPageRoute(
+      //       builder: (BuildContext context) => const TabScreen()),
+      //   ModalRoute.withName(TabScreen.routeName),
+      // );
     //   Navigator.of(context).pushNamed(PersonalDetails.routeName);
     //   // print(response.body);
     // } else {
@@ -135,6 +139,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     // }
     // } catch (e) {
     // print(e);
+  }
+
+ @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
   }
 
   void enableResendButton() {

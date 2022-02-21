@@ -22,7 +22,6 @@ class Auth with ChangeNotifier {
 
   var isNewusertoken = false;
 
-
   bool token(String _token) {
     if (_token == '') {
       return false;
@@ -34,11 +33,9 @@ class Auth with ChangeNotifier {
     return _userId;
   }
 
-
   bool get isNewuser {
     return isNewusertoken;
   }
-
 
   bool get isAuth {
     return authtoken != null;
@@ -68,7 +65,7 @@ class Auth with ChangeNotifier {
         final _token = extractedData['token'];
         final _userId = extractedData['mobile'];
         authtoken = token(_token);
-        authToken=_token;
+        authToken = _token;
         print(authtoken);
         print(_token);
         isAuth;
@@ -96,7 +93,7 @@ class Auth with ChangeNotifier {
         final _token = extractedData['token'];
         final _userId = extractedData['mobile'];
         authtoken = token(_token);
-        authToken=_token;
+        authToken = _token;
         print(authtoken);
         print(_token);
         isAuth;
@@ -121,7 +118,6 @@ class Auth with ChangeNotifier {
       }
       if (response.body.toString().contains('Invalid OTP')) {
         return true;
-
       } else {
         print("error1");
         throw Exception('Something went wrong');
@@ -173,6 +169,7 @@ class Auth with ChangeNotifier {
         print(extractedUserData);
 
         authToken = extractedUserData;
+        authtoken = true;
 
         // _userId = extractedUserData['userId'] as String;
         notifyListeners();
@@ -186,9 +183,33 @@ class Auth with ChangeNotifier {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> submitName(String name) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'accounts/details/');
+      print(name);
+      // ignore: unused_local_variable
 
-    print( authtoken);
+      final http.Response response = await http.patch(
+        url,
+        headers: {
+          'Authorization': 'Token ' + authToken,
+          'Content-Type' : 'application/json',
+        },
+        body: json.encode(
+          {
+            'full_name': name,
+          },
+        ),
+      );
+      final responseData = json.decode(response.body);
+      print(responseData);
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future<void> logout() async {
+    print(authtoken);
     print(authToken);
 
     var url = Uri.http('10.0.2.2:8000', 'accounts/logout/');
