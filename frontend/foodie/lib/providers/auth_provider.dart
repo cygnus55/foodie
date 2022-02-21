@@ -171,7 +171,9 @@ class Auth with ChangeNotifier {
 
         final extractedUserData = prefs.getString('token')!;
         print(extractedUserData);
+
         authToken = extractedUserData;
+
         // _userId = extractedUserData['userId'] as String;
         notifyListeners();
         return true;
@@ -185,8 +187,10 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logout() async {
+
     print( authtoken);
     print(authToken);
+
     var url = Uri.http('10.0.2.2:8000', 'accounts/logout/');
     await http.get(url, headers: {
       'Authorization': 'Token ' + authToken,
