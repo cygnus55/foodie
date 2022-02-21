@@ -1,6 +1,19 @@
 from django.contrib import admin
 
-from foods.models import Food
+from foods.models import Food, FoodTemplate
 
 
-admin.site.register(Food)
+@admin.register(Food)
+class FoodAdmin(admin.ModelAdmin):
+    list_display = ["name", "description", "price", "discount_percent", "selling_price", "image", "restaurant", "is_available", "is_veg"]
+    search_fields = ["name"]
+    list_filter = ["is_available", "is_veg"]
+    list_editable = ["is_available", "is_veg"]
+
+
+@admin.register(FoodTemplate)
+class FoodTemplateAdmin(admin.ModelAdmin):
+    list_display = ["name", "description", "price", "image", "is_available", "is_veg"]
+    search_fields = ["name"]
+    list_filter = ["is_available", "is_veg"]
+    list_editable = ["is_available", "is_veg"]
