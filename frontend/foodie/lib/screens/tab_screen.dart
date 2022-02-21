@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:foodie/screens/profile_screen.dart';
+import 'package:foodie/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
+import './login_screen.dart';
+import './profile_screen.dart';
 import './home_screen.dart';
 import './offer_screen.dart';
 import './cart_screen.dart';
-import './profile_screen.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({Key? key, String? phoneNumber}) : super(key: key);
@@ -15,11 +17,10 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
-  final List _tabs = [
+  bool _auth = false;
+  List _tabs = [
     const HomeScreen(),
-    const CartScreen(),
-    const OfferScreen(),
-    ProfileScreen(),
+    const LoginScreen(),
   ];
 
   int _selectedTabsIndex = 0;
@@ -28,10 +29,86 @@ class _TabScreenState extends State<TabScreen> {
     setState(() {
       _selectedTabsIndex = index;
     });
+    if (!_auth) {
+      if (index == 1) {
+        Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+      } else {
+        setState(() {
+          _selectedTabsIndex = index;
+        });
+      }
+    }
+  }
+
+  void _isAuth() {
+    if (Provider.of<Auth>(context).isAuth) {
+      setState(() {
+        _auth = true;
+        _tabs = [
+          const HomeScreen(),
+          const CartScreen(),
+          const OfferScreen(),
+          ProfileScreen()
+        ];
+      });
+    }
+  }
+
+  List<BottomNavigationBarItem> _list() {
+    if (_auth) {
+      return const [
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.home,
+            size: 30,
+          ),
+          label: 'home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.shopping_cart,
+            size: 30,
+          ),
+          label: 'cart',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.local_offer,
+            size: 30,
+          ),
+          label: 'offer',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.person,
+            size: 30,
+          ),
+          label: 'account',
+        ),
+      ];
+    } else {
+      return const [
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.home,
+            size: 30,
+          ),
+          label: 'home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.person,
+            size: 30,
+          ),
+          label: 'account',
+        ),
+      ];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    _isAuth();
     return Scaffold(
       // extendBodyBehindAppBar: true,
       // drawer: const Drawer(),
@@ -58,36 +135,7 @@ class _TabScreenState extends State<TabScreen> {
         selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              size: 30,
-            ),
-            label: 'home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.shopping_cart,
-              size: 30,
-            ),
-            label: 'cart',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.local_offer,
-              size: 30,
-            ),
-            label: 'offer',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-              size: 30,
-            ),
-            label: 'account',
-          ),
-        ],
+        items: _list(),
       ),
     );
   }

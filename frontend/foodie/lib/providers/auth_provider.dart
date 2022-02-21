@@ -19,7 +19,9 @@ class Auth with ChangeNotifier {
   // ignore: prefer_typing_uninitialized_variables
   var authToken;
   var authtoken;
+
   var isNewusertoken = false;
+
 
   bool token(String _token) {
     if (_token == '') {
@@ -32,9 +34,11 @@ class Auth with ChangeNotifier {
     return _userId;
   }
 
+
   bool get isNewuser {
     return isNewusertoken;
   }
+
 
   bool get isAuth {
     return authtoken != null;
@@ -84,6 +88,7 @@ class Auth with ChangeNotifier {
         }
         return true;
       }
+
       if (response.body.toString().contains('New user created')) {
         final prefs = await SharedPreferences.getInstance();
         final extractedData = json.decode(response.body);
@@ -116,6 +121,7 @@ class Auth with ChangeNotifier {
       }
       if (response.body.toString().contains('Invalid OTP')) {
         return true;
+
       } else {
         print("error1");
         throw Exception('Something went wrong');
@@ -162,6 +168,7 @@ class Auth with ChangeNotifier {
       }
       if (prefs.containsKey('token')) {
         print(prefs.getString('token'));
+
         final extractedUserData = prefs.getString('token')!;
         print(extractedUserData);
         authToken = extractedUserData;
@@ -185,6 +192,7 @@ class Auth with ChangeNotifier {
       'Authorization': 'Token ' + authToken,
     });
     // print(authtoken);
+
     authtoken = null;
     _userId = null;
     notifyListeners();
