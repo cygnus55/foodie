@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/widgets/foods_row.dart';
+import 'package:foodie/widgets/restaurants_row.dart';
+
+import '../widgets/filter.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -33,23 +37,23 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Explore',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline4
-                  ?.copyWith(fontWeight: FontWeight.w500, color: Colors.black),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            const Text(
-              'best dishes for you',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
+            // Text(
+            //   'Explore',
+            //   style: Theme.of(context)
+            //       .textTheme
+            //       .headline4
+            //       ?.copyWith(fontWeight: FontWeight.w500, color: Colors.black),
+            // ),
+            // const SizedBox(
+            //   height: 8,
+            // ),
+            // const Text(
+            //   'best dishes for you',
+            //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+            // ),
+            // const SizedBox(
+            //   height: 8,
+            // ),
             TextFormField(
               cursorColor: Colors.black,
               style: const TextStyle(height: 2),
@@ -67,6 +71,27 @@ class HomeScreen extends StatelessWidget {
                   Icons.search,
                   size: 30,
                 ),
+              ),
+            ),
+            const Filter(),
+            Expanded(
+              child: ListView(
+                children: [
+                  Text(
+                    'Foods for you',
+                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                        fontWeight: FontWeight.w500, color: Colors.black),
+                  ),
+                  const Divider(),
+                  const FoodsRow(),
+                  Text(
+                    'Restaurants for you',
+                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                        fontWeight: FontWeight.w500, color: Colors.black),
+                  ),
+                  const Divider(),
+                  const RestaurantsRow(),
+                ],
               ),
             ),
           ],
