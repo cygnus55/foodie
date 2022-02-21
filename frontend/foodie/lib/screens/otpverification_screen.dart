@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:foodie/http.dart';
+import 'package:foodie/screens/home_screen.dart';
+import 'package:foodie/screens/tab_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -52,13 +54,27 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       });
       await Provider.of<Auth>(context, listen: false).signup(phoneNumber, otp);
       if (Provider.of<Auth>(context, listen: false).isAuth) {
-        Navigator.of(context).pushReplacementNamed(
-          PersonalDetails.routeName,
-        );
-        setState(() {
-          _isloading = false;
-        });
-      } else {
+
+        if (Provider.of<Auth>(context, listen: false).isNewuser) {
+          Navigator.of(context).pushReplacementNamed(
+            PersonalDetails.routeName,
+          );
+          setState(() {
+            _isloading = false;
+          });
+        }
+        else{
+          Navigator.of(context).pushReplacementNamed(
+            TabScreen.routeName,
+          );
+          setState(() {
+            _isloading = false;
+          });
+        }
+
+        }
+       else {
+
         setState(() {
           _isloading = false;
         });
