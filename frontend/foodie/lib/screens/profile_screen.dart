@@ -1,9 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
 
 import './login_screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/profile_screen_provider.dart';
+import '../firebase/firebaseapi.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({Key? key}) : super(key: key);
@@ -13,6 +20,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  UploadTask? task;
+  File? file;
+  String imageUrl = '';
+  String image = '';
   // final List<Map> _hello = [
   final List<IconData> _columnIcon = [
     Icons.star,
@@ -45,10 +56,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late String username;
   Future<void> _getUserName() async {
     try {
-      await Provider.of<Profile>(context, listen: false).getAccountDetails();
+      await Provider.of<Profile>(this.context, listen: false)
+          .getAccountDetails();
       print('hello');
       username =
-          Provider.of<Profile>(context,listen:false).userName as String;
+          Provider.of<Profile>(this.context, listen: false).userName as String;
       print('hi');
       print(username);
       setState(() {
@@ -119,12 +131,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ),
                         ),
-                        Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          child: const CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                'https://img.search.brave.com/Rx5A-765-5Ie9Nt6yNnNc7JH1inemybJqdaRcsOXg1k/rs:fit:844:225:1/g:ce/aHR0cHM6Ly90c2Uy/LmV4cGxpY2l0LmJp/bmcubmV0L3RoP2lk/PU9JUC5LS0ZaS2l2/Rms0S2toWVZrRE9F/aDhRSGFFSyZwaWQ9/QXBp'),
-                            radius: 30,
+                        InkWell(
+                          onTap: selectFile,
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: (imageUrl == '')
+                                        ? const NetworkImage(
+                                            'https://img.search.brave.com/Rx5A-765-5Ie9Nt6yNnNc7JH1inemybJqdaRcsOXg1k/rs:fit:844:225:1/g:ce/aHR0cHM6Ly90c2Uy/LmV4cGxpY2l0LmJp/bmcubmV0L3RoP2lk/PU9JUC5LS0ZaS2l2/Rms0S2toWVZrRE9F/aDhRSGFFSyZwaWQ9/QXBp')
+                                        : NetworkImage(imageUrl))),
                           ),
                         ),
                       ],
@@ -233,5 +252,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           );
+  }
+
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    if (result == null) return;
+    final path = result.files.single.path!;
+
+    setState(() => file = File(path));
+    if (file == null) return;
+
+    final fileName = basename(file!.path);
+    final destination = 'files/$fileName';
+
+    task = FirebaseApi.uploadFile(destination, file!);
+    setState(() {});
+
+    if (task == null) return;
+
+    final snapshot = await task!.whenComplete(() {});
+    image = await snapshot.ref.getDownloadURL();
+
+    setState(() {
+      imageUrl = image;
+    });
   }
 }
