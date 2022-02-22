@@ -43,15 +43,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ];
   bool isloading = true;
   late String username;
-   Future<void> _getUserName()async{
-     await Provider.of<Profile>(context, listen: false).getAccountDetails();
-     print('ello');
-    username= Provider.of<Profile>(context, listen: false).userName as String ;
-    print('hi');
-    print(username);
+  Future<void> _getUserName() async {
+    try {
+      await Provider.of<Profile>(context, listen: false).getAccountDetails();
+      print('hello');
+      username =
+          Provider.of<Profile>(context,listen:false).userName as String;
+      print('hi');
+      print(username);
       setState(() {
         isloading = false;
       });
+    } catch (error) {
+      print(error);
+    }
   }
 
   @override
@@ -62,13 +67,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // setState(() {
     //   isloading = false;
     // });
-    
   }
 
   @override
   Widget build(BuildContext context) {
     return isloading
-        ? const CircularProgressIndicator()
+        ? SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: const Center(child: CircularProgressIndicator()))
         : SafeArea(
             child: Scaffold(
               body: Padding(
@@ -89,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               Text(
                                 username,
-                               // Provider.of<Profile>(context).userName as String,
+                                // Provider.of<Profile>(context).userName as String,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline5
