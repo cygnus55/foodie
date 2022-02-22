@@ -37,6 +37,16 @@ Content-Type: application/json
     "is_available": true
 }
 
+# Update Restaurant with Patch
+PATCH http://localhost:8000/restaurants/2/
+Authorization: Token c49efcab7d466c70f27a79d0dc91bca868628914
+Content-Type: application/json
+
+
+{
+    "logo": "https://www.google.com"
+}
+
 # Delete Restaurant
 DELETE http://localhost:8000/restaurants/2/
 Authorization: Token c49efcab7d466c70f27a79d0dc91bca868628914

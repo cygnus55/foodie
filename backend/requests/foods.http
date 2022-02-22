@@ -1,0 +1,4 @@
+# Get restaurants
+GET http://localhost:8000/foods/
+
+###

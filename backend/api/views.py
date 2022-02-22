@@ -17,12 +17,13 @@ class APIRoot(GenericAPIView):
                     "details": reverse("accounts:details", request=request),
                 },
                 "customer": {
-                    "my-profile": reverse("customers:profile", request=request)
+                    "my-profile": reverse("customers:profile", request=request),
+                    "my-cart": reverse("cart:detail", request=request),
                 },
                 "restaurants": reverse("restaurants:restaurant_list", request=request),
                 "foods": {
                     "food_list": reverse("foods:food_list", request=request),
                     "food_template_list": reverse("foods:food_template_list", request=request),
-                }
+                },
             }
         )
