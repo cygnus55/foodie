@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/providers/restaurants_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 
 import './screens/login_screen.dart';
 import './screens/tab_screen.dart';
@@ -16,7 +18,11 @@ import './providers/profile_screen_provider.dart';
 
 import './color.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
