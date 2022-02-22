@@ -37,6 +37,7 @@ class Profile with ChangeNotifier {
       final responseData = json.decode(response.body);
       print(responseData);
       _userName = responseData['full_name'];
+      userName;
       notifyListeners();
       print(_userName);
     } catch (error) {

@@ -12,6 +12,7 @@ import './screens/personaldetails_screen.dart';
 import './providers/food_provider.dart';
 import './providers/auth_provider.dart';
 import './providers/foods_provider.dart';
+import './providers/profile_screen_provider.dart';
 
 import './color.dart';
 
@@ -27,6 +28,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(
           value: Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Profile>(
+          create: (ctx) => Profile('_'),
+          update: (ctx, auth, previousAuth) => Profile(auth.getauthToken!),
         ),
         ChangeNotifierProvider.value(
           value: Food(),

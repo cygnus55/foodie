@@ -71,6 +71,8 @@ class Auth with ChangeNotifier {
         print(authtoken);
         print(_token);
         isAuth;
+        getauthToken;
+        notifyListeners();
         if (_token != null) {
           // final userData = //_token;
           //     json.encode({
@@ -101,6 +103,8 @@ class Auth with ChangeNotifier {
         isAuth;
         isNewusertoken = true;
         isNewuser;
+        getauthToken;
+        notifyListeners();
 
         if (_token != null) {
           // final userData = //_token;
