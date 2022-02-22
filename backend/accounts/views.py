@@ -120,7 +120,7 @@ class AccountDetails(APIView):
         if serializer.is_valid():
             serializer.save()
             if "full_name" in request.data:
-                change_profile_pic(request)
+                change_profile_pic(request.user)
             return Response(serializer.data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
@@ -130,25 +130,25 @@ class AccountDetails(APIView):
         if serializer.is_valid():
             serializer.save()
             if "full_name" in request.data:
-                change_profile_pic(request)
+                change_profile_pic(request.user)
             return Response(serializer.data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-def change_profile_pic(request):
-    if request.user.is_customer:
-        customer = request.user.customer
+def change_profile_pic(user):
+    if user.is_customer:
+        customer = user.customer
         if "ui-avatars" in customer.profile_picture or not customer.profile_picture:
             colors = ["b88232", "3632b8", "b3452d", "b32d46", "88b02c", "4531b5", "2eab47"]
             color = random.choice(colors)
-            name = str(request.user.full_name.title()).replace(" ", "+")
+            name = str(user.full_name.title()).replace(" ", "+")
             customer.profile_picture = f"https://ui-avatars.com/api/?background={color}&rounded=true&name={name}"
             customer.save()
-    elif request.user.is_restaurant:
-        strg = request.user.full_name.lower()
+    elif user.is_restaurant:
+        strg = user.full_name.lower()
         strg.join(random.choice(string.ascii_letters) for i in range(10))
         digest = md5(strg.encode("utf-8")).hexdigest()
-        restaurant = request.user.restaurant
+        restaurant = user.restaurant
         if "gravatar" in restaurant.logo or not restaurant.logo:
             restaurant.logo = f"https://www.gravatar.com/avatar/{digest}?d=identicon"
             restaurant.save()

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+
 # from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -60,3 +61,4 @@ class User(AbstractBaseUser):
     
     def has_module_perms(self, app_label):
         return self.is_superuser
+  
