@@ -121,7 +121,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: ElevatedButton(
                           // ignore: avoid_print
                           onPressed: () {
-                            submitNumber(phoneNumber, context);
+                            submitNumber(phoneNumber, context)
+                                .catchError((error) {
+                              return showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text('An error occurred!'),
+                                  content: const Text('Something went wrong.'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text('Okay'),
+                                      onPressed: () {
+                                        Navigator.of(ctx).pop();
+                                      },
+                                    )
+                                  ],
+                                ),
+                              );
+                            });
                           },
                           child: const Padding(
                               padding: EdgeInsets.all(15),
