@@ -28,9 +28,11 @@ class Auth with ChangeNotifier {
     }
     return true;
   }
+
   String? get getauthToken {
     return authToken;
   }
+
   String? get userId {
     return _userId;
   }
@@ -131,7 +133,7 @@ class Auth with ChangeNotifier {
       // final responseData = json.decode(response.body);
       // print(responseData);
     } catch (error) {
-      print(error);
+      throw error;
     }
     return true;
   }
@@ -199,7 +201,7 @@ class Auth with ChangeNotifier {
         url,
         headers: {
           'Authorization': 'Token ' + authToken,
-          'Content-Type' : 'application/json',
+          'Content-Type': 'application/json',
         },
         body: json.encode(
           {
@@ -219,7 +221,7 @@ class Auth with ChangeNotifier {
     print(authToken);
 
     var url = Uri.http('10.0.2.2:8000', 'accounts/logout/');
-    await http.get(url, headers: {
+    http.get(url, headers: {
       'Authorization': 'Token ' + authToken,
     });
     // print(authtoken);

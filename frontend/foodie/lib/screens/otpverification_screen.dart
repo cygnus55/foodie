@@ -54,56 +54,53 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       });
       await Provider.of<Auth>(context, listen: false).signup(phoneNumber, otp);
       if (Provider.of<Auth>(context, listen: false).isAuth) {
-
         if (Provider.of<Auth>(context, listen: false).isNewuser) {
-           Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-            builder: (BuildContext context) => const PersonalDetails()),
-        ModalRoute.withName(PersonalDetails.routeName),
-      );
-          setState(() {
-            _isloading = false;
-          });
-        }
-        else{
           Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-            builder: (BuildContext context) => const TabScreen()),
-        ModalRoute.withName(TabScreen.routeName),
-      );
+            MaterialPageRoute(
+                builder: (BuildContext context) => const PersonalDetails()),
+            ModalRoute.withName(PersonalDetails.routeName),
+          );
+          setState(() {
+            _isloading = false;
+          });
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (BuildContext context) => const TabScreen()),
+            ModalRoute.withName(TabScreen.routeName),
+          );
           setState(() {
             _isloading = false;
           });
         }
-
-        }
-       else {
-
+      } else {
         setState(() {
           _isloading = false;
+          showDialog(
+              context: context,
+              builder: (c) {
+                return AlertDialog(
+                  title: const Text('Invalid OTP'),
+                  content: const Text('You enterned an invalid otp.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(c).pop();
+                        clearInput();
+                      },
+                      child: const Text('OK'),
+                    )
+                  ],
+                );
+              });
         });
-
-        showDialog(
-            context: context,
-            builder: (c) {
-              return AlertDialog(
-                title: const Text('Invalid OTP'),
-                content: const Text('You enterned an invalid otp.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(c).pop();
-                      clearInput();
-                    },
-                    child: const Text('OK'),
-                  )
-                ],
-              );
-            });
       }
     } catch (error) {
-      print("error3");
-      print(error);
+      setState(() {
+        _isloading = false;
+      });
+
+      throw error;
     }
     // // ignore: unused_local_variable
     // final http.Response response = await http.post(
@@ -122,17 +119,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     // );
     // var status = response;
     // if (status == 200) {
-      // Navigator.of(context).pushAndRemoveUntil(
-      //   MaterialPageRoute(
-      //       builder: (BuildContext context) => const TabScreen()),
-      //   ModalRoute.withName(TabScreen.routeName),
-      // );
+    // Navigator.of(context).pushAndRemoveUntil(
+    //   MaterialPageRoute(
+    //       builder: (BuildContext context) => const TabScreen()),
+    //   ModalRoute.withName(TabScreen.routeName),
+    // );
     //   Navigator.of(context).pushNamed(PersonalDetails.routeName);
     //   // print(response.body);
     // } else {
-    setState(() {
-      _isloading = false;
-    });
     //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
     //     content: Text("Invalid OTP"),
     //   ));
@@ -141,9 +135,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     // print(e);
   }
 
- @override
+  @override
   void setState(fn) {
-    if(mounted) {
+    if (mounted) {
       super.setState(fn);
     }
   }
@@ -243,7 +237,28 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   TextButton(
                       onPressed: _didnotreceive
                           ? () {
-                              submitNumber(phoneNumber as String, context);
+                              submitNumber(phoneNumber as String, context)
+                                  .catchError((error) {
+                                return showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text('An error occurred!'),
+                                    content:
+                                        const Text('Something went wrong.'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Okay'),
+                                        onPressed: () {
+                                          setState(() {
+                                            _isloading = false;
+                                          });
+                                          Navigator.of(ctx).pop();
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                );
+                              });
                             }
                           : null,
                       child: const Text('Resend'))
@@ -258,7 +273,25 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       child: ElevatedButton(
                         onPressed: _sixth.text.isEmpty
                             ? null
-                            : () => submit(phoneNumber.toString()),
+                            : () => submit(phoneNumber.toString())
+                                    .catchError((error) {
+                                  return showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: const Text('An error occurred!'),
+                                      content:
+                                          const Text('Something went wrong.'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('Okay'),
+                                          onPressed: () {
+                                            Navigator.of(ctx).pop();
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }),
                         child: const Text('Proceed'),
                       ),
                     ),
