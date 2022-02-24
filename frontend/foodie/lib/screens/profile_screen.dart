@@ -22,7 +22,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   UploadTask? task;
   File? file;
-  String imageUrl = '';
+//String imageUrl = '';
   String image = '';
   // final List<Map> _hello = [
   final List<IconData> _columnIcon = [
@@ -53,16 +53,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     'Payment',
   ];
   bool isloading = true;
-  late String username;
+
+  late Map userinfo;
   Future<void> _getUserName() async {
     try {
       await Provider.of<Profile>(this.context, listen: false)
           .getAccountDetails();
-      print('hello');
-      username =
-          Provider.of<Profile>(this.context, listen: false).userName as String;
-      print('hi');
-      print(username);
+      // print('hello');
+      userinfo = Provider.of<Profile>(this.context, listen: false).userprofile!;
+
       setState(() {
         isloading = false;
       });
@@ -73,13 +72,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    super.initState();
     _getUserName();
+    super.initState();
+
     // Provider.of<Profile>(context).getAccountDetails();
     // setState(() {
     //   isloading = false;
     // });
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   _getUserName().catchError((error) {
+  //     return showDialog(
+  //       context: this.context,
+  //       builder: (ctx) => AlertDialog(
+  //         title: const Text('An error occurred!'),
+  //         content: const Text('Something went wrong.'),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: const Text('Okay'),
+  //             onPressed: () {
+  //               Navigator.of(ctx).pop();
+  //             },
+  //           )
+  //         ],
+  //       ),
+  //     );
+  //   });
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -107,15 +130,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                username,
-                                // Provider.of<Profile>(context).userName as String,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    ?.copyWith(fontWeight: FontWeight.bold),
+                                userinfo['username'] as String,
+                                style: Theme.of(context).textTheme.subtitle1,
                               ),
+                              Text(userinfo['userMobile'] as String,
+                                  // Provider.of<Profile>(context).userName as String,
+                                  style: Theme.of(context).textTheme.subtitle1),
                               Text(
-                                'haribahadur@gmail.com',
+                                userinfo['userEmail'] as String,
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
                               Container(
@@ -140,10 +162,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: (imageUrl == '')
-                                        ? const NetworkImage(
-                                            'https://img.search.brave.com/Rx5A-765-5Ie9Nt6yNnNc7JH1inemybJqdaRcsOXg1k/rs:fit:844:225:1/g:ce/aHR0cHM6Ly90c2Uy/LmV4cGxpY2l0LmJp/bmcubmV0L3RoP2lk/PU9JUC5LS0ZaS2l2/Rms0S2toWVZrRE9F/aDhRSGFFSyZwaWQ9/QXBp')
-                                        : NetworkImage(imageUrl))),
+                                    image: NetworkImage(
+                                        userinfo['userProfilePicture']
+                                            as String))),
                           ),
                         ),
                       ],
@@ -281,9 +302,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final snapshot = await task!.whenComplete(() {});
     image = await snapshot.ref.getDownloadURL();
-
+    Provider.of<Profile>(this.context, listen: false)
+        .changeProfilePicture(image);
     setState(() {
-      imageUrl = image;
+      userinfo['userProfilePicture'] = image;
     });
+
+    // setState(() {
+    //   imageUrl = image;
+    // });
   }
 }
