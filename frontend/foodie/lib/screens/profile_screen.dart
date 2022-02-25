@@ -258,18 +258,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        setState(() {
-                          isloading = true;
-                        });
-                        Provider.of<Auth>(context, listen: false).logout();
-
                         Navigator.of(context)
-                            .pushReplacementNamed(LoginScreen.routeName)
-                            .then((_) => {
-                                  setState(() {
-                                    isloading = false;
-                                  })
-                                });
+                            .pushReplacementNamed(LoginScreen.routeName);
+                        Provider.of<Auth>(context, listen: false).logout();
                       },
                       child: Text(
                         'Logout',

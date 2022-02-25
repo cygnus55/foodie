@@ -221,16 +221,16 @@ class Auth with ChangeNotifier {
     print(authToken);
 
     var url = Uri.http('10.0.2.2:8000', 'accounts/logout/');
-    http.get(url, headers: {
+    await http.get(url, headers: {
       'Authorization': 'Token ' + authToken,
     });
     // print(authtoken);
 
     authtoken = null;
     _userId = null;
-    notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('userData');
     prefs.clear();
+    notifyListeners();
   }
 }
