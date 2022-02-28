@@ -79,22 +79,27 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
-            RatingBar.builder(
-              ignoreGestures: true,
-              itemSize: 30,
-              initialRating: 3.33,
-              minRating: 0,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-              itemBuilder: (context, _) => Icon(
-                Icons.star,
-                color: Theme.of(context).primaryColor,
-              ),
-              onRatingUpdate: (rating) {
-                print(rating);
-              },
+            Row(
+              children: [
+                RatingBar.builder(
+                  ignoreGestures: true,
+                  itemSize: 30,
+                  initialRating: _food.rating!,
+                  minRating: 0,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  itemBuilder: (context, _) => Icon(
+                    Icons.star,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  onRatingUpdate: (rating) {
+                    print(rating);
+                  },
+                ),
+                Text('(${_food.ratingCount} ratings)')
+              ],
             ),
             Padding(
               padding: const EdgeInsets.all(12.0),
