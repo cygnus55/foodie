@@ -78,8 +78,10 @@ class Foods with ChangeNotifier {
               description: element['description'],
               image: element['image'],
               isVeg: element['is_veg'],
+
               rating: double.parse(element['average_ratings']),
               ratingCount: element['ratings_count'],
+
               name: element['name'],
               price: element['price'],
               tags: element['tags'],

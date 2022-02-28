@@ -1,16 +1,14 @@
-from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.contenttypes.fields import GenericRelation
+from django.db import models
+from django.db.models import Avg, Count
 from decimal import Decimal
 
 from taggit.managers import TaggableManager
 
 from restaurants.models import Restaurant
-
-
-class AvailabilityManager(models.Manager):
-    """ Filter the objects on the basis of availability. """
-    def get_queryset(self):
-        return super().get_queryset().filter(is_available=True)
+from reviews.models import Review
+from api.custom_managers import AvailabilityManager
 
 
 class Food(models.Model):
@@ -32,6 +30,12 @@ class Food(models.Model):
         on_delete=models.CASCADE
     )
     is_veg = models.BooleanField(default=False)
+    reviews = GenericRelation(
+        Review,
+        related_query_name="food",
+        content_type_field="content_type",
+        object_id_field="object_id",
+    )
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
 
@@ -49,6 +53,18 @@ class Food(models.Model):
     @property
     def selling_price(self):
         return self.price - (self.price * self.discount_percent/100)
+
+    @property
+    def average_ratings(self):
+        avg_ratings = self.reviews.aggregate(Avg("ratings")).get("ratings__avg", 0)
+        if avg_ratings == None: avg_ratings = 0
+        return avg_ratings
+
+    @property
+    def ratings_count(self):
+        ratings_cnt = self.reviews.aggregate(Count("ratings")).get("ratings__count", 0)
+        if ratings_cnt == None: ratings_cnt = 0
+        return ratings_cnt
 
 
 class FoodTemplate(models.Model):

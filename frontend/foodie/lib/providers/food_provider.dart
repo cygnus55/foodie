@@ -11,8 +11,10 @@ class Food with ChangeNotifier {
   bool? isAvailable = true;
   int? discountPercent;
   Restaurant? restaurant;
+
   double? rating;
   int? ratingCount;
+
   List? tags;
   bool? isVeg;
 
@@ -27,8 +29,10 @@ class Food with ChangeNotifier {
     this.restaurant,
     this.tags,
     this.sellingPrice,
+
     this.rating,
     this.ratingCount,
+
   });
 
   void addFood() {
