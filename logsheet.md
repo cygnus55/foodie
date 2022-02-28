@@ -14,3 +14,19 @@
 - Food and Restaurant API
 - Sending and fetching data using HTTP request in front end
 - Design screen (splash screen, login screen, OTP screen, profile screen)
+
+## Week 3:
+
+- Login functionality (backend and frontend).
+- Display dummy foods and restaurants on home screen.
+- Resend OTP functionality
+- Handling server error
+- Add tags in foods and restaurants
+- API (customer profile, permissions and authentication)
+
+## Week 4:
+
+- Fetching foods and restaurants from backend
+- Uploading image in firebase
+- Food detail screen
+- API (cart, reviews and ratings)
