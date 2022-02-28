@@ -7,7 +7,7 @@ from customers.models import Customer
 
 
 class Review(models.Model):
-    customer = models.OneToOneField(
+    customer = models.ForeignKey(
         Customer,
         related_name="review",
         on_delete=models.CASCADE
