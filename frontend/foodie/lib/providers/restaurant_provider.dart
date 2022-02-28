@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 
 class Restaurant with ChangeNotifier {
-  String? id;
+  int? id;
   String? websiteLink;
   String? facebookLink;
   String? name;
   String? description;
   bool? isAvailable;
-  DateTime? openTime;
-  DateTime? closeTime;
+  String? openTime;
+  String? closeTime;
   String? logo;
   // List? tags;
 
