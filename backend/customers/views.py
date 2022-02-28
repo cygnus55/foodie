@@ -5,8 +5,9 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 
 from customers.serializers import CustomerProfileSerializer
-from api import customauthentication, custompermissions
 from customers.custompermissions import IsCurrentUserOwner
+from api import customauthentication, custompermissions
+
 
 class CustomerProfile(APIView):
     permission_classes = [

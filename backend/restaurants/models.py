@@ -6,6 +6,7 @@ from taggit.managers import TaggableManager
 
 from accounts.models import User
 from reviews.models import Review
+from api.custom_managers import AvailabilityManager
 
 
 class Restaurant(models.Model):
@@ -26,6 +27,9 @@ class Restaurant(models.Model):
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
 
+    # Managers
+    objects = models.Manager()
+    available = AvailabilityManager()
     tags = TaggableManager()
 
     class Meta:
@@ -42,6 +46,6 @@ class Restaurant(models.Model):
         ratings_cnt = self.reviews.aggregate(Count("ratings")).get("ratings__count", 0)
         if ratings_cnt == None: ratings_cnt = 0
         return ratings_cnt
-    
+
     def __str__(self):
         return f"{self.user.full_name} for user {self.user.username}"
