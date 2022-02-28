@@ -11,6 +11,8 @@ class FoodSerializer(TaggitSerializer, serializers.ModelSerializer):
     restaurant = RestaurantSerializer(read_only=True)
     tags = TagListSerializerField()
     selling_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    average_ratings = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    ratings_count = serializers.IntegerField()
 
     class Meta:
         model = Food
