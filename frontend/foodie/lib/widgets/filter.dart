@@ -23,10 +23,6 @@ class _FilterState extends State<Filter> {
       '_isactive': false,
     },
     {
-      'name': 'Open Now',
-      '_isactive': false,
-    },
-    {
       'name': 'Offers',
       '_isactive': false,
     },
@@ -40,7 +36,7 @@ class _FilterState extends State<Filter> {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, i) {
           return Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
             child: OutlinedButton(
               style: OutlinedButton.styleFrom(
                 side: _filtername[i]['_isactive']

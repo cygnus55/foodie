@@ -31,22 +31,21 @@ class _FoodsRowState extends State<FoodsRow> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemBuilder: (ctx, i) {
-          return Container(
-            margin: const EdgeInsets.all(8),
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).pushNamed(FoodDetailScreen.routeName,
-                    arguments: list[i].id);
-              },
-              child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  child: Image.network(
-                    list[i].image as String,
-                    fit: BoxFit.cover,
-                  ),
+
+          return InkWell(
+            onTap: () {
+              Navigator.of(context)
+                  .pushNamed(FoodDetailScreen.routeName, arguments: list[i].id);
+            },
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                child: Image.network(
+                  list[i].image as String,
+                  fit: BoxFit.cover,
+
                 ),
                 elevation: 5,
               ),
