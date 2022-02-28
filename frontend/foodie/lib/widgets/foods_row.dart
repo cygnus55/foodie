@@ -31,7 +31,6 @@ class _FoodsRowState extends State<FoodsRow> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemBuilder: (ctx, i) {
-
           return InkWell(
             onTap: () {
               Navigator.of(context)
@@ -45,10 +44,9 @@ class _FoodsRowState extends State<FoodsRow> {
                 child: Image.network(
                   list[i].image as String,
                   fit: BoxFit.cover,
-
                 ),
-                elevation: 5,
               ),
+              elevation: 5,
             ),
           );
         },

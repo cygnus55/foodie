@@ -79,7 +79,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
-]
             Row(
               children: [
                 RatingBar.builder(
@@ -101,7 +100,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                 ),
                 Text('(${_food.ratingCount} ratings)')
               ],
-]
             ),
             Padding(
               padding: const EdgeInsets.all(12.0),
