@@ -31,7 +31,7 @@ class _TabScreenState extends State<TabScreen> {
     });
     if (!_auth) {
       if (index == 1) {
-        Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+        Navigator.of(context).pop();
       } else {
         setState(() {
           _selectedTabsIndex = index;
@@ -39,6 +39,7 @@ class _TabScreenState extends State<TabScreen> {
       }
     }
   }
+
   @override
   void initState() {
     _isAuth();
@@ -121,7 +122,6 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     return SafeArea(
       child: Scaffold(
         // extendBodyBehindAppBar: true,
