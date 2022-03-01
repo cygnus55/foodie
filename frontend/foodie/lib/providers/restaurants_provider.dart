@@ -60,6 +60,10 @@ class Restaurants with ChangeNotifier {
     return [..._items];
   }
 
+  Restaurant findById(int id) {
+    return _items.firstWhere((restaurant) => restaurant.id == id);
+  }
+
   Future<void> getrestaurants() async {
     try {
       var url = Uri.http('10.0.2.2:8000', 'restaurants/');
@@ -69,16 +73,21 @@ class Restaurants with ChangeNotifier {
       data.forEach(
         (element) {
           var restaurant = element['user'] as Map;
-          restaurants.add(Restaurant(
-              id: element['id'],
-              closeTime: element['close_hour'],
-              description: element['description'],
-              logo: element['logo'],
-              facebookLink: element['facebook_link'],
-              isAvailable: element['is_available'],
-              openTime: element['open_hour'],
-              websiteLink: element['website_link'],
-              name: restaurant['full_name']));
+          restaurants.add(
+            Restaurant(
+                id: element['id'],
+                closeTime: element['close_hour'],
+                description: element['description'],
+                logo: element['logo'],
+                facebookLink: element['facebook_link'],
+                isAvailable: element['is_available'],
+                openTime: element['open_hour'],
+                websiteLink: element['website_link'],
+                name: restaurant['full_name'],
+                rating: double.parse(element['average_ratings']),
+                ratingCount: element['ratings_count'],
+                address: element['address']),
+          );
         },
       );
       _items = restaurants;
