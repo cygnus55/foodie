@@ -31,6 +31,9 @@ class CartItem(models.Model):
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('cart', 'food')
+
     @property
     def cost(self):
         return round(self.price * self.quantity, 2)
