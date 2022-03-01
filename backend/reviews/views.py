@@ -60,7 +60,7 @@ class FoodReviewList(ListCreateAPIView):
         id_ = self.kwargs.get("pk")
         content_object = Food.objects.get(id=id_)
         customer = self.request.user.customer
-        serializer.save(content_object=content_object, customer=customer)
+        serializer.save(content_object=content_object, customer=customer, sentiment_score=0)
 
 
 class ReviewDetails(RetrieveUpdateDestroyAPIView):
