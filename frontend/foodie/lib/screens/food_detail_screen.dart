@@ -106,7 +106,17 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                     return;
                   },
                 ),
-                Text('(${_food.ratingCount} ratings)')
+                const SizedBox(
+                  width: 6,
+                ),
+                Text('${_food.ratingCount}'),
+                const SizedBox(
+                  width: 3,
+                ),
+                const Icon(
+                  Icons.people,
+                  size: 20,
+                ),
               ],
             ),
             Padding(

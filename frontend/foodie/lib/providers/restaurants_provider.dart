@@ -75,18 +75,20 @@ class Restaurants with ChangeNotifier {
           var restaurant = element['user'] as Map;
           restaurants.add(
             Restaurant(
-                id: element['id'],
-                closeTime: element['close_hour'],
-                description: element['description'],
-                logo: element['logo'],
-                facebookLink: element['facebook_link'],
-                isAvailable: element['is_available'],
-                openTime: element['open_hour'],
-                websiteLink: element['website_link'],
-                name: restaurant['full_name'],
-                rating: double.parse(element['average_ratings']),
-                ratingCount: element['ratings_count'],
-                address: element['address']),
+              id: element['id'],
+              closeTime: element['close_hour'],
+              description: element['description'],
+              logo: element['logo'],
+              facebookLink: element['facebook_link'],
+              isAvailable: element['is_available'],
+              openTime: element['open_hour'],
+              websiteLink: element['website_link'],
+              name: restaurant['full_name'],
+              rating: double.parse(element['average_ratings']),
+              ratingCount: element['ratings_count'],
+              address: element['address'],
+              openStatus: element['open_status'],
+            ),
           );
         },
       );

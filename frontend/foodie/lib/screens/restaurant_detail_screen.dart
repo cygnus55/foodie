@@ -5,12 +5,16 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../providers/restaurants_provider.dart';
 import '../providers/foods_provider.dart';
 
-class RestaurantDetailScreen extends StatelessWidget {
+class RestaurantDetailScreen extends StatefulWidget {
   const RestaurantDetailScreen({Key? key}) : super(key: key);
   static const routeName = '/restaurant';
 
-  get children => null;
+  @override
+  State<RestaurantDetailScreen> createState() => _RestaurantDetailScreenState();
+}
 
+class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
+  var _isfavourite = false;
   @override
   Widget build(BuildContext context) {
     final _id = ModalRoute.of(context)?.settings.arguments as int;
@@ -85,7 +89,17 @@ class RestaurantDetailScreen extends StatelessWidget {
                           return;
                         },
                       ),
-                      Text('(${_restaurant.ratingCount}) ratings'),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text('${_restaurant.ratingCount}'),
+                      const SizedBox(
+                        width: 3,
+                      ),
+                      const Icon(
+                        Icons.people,
+                        size: 20,
+                      ),
                     ],
                   ),
                   const SizedBox(
@@ -95,20 +109,54 @@ class RestaurantDetailScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           const Icon(Icons.location_pin),
-                          Text('${_restaurant.address}'),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            height: 20,
+                            child: FittedBox(
+                              child: Text('${_restaurant.address}'),
+                            ),
+                          ),
                         ],
                       ),
                       Row(
-                        children: const [
-                          Icon(Icons.access_time),
-                          Text('Open status'),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text('closes or opens at')
-                        ],
+                        children: _restaurant.openStatus == true
+                            ? [
+                                const Icon(
+                                  Icons.access_time,
+                                  color: Colors.green,
+                                ),
+                                const Text(
+                                  'Open Now',
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Closes at ${_restaurant.closeTime}',
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              ]
+                            : [
+                                const Icon(
+                                  Icons.access_time,
+                                  color: Colors.red,
+                                ),
+                                const Text(
+                                  'Closed Now',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Opens at ${_restaurant.openTime}',
+                                  style: const TextStyle(color: Colors.green),
+                                )
+                              ],
                       )
                     ],
                   ),
@@ -189,10 +237,16 @@ class RestaurantDetailScreen extends StatelessWidget {
                                 child: Icon(
                                   Icons.favorite,
                                   size: 30,
-                                  color: Theme.of(context).iconTheme.color,
+                                  color: _isfavourite
+                                      ? Theme.of(context).primaryColor
+                                      : Theme.of(context).iconTheme.color,
                                 ),
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                setState(() {
+                                  _isfavourite = !_isfavourite;
+                                });
+                              },
                             ),
                             const Text('Favourite'),
                           ],
@@ -246,24 +300,51 @@ class RestaurantDetailScreen extends StatelessWidget {
                     ),
                   ),
                   body: TabBarView(
-                    children: [
-                      Icon(Icons.directions_car),
-                      ListView.builder(
-                          itemCount: _restaurantmenu.length,
-                          itemBuilder: (context, i) {
-                            return ListTile(
-                              leading: Text(
-                                '${_restaurantmenu[i].name}',
+                      children: _restaurantmenu.isNotEmpty
+                          ? [
+                              const Center(child: Text('my favourite')),
+                              ListView.builder(
+                                itemCount: _restaurantmenu.length,
+                                itemBuilder: (context, i) {
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        leading: CircleAvatar(
+                                          radius: 30,
+                                          child: ClipOval(
+                                            child: Image.network(
+                                              '${_restaurantmenu[i].image}',
+                                              height: 60,
+                                              width: 60,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          backgroundColor: Colors.transparent,
+                                        ),
+                                        title: Text(
+                                          '${_restaurantmenu[i].name}',
+                                        ),
+                                        trailing: Text(
+                                            '${_restaurantmenu[i].sellingPrice}'),
+                                        onTap: () => Navigator.of(context)
+                                            .pushNamed(
+                                                FoodDetailScreen.routeName,
+                                                arguments:
+                                                    _restaurantmenu[i].id),
+                                      ),
+                                      const Divider(
+                                        thickness: 2.5,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
-                              trailing:
-                                  Text('${_restaurantmenu[i].sellingPrice}'),
-                              onTap: () => Navigator.of(context).pushNamed(
-                                  FoodDetailScreen.routeName,
-                                  arguments: _restaurantmenu[i].id),
-                            );
-                          }),
-                    ],
-                  ),
+                            ]
+                          : const [
+                              Center(child: Text('my favourite')),
+                              Center(child: Text('No dish to show')),
+                            ]),
                 ),
               ),
             )
