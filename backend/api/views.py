@@ -19,6 +19,7 @@ class APIRoot(GenericAPIView):
                 "customer": {
                     "my-profile": reverse("customers:profile", request=request),
                     "my-cart": reverse("cart:detail", request=request),
+                    "add-to-cart": reverse("cart:add_item", request=request),
                 },
                 "restaurants": reverse("restaurants:restaurant_list", request=request),
                 "foods": {
