@@ -18,7 +18,7 @@ class Profile with ChangeNotifier {
   // String? _userId;
   // String? _userName;
   // String? _userEmail;
-  final String authToken;
+  var authToken;
   // String? _userPhone;
 
   // String? get userName {

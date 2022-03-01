@@ -55,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Align(
                       alignment: Alignment.topRight,
                       child: TextButton(
+                        child: const Text('Skip'),
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.all(3.0),
                           primary: Colors.white,
@@ -68,7 +69,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.of(context)
                               .pushReplacementNamed(TabScreen.routeName);
                         },
-                        child: const Text('Skip'),
                       ),
                     ),
                   ),

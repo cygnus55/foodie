@@ -3,8 +3,23 @@ import 'package:provider/provider.dart';
 
 import '../providers/restaurants_provider.dart';
 
-class RestaurantsRow extends StatelessWidget {
+class RestaurantsRow extends StatefulWidget {
   const RestaurantsRow({Key? key}) : super(key: key);
+
+  @override
+  State<RestaurantsRow> createState() => _RestaurantsRowState();
+}
+
+class _RestaurantsRowState extends State<RestaurantsRow> {
+  bool _isinit = true;
+  @override
+  void didChangeDependencies() {
+    if (_isinit) {
+      Provider.of<Restaurants>(context).getrestaurants();
+    }
+    _isinit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {

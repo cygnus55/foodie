@@ -39,9 +39,14 @@ class _TabScreenState extends State<TabScreen> {
       }
     }
   }
+  @override
+  void initState() {
+    _isAuth();
+    super.initState();
+  }
 
   void _isAuth() {
-    if (Provider.of<Auth>(context).isAuth) {
+    if (Provider.of<Auth>(context, listen: false).isAuth) {
       setState(() {
         _auth = true;
         _tabs = [
@@ -116,7 +121,7 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _isAuth();
+    
     return SafeArea(
       child: Scaffold(
         // extendBodyBehindAppBar: true,

@@ -13,7 +13,7 @@ class Restaurant(models.Model):
     user = models.OneToOneField(User, related_name="restaurant", on_delete=models.CASCADE)
     website_link = models.URLField(max_length=200, blank=True)
     facebook_link = models.URLField(max_length=200, blank=True)
-    logo = models.URLField(blank=True)
+    logo = models.URLField(blank=True, max_length=1000)
     description = models.TextField(blank=True)
     open_hour = models.TimeField(auto_now=False, auto_now_add=False)
     close_hour = models.TimeField(auto_now=False, auto_now_add=False)
@@ -24,6 +24,9 @@ class Restaurant(models.Model):
         content_type_field="content_type",
         object_id_field="object_id",
     )
+    longitude = models.FloatField(blank=True)
+    latitude = models.FloatField(blank=True)
+    address = models.CharField(blank=True, max_length=250)
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
 

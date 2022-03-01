@@ -16,7 +16,7 @@ class Food(models.Model):
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Decimal("0.01"))])
     is_available = models.BooleanField(default=True)
-    image = models.URLField(max_length=200, blank=True)
+    image = models.URLField(max_length=1000, blank=True)
     discount_percent = models.IntegerField(
         default=0,
         validators=[

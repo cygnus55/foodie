@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import './restaurant_provider.dart';
 
 class Food with ChangeNotifier {
-  String? id;
+  int? id;
   String? name;
   String? description;
-  double? price;
+  String? price;
+  String? sellingPrice;
   String? image;
   bool? isAvailable = true;
   int? discountPercent;
-  // Map<String,dynamic>? restaurant;
-  // List? tags;
+  Restaurant? restaurant;
+
+  double? rating;
+  int? ratingCount;
+
+  List? tags;
   bool? isVeg;
 
   Food({
@@ -20,6 +26,13 @@ class Food with ChangeNotifier {
     this.image,
     this.discountPercent,
     this.isVeg,
+    this.restaurant,
+    this.tags,
+    this.sellingPrice,
+
+    this.rating,
+    this.ratingCount,
+
   });
 
   void addFood() {

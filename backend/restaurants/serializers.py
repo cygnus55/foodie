@@ -13,6 +13,9 @@ class RestaurantSerializer(TaggitSerializer, serializers.ModelSerializer):
     average_ratings = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     ratings_count = serializers.IntegerField()
     reviews = ReviewSerializer(read_only=True, many=True)
+    open_hour = serializers.DateTimeField(format="%I:%M %p")
+    close_hour = serializers.DateTimeField(format="%I:%M %p")
+
 
     class Meta:
         model = Restaurant

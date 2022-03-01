@@ -74,22 +74,27 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const Filter(),
+
             Expanded(
               child: ListView(
                 children: [
-                  Text(
-                    'Foods for you',
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontWeight: FontWeight.w500, color: Colors.black),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                    child: Text(
+                      'Foods for you',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                          fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
                   ),
-                  const Divider(),
                   const FoodsRow(),
-                  Text(
-                    'Restaurants for you',
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontWeight: FontWeight.w500, color: Colors.black),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                    child: Text(
+                      'Restaurants for you',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                          fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
                   ),
-                  const Divider(),
                   const RestaurantsRow(),
                 ],
               ),
