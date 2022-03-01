@@ -24,6 +24,9 @@ class Restaurant(models.Model):
         content_type_field="content_type",
         object_id_field="object_id",
     )
+    longitude = models.FloatField(blank=True)
+    latitude = models.FloatField(blank=True)
+    address = models.CharField(blank=True, max_length=250)
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
 
