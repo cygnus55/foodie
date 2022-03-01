@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<Auth, Profile>(
           create: (ctx) => Profile('_'),
-          update: (ctx, auth, previousAuth) => Profile(auth.getauthToken!),
+          update: (ctx, auth, previousAuth) => Profile(auth.getauthToken),
         ),
         ChangeNotifierProvider.value(
           value: Food(),
