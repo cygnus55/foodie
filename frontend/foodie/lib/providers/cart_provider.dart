@@ -22,7 +22,8 @@ class Cart with ChangeNotifier {
       http.Response response = await http.get(
         url,
         headers: {
-          'Authorization': 'Token ' + Provider.of<Auth>(context).getauthToken!,
+          'Authorization': 'Token ' +
+              Provider.of<Auth>(context, listen: false).getauthToken!,
         },
       );
       final data = json.decode(response.body) as Map<String, dynamic>;
@@ -62,10 +63,25 @@ class Cart with ChangeNotifier {
       });
       _items = cart;
       notifyListeners();
+
       print(_items);
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> addToCart(BuildContext context, int quantity, int foodId) async {
+    var url = Uri.http('10.0.2.2:8000', 'cart/add/');
+    http.Response response = await http.post(
+      url,
+      headers: {
+        'Authorization':
+            'Token ' + Provider.of<Auth>(context, listen: false).getauthToken!,
+        'Content-Type': 'application/json'
+      },
+      body: json.encode({'quantity': quantity, 'food': foodId}),
+    );
+    print(response.body);
   }
 
   // void addItems(int id, String price, String name){

@@ -6,6 +6,5 @@ Content-Type: application/json
 
 {
     "food": 3,
-    "price": "100.00",
     "quantity": 3
 }
