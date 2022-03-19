@@ -1,0 +1,11 @@
+# Add item to cart
+POST http://localhost:8000/cart/add/
+Authorization: Token 4bd26b07cb18f8f6aa770f2a655d4266296c0f17
+Content-Type: application/json
+
+
+{
+    "food": 3,
+    "price": "100.00",
+    "quantity": 3
+}
