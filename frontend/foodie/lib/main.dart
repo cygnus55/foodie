@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import './screens/restaurant_detail_screen.dart';
 import './screens/login_screen.dart';
 import './screens/tab_screen.dart';
 import './screens/otpverification_screen.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<Auth, Profile>(
           create: (ctx) => Profile('_'),
-          update: (ctx, auth, previousAuth) => Profile(auth.getauthToken!),
+          update: (ctx, auth, previousAuth) => Profile(auth.getauthToken),
         ),
         ChangeNotifierProvider.value(
           value: Food(),
@@ -72,7 +73,9 @@ class MyApp extends StatelessWidget {
               PersonalDetails.routeName: (ctx) => const PersonalDetails(),
               OtpVerificationScreen.routeName: (ctx) =>
                   const OtpVerificationScreen(),
-              FoodDetailScreen.routeName: (ctx) => FoodDetailScreen()
+              FoodDetailScreen.routeName: (ctx) => const FoodDetailScreen(),
+              RestaurantDetailScreen.routeName: (ctx) =>
+                  const RestaurantDetailScreen(),
             }),
       ),
     );

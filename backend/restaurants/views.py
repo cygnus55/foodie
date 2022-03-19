@@ -1,11 +1,15 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.generics import (ListCreateAPIView,
+                                     RetrieveUpdateDestroyAPIView)
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from api import customauthentication, custompermissions
 from restaurants.models import Restaurant
 from restaurants.serializers import RestaurantSerializer
-from api import custompermissions, customauthentication
-from .custompermissions import IsCurrentUserAlreadyAnOwner, IsCurrentUserOwnerOrReadOnly
+
+from .custompermissions import (IsCurrentUserAlreadyAnOwner,
+                                IsCurrentUserOwnerOrReadOnly)
+
 
 class RestaurantList(ListCreateAPIView):
     queryset = Restaurant.objects.all()
@@ -17,7 +21,7 @@ class RestaurantList(ListCreateAPIView):
         IsCurrentUserOwnerOrReadOnly
     ]
     authentication_classes = [
-        TokenAuthentication, 
+        TokenAuthentication,
         customauthentication.CsrfExemptSessionAuthentication
     ]
 

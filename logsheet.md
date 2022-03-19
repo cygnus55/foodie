@@ -29,4 +29,5 @@
 - Fetching foods and restaurants from backend
 - Uploading image in firebase
 - Food detail screen
+- Restaurant detail screen 
 - API (cart, reviews and ratings)

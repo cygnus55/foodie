@@ -8,11 +8,16 @@ class Restaurant with ChangeNotifier {
   String? description;
   bool? isAvailable;
   String? openTime;
+  double? rating;
+  int? ratingCount;
   String? closeTime;
   String? logo;
+  String? address;
+  bool? openStatus;
   // List? tags;
 
   Restaurant({
+    this.address,
     this.id,
     this.websiteLink,
     this.facebookLink,
@@ -22,5 +27,8 @@ class Restaurant with ChangeNotifier {
     this.openTime,
     this.closeTime,
     this.logo,
+    this.rating,
+    this.ratingCount,
+    this.openStatus,
   });
 }
