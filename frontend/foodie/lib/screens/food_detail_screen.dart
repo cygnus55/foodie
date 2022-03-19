@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:foodie/providers/foods_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
+import '../providers/foods_provider.dart';
+import '../providers/cart_provider.dart';
 
 // ignore: must_be_immutable
 class FoodDetailScreen extends StatefulWidget {
@@ -14,12 +16,24 @@ class FoodDetailScreen extends StatefulWidget {
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   Color green = Color.fromARGB(255, 43, 164, 0);
-  var _quantity = 1;
+  int _quantity = 1;
   var _isfavourite = false;
+  var _undo = false;
+
+  void undo(_id) {
+    Future.delayed(const Duration(seconds: 5), () {
+      if (!_undo) {
+        Provider.of<Cart>(context, listen: false)
+            .addToCart(context, _quantity, _id);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _id = ModalRoute.of(context)?.settings.arguments as int;
+    int _id = ModalRoute.of(context)?.settings.arguments as int;
     final _food = Provider.of<Foods>(context).findById(_id);
+
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -282,7 +296,23 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                   ),
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    duration: const Duration(seconds: 5),
+                                    content: const Text('Food added to cart'),
+                                    action: SnackBarAction(
+                                      label: 'Undo',
+                                      onPressed: () {
+                                        setState(() {
+                                          _undo = true;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                );
+                                undo(_id);
+                              },
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,

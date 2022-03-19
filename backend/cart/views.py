@@ -1,3 +1,5 @@
+import copy
+
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -26,7 +28,15 @@ class CartDetails(APIView):
     def get(self, request, format=None):
         cart = Cart.objects.filter(customer=self.request.user.customer).first()
         serializers = CartSerializer(cart, context={'request': request})
-        return Response(serializers.data, status=HTTP_200_OK)
+        # categorize the serializer items with restaurants
+        restaurants = {}
+        for item in serializers.data['items']:
+            if str(item['restaurant_id']) not in restaurants:
+                restaurants[str(item['restaurant_id'])] = [{'name': item['restaurant_name']}, {'items': []}]
+            restaurants[str(item['restaurant_id'])][1]['items'].append(item)
+        response = copy.copy(serializers.data)
+        response['items'] = restaurants
+        return Response(response, status=HTTP_200_OK)
 
 
 class CartItemsDetails(RetrieveUpdateDestroyAPIView):
@@ -57,27 +67,14 @@ class CartItemCreate(CreateAPIView):
     queryset = CartItem.objects.all()
 
     def perform_create(self, serializer):
-        print(self.request.data)
         try:
             food = Food.objects.get(id=self.request.data["food"])
-            print(food)
         except Exception:
-            return Response(status=HTTP_400_BAD_REQUEST)
+            return Response({"error": "Food does not exist."}, status=HTTP_400_BAD_REQUEST)
+
 
         price = food.selling_price
         cart = Cart.objects.filter(customer=self.request.user.customer).first()
         if not cart:
-            return Response(status=HTTP_400_BAD_REQUEST)
-        
+            return Response({"error": "Cart does not exist for this customer"}, status=HTTP_400_BAD_REQUEST)
         serializer.save(cart=cart, price=price)
-
-    # def post(self, request, format=None):
-    #     cart = Cart.objects.filter(customer=self.request.user.customer).first()
-    #     if not cart:
-    #         return Response(status=HTTP_400_BAD_REQUEST)
-    #     serializer = CartItemSerializer(data=request.data, context={'request': request})
-    #     print(request.data)
-    #     if serializer.is_valid():
-    #         serializer.save(cart=cart)
-    #         return Response(serializer.data, status=HTTP_200_OK)
-    #     return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)

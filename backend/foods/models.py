@@ -48,7 +48,7 @@ class Food(models.Model):
         ordering = ("-is_available", "-discount_percent", "name",)
 
     def __str__(self):
-        return f"Food: {self.name}"
+        return f"Food: {self.name} for restaurant {self.restaurant.user.full_name}"
 
     @property
     def selling_price(self):
