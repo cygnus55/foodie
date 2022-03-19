@@ -52,7 +52,8 @@ class Cart with ChangeNotifier {
                         name: element['food_name']));
                   });
                   cart.add(CartItem(
-                      restaurantname: restaurantname, foodlist: fooditem));
+                      restaurantname: restaurantname, foodlist: [...fooditem]));
+                  fooditem.clear();
                 }
               });
             });
@@ -61,7 +62,7 @@ class Cart with ChangeNotifier {
       });
       _items = cart;
       notifyListeners();
-      print(_items![0].foodlist![0]);
+      print(_items);
     } catch (e) {
       print(e);
     }
