@@ -66,8 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.of(context)
-                              .pushReplacementNamed(TabScreen.routeName);
+                          Navigator.of(context).pushNamed(TabScreen.routeName);
                         },
                       ),
                     ),

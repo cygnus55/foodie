@@ -1,12 +1,15 @@
+import datetime
+
+import pytz
+from django.contrib.contenttypes.fields import GenericRelation
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Avg, Count
-from django.contrib.contenttypes.fields import GenericRelation
-
 from taggit.managers import TaggableManager
 
 from accounts.models import User
-from reviews.models import Review
 from api.custom_managers import AvailabilityManager
+from reviews.models import Review
 
 
 class Restaurant(models.Model):
@@ -24,6 +27,9 @@ class Restaurant(models.Model):
         content_type_field="content_type",
         object_id_field="object_id",
     )
+    longitude = models.FloatField(blank=True)
+    latitude = models.FloatField(blank=True)
+    address = models.CharField(blank=True, max_length=250)
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
 
@@ -46,6 +52,19 @@ class Restaurant(models.Model):
         ratings_cnt = self.reviews.aggregate(Count("ratings")).get("ratings__count", 0)
         if ratings_cnt == None: ratings_cnt = 0
         return ratings_cnt
+
+    @property
+    def open_status(self):
+        open_hour = self.open_hour
+        close_hour = self.close_hour
+        IST = pytz.timezone("Asia/Kathmandu")
+        current_time = datetime.datetime.now(IST).time()
+        return current_time >= open_hour and current_time <= close_hour
+
+    def clean(self):
+        if self.open_hour > self.close_hour:
+            raise ValidationError('Opening hour should be greater than closing hours.')
+        return super().clean()
 
     def __str__(self):
         return f"{self.user.full_name} for user {self.user.username}"

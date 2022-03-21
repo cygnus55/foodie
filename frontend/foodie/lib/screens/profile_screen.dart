@@ -55,6 +55,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isloading = true;
 
   late Map userinfo;
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
   Future<void> _getUserName() async {
     try {
       await Provider.of<Profile>(this.context, listen: false)
@@ -69,6 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print(error);
     }
   }
+
 
   @override
   void initState() {
@@ -258,9 +267,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context)
-                            .pushReplacementNamed(LoginScreen.routeName);
-                        Provider.of<Auth>(context, listen: false).logout();
+                        setState(() {
+                          isloading = true;
+                        });
+                        Provider.of<Auth>(context, listen: false).logout().then(
+                          (_) {
+                            Navigator.of(context)
+                                .pushReplacementNamed(LoginScreen.routeName);
+                          },
+                        );
                       },
                       child: Text(
                         'Logout',

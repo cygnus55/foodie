@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../screens/restaurant_detail_screen.dart';
 import '../providers/restaurants_provider.dart';
 
 class RestaurantsRow extends StatefulWidget {
@@ -32,20 +33,25 @@ class _RestaurantsRowState extends State<RestaurantsRow> {
         itemBuilder: (ctx, i) {
           return Column(
             children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
-                width: MediaQuery.of(context).size.width * 0.35,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    child: Image.network(
-                      list[i].logo as String,
-                      fit: BoxFit.fill,
+              InkWell(
+                onTap: () => Navigator.of(context).pushNamed(
+                    RestaurantDetailScreen.routeName,
+                    arguments: list[i].id),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  width: MediaQuery.of(context).size.width * 0.35,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      child: Image.network(
+                        list[i].logo as String,
+                        fit: BoxFit.fill,
+                      ),
                     ),
+                    elevation: 5,
                   ),
-                  elevation: 5,
                 ),
               ),
               Text(list[i].name as String),

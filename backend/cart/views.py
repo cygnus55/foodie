@@ -82,6 +82,7 @@ class CartItemCreate(CreateAPIView):
             print(e)
             return Response({"error": "Food does not exist."}, status=HTTP_400_BAD_REQUEST)
 
+
         price = food.selling_price
         cart = Cart.objects.filter(customer=self.request.user.customer).first()
         if not cart:
