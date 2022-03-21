@@ -13,7 +13,7 @@ POST http://localhost:8000/accounts/login/
 Content-Type: application/json
 
 {
-    "mobile": "+9779863471",
+    "mobile": "+9779801200112",
     "otp" : "123456"
 }
 

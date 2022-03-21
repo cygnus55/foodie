@@ -20,7 +20,7 @@ class CartItemSerializer(serializers.ModelSerializer):
     def save(self, *args, **kwargs):
         # if item is already in cart, update the quantity
         cart = kwargs.get('cart')
-        food = self.validated_data['food']
+        food = self.validated_data.get('food')
         try:
             item = CartItem.objects.get(cart=cart, food=food)
             item.quantity += self.validated_data['quantity']
