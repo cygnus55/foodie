@@ -110,4 +110,3 @@ class ClearCartItemByRestaurant(APIView):
         
         cart.items.filter(food__restaurant=restaurant).delete()
         return Response({'success': 'Cart item deleted.'}, status=HTTP_200_OK)
-            
