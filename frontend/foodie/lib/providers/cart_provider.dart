@@ -46,11 +46,15 @@ class Cart with ChangeNotifier {
                 if (key == 'items') {
                   var data4 = value as List;
                   data4.forEach((element) {
-                    fooditem.add(FoodItem(
+                    fooditem.add(
+                      FoodItem(
                         id: element['id'],
                         quantity: element['quantity'],
                         price: element['price'],
-                        name: element['food_name']));
+                        name: element['food_name'],
+                        foodid: element['food'],
+                      ),
+                    );
                   });
                   cart.add(CartItem(
                       restaurantname: restaurantname, foodlist: [...fooditem]));
@@ -107,6 +111,13 @@ class FoodItem {
   int? quantity;
   String? price;
   String? name;
+  int? foodid;
 
-  FoodItem({this.id, this.quantity, this.price, this.name});
+  FoodItem({
+    this.id,
+    this.quantity,
+    this.price,
+    this.name,
+    this.foodid,
+  });
 }

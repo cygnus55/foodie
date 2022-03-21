@@ -33,7 +33,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   Widget build(BuildContext context) {
     int _id = ModalRoute.of(context)?.settings.arguments as int;
     final _food = Provider.of<Foods>(context).findById(_id);
-
+    // print(_food.id);
     return SafeArea(
       child: Scaffold(
         body: Column(
