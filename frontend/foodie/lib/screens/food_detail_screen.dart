@@ -15,7 +15,7 @@ class FoodDetailScreen extends StatefulWidget {
 }
 
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
-  Color green = Color.fromARGB(255, 43, 164, 0);
+  Color green = const Color.fromARGB(255, 43, 164, 0);
   int _quantity = 1;
   var _isfavourite = false;
   var _undo = false;

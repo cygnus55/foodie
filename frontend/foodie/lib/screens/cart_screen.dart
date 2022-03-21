@@ -198,7 +198,12 @@ class _CartScreenState extends State<CartScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Icon(Icons.close),
+                              GestureDetector(
+                                child: const Icon(Icons.close),
+                                onTap: () =>
+                                    Provider.of<Cart>(context, listen: false)
+                                        .deletefood(context, food.id!),
+                              ),
                               Text(
                                 'Rs: ${food.quantity! * double.parse(food.price!)}',
                               )

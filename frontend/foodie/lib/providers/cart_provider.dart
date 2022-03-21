@@ -88,6 +88,18 @@ class Cart with ChangeNotifier {
     print(response.body);
   }
 
+  Future<void> deletefood(BuildContext context, int cartId) async {
+    var url = Uri.http('10.0.2.2:8000', 'cart/items/$cartId');
+    http.Response response = await http.delete(
+      url,
+      headers: {
+        'Authorization':
+            'Token ' + Provider.of<Auth>(context, listen: false).getauthToken!
+      },
+    );
+    print(response.body);
+  }
+
   // void addItems(int id, String price, String name){
   //   if (_items!.containsKey(key)){
 
