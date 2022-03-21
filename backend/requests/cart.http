@@ -6,6 +6,38 @@ Content-Type: application/json
 
 {
     "food": 3,
-    "price": "100.00",
     "quantity": 3
 }
+
+###
+
+# Clear cart
+DELETE http://localhost:8000/cart/
+Authorization: Token 4bd26b07cb18f8f6aa770f2a655d4266296c0f17
+
+###
+
+# Get cart
+GET http://localhost:8000/cart/
+Authorization: Token 4bd26b07cb18f8f6aa770f2a655d4266296c0f17
+
+###
+# patch cart item quantity. 21 is cart item id. 
+PATCH http://localhost:8000/cart/items/21/
+Authorization: Token f23122ffa50bdd3240992758de487643761aef96
+Content-Type: application/json
+
+{
+    "quantity": 3
+}
+
+###
+# Remove item from cart. 21 is the cart item id
+DELETE  http://localhost:8000/cart/items/21/
+Authorization: Token f23122ffa50bdd3240992758de487643761aef96
+
+###
+# Delete cart item by restaurant id.
+
+GET http://localhost:8000/cart/clear/restaurant/?restaurant_id=1
+Authorization: Token f23122ffa50bdd3240992758de487643761aef96

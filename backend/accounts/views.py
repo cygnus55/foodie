@@ -20,6 +20,7 @@ from rest_framework.views import APIView
 from accounts.models import User
 from accounts import otp_verify
 from customers.models import Customer
+from cart.models import Cart
 from accounts.serializers import UserSerializer
 from accounts.custompermissions import IsCurrentUserOwner
 from api import customauthentication
@@ -68,8 +69,10 @@ def customer_login(request):
                 user.is_customer = True
             user.set_unusable_password()
             user.save()
-            customer = Customer.objects.create(user=user)
-            customer.save()
+            if user.is_customer:
+                customer = Customer.objects.create(user=user)
+                customer.save()
+                Cart.objects.create(customer=customer)
             token = Token.objects.create(user=user)
             data["success"] = "New user created"
 
