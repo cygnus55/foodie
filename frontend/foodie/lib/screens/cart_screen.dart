@@ -63,7 +63,6 @@ class _CartScreenState extends State<CartScreen> {
                       ],
                     ),
                   )
-
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -428,7 +427,6 @@ class _CartScreenState extends State<CartScreen> {
                             'Total: ${Provider.of<Cart>(context).totalAmount}'),
                       ),
                     ],
-
                   ),
           );
   }

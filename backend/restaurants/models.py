@@ -1,14 +1,17 @@
 import datetime
-
 import pytz
+
 from django.contrib.contenttypes.fields import GenericRelation
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models import Avg, Count
+
 from taggit.managers import TaggableManager
 
 from accounts.models import User
 from api.custom_managers import AvailabilityManager
+from customers.models import Customer
+from favourites.models import Favourite
 from reviews.models import Review
 
 
@@ -24,6 +27,12 @@ class Restaurant(models.Model):
     reviews = GenericRelation(
         Review,
         related_query_name="restaurant",
+        content_type_field="content_type",
+        object_id_field="object_id",
+    )
+    favourites = GenericRelation(
+        Favourite,
+        related_query_name="food",
         content_type_field="content_type",
         object_id_field="object_id",
     )
@@ -65,6 +74,16 @@ class Restaurant(models.Model):
         if self.open_hour > self.close_hour:
             raise ValidationError('Opening hour should be greater than closing hours.')
         return super().clean()
+
+    def customer_favourite_status(self, id):
+        try:
+            customer = Customer.objects.get(id=id)
+            item = self.favourites.filter(customer=customer)
+            if item:
+                return True
+            return False
+        except ObjectDoesNotExist:
+            return False
 
     def __str__(self):
         return f"{self.user.full_name} for user {self.user.username}"
