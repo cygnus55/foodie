@@ -1,4 +1,5 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models import Avg, Count
@@ -10,6 +11,7 @@ from restaurants.models import Restaurant
 from reviews.models import Review
 from favourites.models import Favourite
 from api.custom_managers import AvailabilityManager
+from customers.models import Customer
 
 
 class Food(models.Model):
@@ -54,9 +56,6 @@ class Food(models.Model):
     class Meta:
         ordering = ("-is_available", "-discount_percent", "name",)
 
-    def __str__(self):
-        return f"Food: {self.name} for restaurant {self.restaurant.user.full_name}"
-
     @property
     def selling_price(self):
         return self.price - (self.price * self.discount_percent/100)
@@ -72,6 +71,19 @@ class Food(models.Model):
         ratings_cnt = self.reviews.aggregate(Count("ratings")).get("ratings__count", 0)
         if ratings_cnt == None: ratings_cnt = 0
         return ratings_cnt
+
+    def customer_favourite_status(self, id):
+        try:
+            customer = Customer.objects.get(id=id)
+            item = self.favourites.filter(customer=customer)
+            if item:
+                return True
+            return False
+        except ObjectDoesNotExist:
+            return False
+
+    def __str__(self):
+        return f"Food: {self.name} for restaurant {self.restaurant.user.full_name}"
 
 
 class FoodTemplate(models.Model):
