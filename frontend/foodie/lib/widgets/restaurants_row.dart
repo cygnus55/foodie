@@ -26,6 +26,13 @@ class _RestaurantsRowState extends State<RestaurantsRow> {
   }
 
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     var list = Provider.of<Restaurants>(context).items;
     return _isLoading

@@ -89,7 +89,7 @@ class Cart with ChangeNotifier {
       },
       body: json.encode({'quantity': quantity, 'food': foodId}),
     );
-    // .then((_) => cartItems(context));
+
     print(response.body);
   }
 
