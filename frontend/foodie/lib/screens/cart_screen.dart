@@ -426,6 +426,74 @@ class _CartScreenState extends State<CartScreen> {
                         child: Text(
                             'Total: ${Provider.of<Cart>(context).totalAmount}'),
                       ),
+                      Expanded(
+                          child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                Provider.of<Cart>(context, listen: false)
+                                    .deletecart(context)
+                                    .then((_) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  Provider.of<Cart>(context, listen: false)
+                                      .cartItems(context)
+                                      .then((_) {
+                                    setState(() {
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                    });
+                                  });
+                                });
+                              },
+                              child: Row(
+                                children: const [
+                                  Icon(Icons.delete),
+                                  Text('Clear Cart')
+                                ],
+                              )),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          ElevatedButton(
+                              onPressed: () {},
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.grey),
+                                shape: MaterialStateProperty.all(
+                                  const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(10),
+                                        bottomRight: Radius.circular(10)),
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                children: const [
+                                  Text(
+                                    'Checkout',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  Icon(
+                                    Icons.check_circle,
+                                    color: Colors.black,
+                                  ),
+                                ],
+                              )),
+                        ],
+                      ))
                     ],
                   ),
           );
