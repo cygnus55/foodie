@@ -13,8 +13,14 @@ class Cart with ChangeNotifier {
     return [...?_items];
   }
 
-  String get totalAmount {
-    return totalPrice!;
+  double get totalAmount {
+    var total = 0.0;
+    for (var restaurant in _items!) {
+      for (var element in restaurant.foodlist!) {
+        total = total + element.quantity! * double.parse(element.price!);
+      }
+    }
+    return total;
   }
 
   Future<void> cartItems(BuildContext context) async {
