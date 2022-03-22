@@ -127,6 +127,22 @@ class Cart with ChangeNotifier {
     }
   }
 
+  Future<void> deletecart(BuildContext context) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'cart/');
+      http.Response response = await http.delete(
+        url,
+        headers: {
+          'Authorization':
+              'Token ' + Provider.of<Auth>(context, listen: false).getauthToken!
+        },
+      );
+      print(response.body);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> deleterestaurant(
       BuildContext context, String restaurantId) async {
     try {
