@@ -79,7 +79,6 @@ class CartItemCreate(CreateAPIView):
         try:
             food = Food.objects.get(id=self.request.data["food"])
         except Exception as e:
-            print(e)
             return Response({"error": "Food does not exist."}, status=HTTP_400_BAD_REQUEST)
 
 

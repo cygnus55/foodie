@@ -10,4 +10,4 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        exclude = ("created", "updated", "content_type", "object_id", "sentiment_score")
+        exclude = ("created", "updated", "content_type", "object_id",)

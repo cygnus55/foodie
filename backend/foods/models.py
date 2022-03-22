@@ -8,6 +8,7 @@ from taggit.managers import TaggableManager
 
 from restaurants.models import Restaurant
 from reviews.models import Review
+from favourites.models import Favourite
 from api.custom_managers import AvailabilityManager
 
 
@@ -32,6 +33,12 @@ class Food(models.Model):
     is_veg = models.BooleanField(default=False)
     reviews = GenericRelation(
         Review,
+        related_query_name="food",
+        content_type_field="content_type",
+        object_id_field="object_id",
+    )
+    favourites = GenericRelation(
+        Favourite,
         related_query_name="food",
         content_type_field="content_type",
         object_id_field="object_id",
