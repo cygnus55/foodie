@@ -14,6 +14,14 @@ class FoodsRow extends StatefulWidget {
 class _FoodsRowState extends State<FoodsRow> {
   bool _isinit = true;
   bool _isLoading = true;
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
   @override
   void didChangeDependencies() {
     if (_isinit) {

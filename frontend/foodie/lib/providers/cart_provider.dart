@@ -7,6 +7,7 @@ import './auth_provider.dart';
 class Cart with ChangeNotifier {
   String? totalPrice;
   String? restaurantname;
+  String? restaurantid;
   List<CartItem>? _items;
   List<CartItem> get items {
     return [...?_items];
@@ -36,6 +37,7 @@ class Cart with ChangeNotifier {
         if (key == 'items') {
           var data1 = value as Map;
           data1.forEach((key, value) {
+            restaurantid = key;
             var data2 = value as List;
             data2.forEach((element) {
               var data3 = element as Map;
@@ -57,7 +59,9 @@ class Cart with ChangeNotifier {
                     );
                   });
                   cart.add(CartItem(
-                      restaurantname: restaurantname, foodlist: [...fooditem]));
+                      restaurantname: restaurantname,
+                      restaurantid: restaurantid,
+                      foodlist: [...fooditem]));
                   fooditem.clear();
                 }
               });
@@ -85,25 +89,53 @@ class Cart with ChangeNotifier {
       },
       body: json.encode({'quantity': quantity, 'food': foodId}),
     );
+
     print(response.body);
   }
 
-  // void addItems(int id, String price, String name){
-  //   if (_items!.containsKey(key)){
+  Future<void> deletefood(BuildContext context, int cartId) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'cart/items/$cartId/');
+      http.Response response = await http.delete(
+        url,
+        headers: {
+          'Authorization':
+              'Token ' + Provider.of<Auth>(context, listen: false).getauthToken!
+        },
+      );
+      print(response.body);
+    } catch (e) {
+      print(e);
+    }
+  }
 
-  //   }
-  //   else{
-  //     _items.putIfAbsent(key, ))
-
-  //   }
-  // }
+  Future<void> deleterestaurant(
+      BuildContext context, String restaurantId) async {
+    try {
+      var queryParameters = {
+        'restaurant_id': restaurantId,
+      };
+      var url =
+          Uri.http('10.0.2.2:8000', 'cart/clear/restaurant/', queryParameters);
+      http.Response response = await http.get(
+        url,
+        headers: {
+          'Authorization':
+              'Token ' + Provider.of<Auth>(context, listen: false).getauthToken!
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
 }
 
 class CartItem {
   String? restaurantname;
+  String? restaurantid;
   List<FoodItem>? foodlist;
 
-  CartItem({this.restaurantname, this.foodlist});
+  CartItem({this.restaurantname, this.foodlist, this.restaurantid});
 }
 
 class FoodItem {
