@@ -23,6 +23,18 @@ class Cart with ChangeNotifier {
     return total;
   }
 
+  int get total {
+    var sum = 0;
+    for (var restaurant in items) {
+      for (var element in restaurant.foodlist!) {
+        sum = sum + 1;
+      }
+    }
+    print(sum);
+
+    return sum;
+  }
+
   Future<void> cartItems(BuildContext context) async {
     try {
       var url = Uri.http('10.0.2.2:8000', 'cart/');
@@ -95,7 +107,7 @@ class Cart with ChangeNotifier {
       },
       body: json.encode({'quantity': quantity, 'food': foodId}),
     );
-
+    notifyListeners();
     print(response.body);
   }
 
