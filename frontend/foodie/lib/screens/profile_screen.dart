@@ -78,7 +78,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-
   @override
   void initState() {
     _getUserName();
