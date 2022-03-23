@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -323,25 +324,37 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  setState(() {
-                                    _disableBack = true;
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      duration: const Duration(seconds: 3),
-                                      content: const Text('Food added to cart'),
-                                      action: SnackBarAction(
-                                        label: 'Undo',
-                                        onPressed: () {
-                                          setState(() {
-                                            _undo = true;
-                                            _disableBack = false;
-                                          });
-                                        },
+                                  if (Provider.of<Auth>(context, listen: false)
+                                      .isAuth) {
+                                    setState(() {
+                                      _disableBack = true;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: const Duration(seconds: 3),
+                                        content:
+                                            const Text('Food added to cart'),
+                                        action: SnackBarAction(
+                                          label: 'Undo',
+                                          onPressed: () {
+                                            setState(() {
+                                              _undo = true;
+                                              _disableBack = false;
+                                            });
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                  undo(_id);
+                                    );
+                                    undo(_id);
+                                  } else {
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              const LoginScreen()),
+                                      ModalRoute.withName(
+                                          LoginScreen.routeName),
+                                    );
+                                  }
                                 },
                                 child: Row(
                                   mainAxisAlignment:
