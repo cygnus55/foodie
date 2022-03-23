@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
-import 'package:foodie/providers/restaurant_provider.dart';
+import 'package:foodie/providers/auth_provider.dart';
+import './restaurant_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import './food_provider.dart';
 
@@ -65,10 +67,21 @@ class Foods with ChangeNotifier {
     return _items.firstWhere((food) => food.id == id);
   }
 
-  Future<void> getfoods() async {
+  Future<void> getfoods(BuildContext context) async {
     try {
       var url = Uri.http('10.0.2.2:8000', 'foods/');
-      http.Response response = await http.get(url);
+      late http.Response response;
+      if (Provider.of<Auth>(context).isAuth) {
+        response = await http.get(
+          url,
+          headers: {
+            'Authorization': 'Token ' +
+                Provider.of<Auth>(context, listen: false).getauthToken!,
+          },
+        );
+      } else {
+        response = await http.get(url);
+      }
       final data = json.decode(response.body) as List<dynamic>;
       final List<Food> foods = [];
       data.forEach(
@@ -88,6 +101,8 @@ class Foods with ChangeNotifier {
               price: element['price'],
               tags: element['tags'],
               sellingPrice: element['selling_price'],
+              isAvailable: element['is_available'],
+              isFavourite: element['is_favourite'],
               restaurant: Restaurant(
                   id: restaurant['id'],
                   closeTime: restaurant['close_hour'],
@@ -97,6 +112,7 @@ class Foods with ChangeNotifier {
                   isAvailable: restaurant['is_available'],
                   openTime: restaurant['open_hour'],
                   websiteLink: restaurant['website_link'],
+                  isFavourite: restaurant['is_favourite'],
                   name: user['full_name']),
             ),
           );
