@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/foods_provider.dart';
 import './food_detail_screen.dart';
+import 'package:location/location.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -32,6 +33,15 @@ class _CartScreenState extends State<CartScreen> {
     if (mounted) {
       super.setState(fn);
     }
+  }
+
+  Future<void> ordercart() async {
+    final locaData = await Location().getLocation();
+    print(locaData.latitude);
+
+    Provider.of<Cart>(context, listen: false).createorder(context,
+        (locaData.latitude).toString(), (locaData.longitude).toString());
+    // Navigator.of(context).pushNamed(routeName) <--- order screnn
   }
 
   @override
@@ -468,7 +478,7 @@ class _CartScreenState extends State<CartScreen> {
                             width: 10,
                           ),
                           ElevatedButton(
-                              onPressed: () {},
+                              onPressed: ordercart,
                               style: ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.grey),
