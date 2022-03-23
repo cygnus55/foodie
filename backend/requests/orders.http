@@ -1,0 +1,27 @@
+# create order
+# method CART means that the order will be created using the cart
+# method DIRECT means that the order will be directly created from the food details page
+
+POST http://localhost:8000/orders/create/
+Authorization: Token f23122ffa50bdd3240992758de487643761aef96
+Content-Type: application/json
+
+{
+    "method": "CART",
+    "latitude": "27.7172453",
+    "longitude": "85.3239605",
+    "items": [
+        {
+            "food_id": 1,
+            "quantity": 2,
+            "price": 270.00
+        },
+        {
+            "food_id": 2,
+            "quantity": 1,
+            "price": 120.00
+        }
+    ]
+}
+
+###

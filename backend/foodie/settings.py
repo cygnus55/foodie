@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'taggit',
+    'django_better_admin_arrayfield',
 
     # local apps
     'accounts',
@@ -59,6 +60,7 @@ INSTALLED_APPS = [
     'customers',
     'cart',
     'reviews',
+    'orders',
     'favourites',
 ]
 

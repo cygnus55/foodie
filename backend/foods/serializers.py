@@ -3,7 +3,6 @@ from taggit.serializers import TaggitSerializer, TagListSerializerField
 
 from foods.models import Food, FoodTemplate
 from restaurants.serializers import RestaurantSerializer
-from reviews.serializers import ReviewSerializer
 
 
 class FoodSerializer(TaggitSerializer, serializers.ModelSerializer):

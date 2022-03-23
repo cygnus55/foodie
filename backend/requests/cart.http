@@ -19,7 +19,7 @@ Authorization: Token 4bd26b07cb18f8f6aa770f2a655d4266296c0f17
 
 # Get cart
 GET http://localhost:8000/cart/
-Authorization: Token 4bd26b07cb18f8f6aa770f2a655d4266296c0f17
+Authorization: Token f23122ffa50bdd3240992758de487643761aef96
 
 ###
 # patch cart item quantity. 21 is cart item id. 
@@ -33,7 +33,7 @@ Content-Type: application/json
 
 ###
 # Remove item from cart. 21 is the cart item id
-DELETE  http://localhost:8000/cart/items/21/
+DELETE  http://localhost:8000/cart/items/22/
 Authorization: Token f23122ffa50bdd3240992758de487643761aef96
 
 ###

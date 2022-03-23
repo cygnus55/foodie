@@ -35,5 +35,9 @@ class APIRoot(GenericAPIView):
                     "toggle_food_favourite": reverse("favourites:food-toggle-favourite", request=request, kwargs={"pk": 1}),
                     "toggle_restaurant_favourite": reverse("favourites:restaurant-toggle-favourite", request=request, kwargs={"pk": 1}),
                 },
+                "orders": {
+                    "order_list": reverse("orders:list", request=request),
+                    "order_create": reverse("orders:create", request=request),
+                }
             }
         )
