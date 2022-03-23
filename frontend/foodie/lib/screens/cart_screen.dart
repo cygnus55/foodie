@@ -478,7 +478,89 @@ class _CartScreenState extends State<CartScreen> {
                             width: 10,
                           ),
                           ElevatedButton(
-                              onPressed: ordercart,
+                              onPressed: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Container(
+                                        padding: const EdgeInsets.all(15),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.35,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Center(
+                                                child: Text(
+                                              'Choose Delivery Location',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            )),
+                                            TextButton(
+                                              onPressed: () {},
+                                              child: Row(
+                                                children: const [
+                                                  Icon(
+                                                    Icons
+                                                        .location_searching_outlined,
+                                                    size: 20,
+                                                    color: Colors.red,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Text(
+                                                    'Use Current Location',
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const Divider(),
+                                            Text(
+                                              'Recent Location',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            const Text('Home'),
+                                            const SizedBox(height: 10),
+                                            const Text('Office'),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                ElevatedButton(
+                                                    onPressed: () {},
+                                                    child:
+                                                        const Text('Cancel')),
+                                                const SizedBox(width: 20),
+                                                ElevatedButton(
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all(Colors.grey),
+                                                    ),
+                                                    onPressed: () {},
+                                                    child:
+                                                        const Text('Confirm')),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    });
+                              },
                               style: ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.grey),
