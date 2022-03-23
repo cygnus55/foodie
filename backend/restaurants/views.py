@@ -51,19 +51,3 @@ class RestaurantDetails(RetrieveUpdateDestroyAPIView):
         customauthentication.CsrfExemptSessionAuthentication
     ]
 
-    def get(self, request, format=None, *args, **kwargs):
-        id = self.kwargs.get("pk")
-        restaurant = Restaurant.objects.get(id=id)
-        serializer = RestaurantSerializer(restaurant, context={"request": request})
-        response = copy.copy(serializer.data)
-
-        if request.user.is_authenticated and request.user.is_customer:
-            try:
-                customer_id = request.user.customer.id
-                response["is_favourite"] = restaurant.customer_favourite_status(id=customer_id)
-                return Response(response)
-            except ObjectDoesNotExist:
-                return Response({"error": "Customer does not exist!"}, status=HTTP_404_NOT_FOUND)
-        else:
-            response["is_favourite"] = False
-            return Response(response)
