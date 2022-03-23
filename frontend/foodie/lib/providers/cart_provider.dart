@@ -13,8 +13,26 @@ class Cart with ChangeNotifier {
     return [...?_items];
   }
 
-  String get totalAmount {
-    return totalPrice!;
+  double get totalAmount {
+    var total = 0.0;
+    for (var restaurant in _items!) {
+      for (var element in restaurant.foodlist!) {
+        total = total + element.quantity! * double.parse(element.price!);
+      }
+    }
+    return total;
+  }
+
+  int get total {
+    var sum = 0;
+    for (var restaurant in items) {
+      for (var element in restaurant.foodlist!) {
+        sum = sum + 1;
+      }
+    }
+    print(sum);
+
+    return sum;
   }
 
   Future<void> cartItems(BuildContext context) async {
@@ -89,13 +107,29 @@ class Cart with ChangeNotifier {
       },
       body: json.encode({'quantity': quantity, 'food': foodId}),
     );
-
+    notifyListeners();
     print(response.body);
   }
 
   Future<void> deletefood(BuildContext context, int cartId) async {
     try {
       var url = Uri.http('10.0.2.2:8000', 'cart/items/$cartId/');
+      http.Response response = await http.delete(
+        url,
+        headers: {
+          'Authorization':
+              'Token ' + Provider.of<Auth>(context, listen: false).getauthToken!
+        },
+      );
+      print(response.body);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> deletecart(BuildContext context) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'cart/');
       http.Response response = await http.delete(
         url,
         headers: {

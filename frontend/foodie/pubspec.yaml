@@ -38,6 +38,8 @@ dependencies:
 
   firebase_core: ^1.12.0
   firebase_storage: ^10.2.7
+  badges: ^2.0.2
+
 
   # pick file
   file_picker: ^4.4.0

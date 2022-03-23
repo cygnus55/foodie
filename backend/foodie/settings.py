@@ -45,14 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # 3rd-party apps
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
     'taggit',
     'django_better_admin_arrayfield',
-    
 
     # local apps
     'accounts',
@@ -62,6 +61,7 @@ INSTALLED_APPS = [
     'cart',
     'reviews',
     'orders',
+    'favourites',
 ]
 
 MIDDLEWARE = [

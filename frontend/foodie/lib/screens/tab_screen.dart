@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/providers/auth_provider.dart';
+import '../providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
 import './login_screen.dart';
@@ -7,6 +8,7 @@ import './profile_screen.dart';
 import './home_screen.dart';
 import './offer_screen.dart';
 import './cart_screen.dart';
+import 'package:badges/badges.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({Key? key}) : super(key: key);
@@ -43,7 +45,26 @@ class _TabScreenState extends State<TabScreen> {
   @override
   void initState() {
     _isAuth();
+
     super.initState();
+  }
+
+  bool _isinit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isinit) {
+      Provider.of<Cart>(context).cartItems(context);
+    }
+    _isinit = false;
+    super.didChangeDependencies();
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
   }
 
   void _isAuth() {
@@ -70,8 +91,8 @@ class _TabScreenState extends State<TabScreen> {
 
   List<BottomNavigationBarItem> _list() {
     if (_auth) {
-      return const [
-        BottomNavigationBarItem(
+      return [
+        const BottomNavigationBarItem(
           icon: Icon(
             Icons.home,
             size: 30,
@@ -79,20 +100,20 @@ class _TabScreenState extends State<TabScreen> {
           label: 'home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.shopping_cart,
-            size: 30,
+          icon: Badge(
+            badgeContent: Text('${Provider.of<Cart>(context).total}'),
+            child: const Icon(Icons.shopping_cart),
           ),
-          label: 'cart',
+          label: 'Shopping_cart',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(
             Icons.local_offer,
             size: 30,
           ),
           label: 'offer',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(
             Icons.person,
             size: 30,
