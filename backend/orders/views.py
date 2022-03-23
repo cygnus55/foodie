@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
+from rest_framework.renderers import JSONRenderer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
@@ -11,7 +12,7 @@ from cart.models import Cart
 from orders.custompermissions import AllowOnlyOwner, AllowOnlyOrderOwner
 from foods.models import Food
 from orders.geocoding import get_delivery_location
-from orders.serializers import OrderSerializer, OrderItemSerializer
+from orders.serializers import OrderSerializer, OrderItemSerializer, DeliveryLocationSerializer
 
 # Create your views here.
 
@@ -65,3 +66,54 @@ class OrderList(ListAPIView):
         return Order.objects.filter(customer=self.request.user.customer)
 
 
+
+class DeliveryLocation(APIView):
+    permission_classes = [
+        IsAuthenticated,
+        custompermissions.AllowOnlyCustomer,
+        AllowOnlyOwner,
+    ]
+    authentication_classes = [
+        TokenAuthentication,
+        customauthentication.CsrfExemptSessionAuthentication
+    ]
+
+    def get(self, request, format=None):
+        orders = Order.objects.filter(customer=self.request.user.customer).order_by('-created')[:5]
+        delivery_locations = []
+        for order in orders:
+            location = {
+                'latitude': order.delivery_location[0],
+                'longitude': order.delivery_location[1],
+                'address': order.delivery_location[2],
+                'city': order.delivery_location[2].split(',')[0],
+            }
+            if location not in delivery_locations:
+                delivery_locations.append(location)
+        # serialize delivery location
+        serializer = DeliveryLocationSerializer(delivery_locations, many=True)
+        return Response(serializer.data, status=HTTP_200_OK)
+
+
+
+class Geocoding(APIView):
+    permission_classes = [
+        IsAuthenticated,
+        custompermissions.AllowOnlyCustomer,
+    ]
+    authentication_classes = [
+        TokenAuthentication,
+        customauthentication.CsrfExemptSessionAuthentication
+    ]
+
+    def post(self, request, format=None):
+        lat = request.data.get('latitude')
+        lng = request.data.get('longitude')
+        delivery_location = get_delivery_location(lat, lng)
+        serializer = DeliveryLocationSerializer({
+            'latitude': delivery_location[0],
+            'longitude': delivery_location[1],
+            'address': delivery_location[2],
+            'city': delivery_location[2].split(',')[0],
+        })
+        return Response(serializer.data, status=HTTP_200_OK)

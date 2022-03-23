@@ -25,3 +25,27 @@ Content-Type: application/json
 }
 
 ###
+
+# get order list
+GET http://localhost:8000/orders/
+Authorization: Token f23122ffa50bdd3240992758de487643761aef96
+
+
+###
+
+# Get five recent delivery location
+GET http://localhost:8000/orders/delivery-location/
+Authorization: Token f23122ffa50bdd3240992758de487643761aef96
+
+###
+
+# Geocoding for given latitude and longitude
+
+POST http://localhost:8000/orders/geocode/
+Authorization: Token f23122ffa50bdd3240992758de487643761aef96
+Content-Type: application/json
+
+{
+    "latitude": "27.7172453",
+    "longitude": "85.3239605"
+}
