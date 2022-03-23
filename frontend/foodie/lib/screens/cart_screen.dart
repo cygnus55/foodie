@@ -4,6 +4,7 @@ import '../providers/cart_provider.dart';
 import '../providers/foods_provider.dart';
 import './food_detail_screen.dart';
 import 'package:location/location.dart';
+import './order_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -39,8 +40,12 @@ class _CartScreenState extends State<CartScreen> {
     final locaData = await Location().getLocation();
     print(locaData.latitude);
 
-    Provider.of<Cart>(context, listen: false).createorder(context,
+    await Provider.of<Cart>(context, listen: false).createorder(context,
         (locaData.latitude).toString(), (locaData.longitude).toString());
+    await Provider.of<Cart>(context, listen: false).cartItems(context);
+    Navigator.of(context).pop();
+    Navigator.of(context).pushNamed(OrderScreen.routeName);
+
     // Navigator.of(context).pushNamed(routeName) <--- order screnn
   }
 
@@ -502,7 +507,9 @@ class _CartScreenState extends State<CartScreen> {
                                                   ),
                                             )),
                                             TextButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                ordercart();
+                                              },
                                               child: Row(
                                                 children: const [
                                                   Icon(
@@ -532,28 +539,17 @@ class _CartScreenState extends State<CartScreen> {
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                             ),
-                                            const SizedBox(height: 10),
-                                            const Text('Home'),
-                                            const SizedBox(height: 10),
-                                            const Text('Office'),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               children: [
                                                 ElevatedButton(
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
                                                     child:
                                                         const Text('Cancel')),
-                                                const SizedBox(width: 20),
-                                                ElevatedButton(
-                                                    style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all(Colors.grey),
-                                                    ),
-                                                    onPressed: () {},
-                                                    child:
-                                                        const Text('Confirm')),
                                               ],
                                             )
                                           ],
