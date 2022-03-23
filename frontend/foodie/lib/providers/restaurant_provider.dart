@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import './auth_provider.dart';
+
 class Restaurant with ChangeNotifier {
   int? id;
   String? websiteLink;
@@ -14,6 +18,7 @@ class Restaurant with ChangeNotifier {
   String? logo;
   String? address;
   bool? openStatus;
+  bool? isFavourite;
   // List? tags;
 
   Restaurant({
@@ -30,5 +35,22 @@ class Restaurant with ChangeNotifier {
     this.rating,
     this.ratingCount,
     this.openStatus,
+    this.isFavourite,
   });
+
+  Future<void> toggleFav(BuildContext context, int restaurantid) async {
+    try {
+      var url =
+          Uri.http('10.0.2.2:8000', 'favourites/restaurants/$restaurantid');
+      http.Response response = await http.get(
+        url,
+        headers: {
+          'Authorization':
+              'Token ' + Provider.of<Auth>(context, listen: false).getauthToken!
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
 }

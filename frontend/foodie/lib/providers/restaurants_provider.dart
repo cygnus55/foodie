@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import './restaurant_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import './auth_provider.dart';
 
 class Restaurants with ChangeNotifier {
   List<Restaurant> _items = [
@@ -64,10 +66,21 @@ class Restaurants with ChangeNotifier {
     return _items.firstWhere((restaurant) => restaurant.id == id);
   }
 
-  Future<void> getrestaurants() async {
+  Future<void> getrestaurants(BuildContext context) async {
     try {
       var url = Uri.http('10.0.2.2:8000', 'restaurants/');
-      http.Response response = await http.get(url);
+      http.Response response;
+      if (Provider.of<Auth>(context).isAuth) {
+        response = await http.get(
+          url,
+          headers: {
+            'Authorization': 'Token ' +
+                Provider.of<Auth>(context, listen: false).getauthToken!,
+          },
+        );
+      } else {
+        response = await http.get(url);
+      }
       final data = json.decode(response.body) as List<dynamic>;
       final List<Restaurant> restaurants = [];
       data.forEach(
@@ -88,6 +101,7 @@ class Restaurants with ChangeNotifier {
               ratingCount: element['ratings_count'],
               address: element['address'],
               openStatus: element['open_status'],
+              isFavourite: element['is_favourite'],
             ),
           );
         },
