@@ -25,6 +25,7 @@ urlpatterns = [
     path("customers/", include("customers.urls")),
     path("cart/", include("cart.urls")),
     path("reviews/", include("reviews.urls")),
+    path("orders/", include("orders.urls")),
 ]
 
 # Admin Site Configurations

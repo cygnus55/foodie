@@ -29,7 +29,11 @@ class APIRoot(GenericAPIView):
                 "reviews_example": {
                     "restaurant_reviews_list": reverse("reviews:restaurant_reviews_list", request=request, kwargs={"pk": 1}),
                     "food_reviews_list": reverse("reviews:food_reviews_list", request=request, kwargs={"pk": 1}),
-                    "review_details": reverse("reviews:review_details", request=request, kwargs={"pk": 1})
+                    "review_details": reverse("reviews:review_details", request=request, kwargs={"pk": 1}),
                 },
+                "orders": {
+                    "order_list": reverse("orders:list", request=request),
+                    "order_create": reverse("orders:create", request=request),
+                }
             }
         )

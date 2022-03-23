@@ -1,5 +1,3 @@
-import imp
-from statistics import mode
 from django.db import models
 
 from customers.models import Customer

@@ -95,7 +95,7 @@ class ClearCartItemByRestaurant(APIView):
     permission_classes = [
         IsAuthenticated,
         custompermissions.AllowOnlyCustomer,
-        AllowOnlyOwner,
+        AllowOnlyCartOwner,
     ]
     authentication_classes = [
         TokenAuthentication,
