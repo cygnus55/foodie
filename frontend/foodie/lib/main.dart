@@ -12,6 +12,7 @@ import './screens/otpverification_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/personaldetails_screen.dart';
 import './screens/food_detail_screen.dart';
+import './screens/order_screen.dart';
 
 import './providers/restaurants_provider.dart';
 import './providers/food_provider.dart';
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
               FoodDetailScreen.routeName: (ctx) => const FoodDetailScreen(),
               RestaurantDetailScreen.routeName: (ctx) =>
                   const RestaurantDetailScreen(),
+              OrderScreen.routeName: (ctx) => const OrderScreen(),
             }),
       ),
     );
