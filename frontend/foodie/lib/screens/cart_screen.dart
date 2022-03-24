@@ -509,7 +509,7 @@ class _CartScreenState extends State<CartScreen> {
                                             TextButton(
                                               onPressed: () {
                                                 ordercart();
-                                              },
+                                             
                                               child: Row(
                                                 children: const [
                                                   Icon(
@@ -550,6 +550,8 @@ class _CartScreenState extends State<CartScreen> {
                                                     },
                                                     child:
                                                         const Text('Cancel')),
+
+                                               
                                               ],
                                             )
                                           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/providers/cart_provider.dart';
+import 'package:foodie/providers/restaurant_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Foods()),
         ChangeNotifierProvider(create: (context) => Restaurants()),
         ChangeNotifierProvider(create: (context) => Cart()),
+        ChangeNotifierProvider(create: (context) => Restaurant()),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(

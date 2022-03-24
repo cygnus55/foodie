@@ -38,6 +38,8 @@ class APIRoot(GenericAPIView):
                 "orders": {
                     "order_list": reverse("orders:list", request=request),
                     "order_create": reverse("orders:create", request=request),
-                }
+                    "recent_delivery_location": reverse("orders:delivery_location", request=request),
+                  "geocoding": reverse("orders:geocoding", request=request),
+                },
             }
         )

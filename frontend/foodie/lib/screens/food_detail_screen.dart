@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../providers/foods_provider.dart';
+import '../providers/food_provider.dart';
 import '../providers/cart_provider.dart';
+import '../providers/auth_provider.dart';
 
 // ignore: must_be_immutable
 class FoodDetailScreen extends StatefulWidget {
@@ -17,7 +20,7 @@ class FoodDetailScreen extends StatefulWidget {
 class _FoodDetailScreenState extends State<FoodDetailScreen> {
   Color green = const Color.fromARGB(255, 43, 164, 0);
   int _quantity = 1;
-  var _isfavourite = false;
+
   var _undo = false;
   var _disableBack = false;
 
@@ -99,15 +102,27 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         backgroundColor: Colors.grey,
                         child: Icon(
                           Icons.favorite,
-                          color: _isfavourite
+                          color: _food.isFavourite!
                               ? Theme.of(context).primaryColor
                               : Theme.of(context).iconTheme.color,
                         ),
                       ),
                       onTap: () {
                         setState(() {
-                          _isfavourite = !_isfavourite;
+                          _food.isFavourite = !_food.isFavourite!;
                         });
+                        if (Provider.of<Auth>(context, listen: false).isAuth) {
+                          Provider.of<Food>(context, listen: false)
+                              .toggleFav(context, _food.id!);
+                        }
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 3),
+                            content: _food.isFavourite!
+                                ? const Text('Food added to favourite.')
+                                : const Text('Food removed from favourite.'),
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -309,25 +324,37 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  setState(() {
-                                    _disableBack = true;
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      duration: const Duration(seconds: 3),
-                                      content: const Text('Food added to cart'),
-                                      action: SnackBarAction(
-                                        label: 'Undo',
-                                        onPressed: () {
-                                          setState(() {
-                                            _undo = true;
-                                            _disableBack = false;
-                                          });
-                                        },
+                                  if (Provider.of<Auth>(context, listen: false)
+                                      .isAuth) {
+                                    setState(() {
+                                      _disableBack = true;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: const Duration(seconds: 3),
+                                        content:
+                                            const Text('Food added to cart'),
+                                        action: SnackBarAction(
+                                          label: 'Undo',
+                                          onPressed: () {
+                                            setState(() {
+                                              _undo = true;
+                                              _disableBack = false;
+                                            });
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                  undo(_id);
+                                    );
+                                    undo(_id);
+                                  } else {
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              const LoginScreen()),
+                                      ModalRoute.withName(
+                                          LoginScreen.routeName),
+                                    );
+                                  }
                                 },
                                 child: Row(
                                   mainAxisAlignment:

@@ -17,7 +17,7 @@ class _RestaurantsRowState extends State<RestaurantsRow> {
   @override
   void didChangeDependencies() {
     if (_isinit) {
-      Provider.of<Restaurants>(context).getrestaurants().then((_) {
+      Provider.of<Restaurants>(context).getrestaurants(context).then((_) {
         _isLoading = false;
       });
     }

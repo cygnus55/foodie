@@ -25,3 +25,10 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         exclude = ('created', 'updated', 'customer')
+
+
+class DeliveryLocationSerializer(serializers.Serializer):
+    latitude = serializers.CharField(max_length=20)
+    longitude = serializers.CharField(max_length=20)
+    address = serializers.CharField(max_length=500)
+    city = serializers.CharField(max_length=100)
