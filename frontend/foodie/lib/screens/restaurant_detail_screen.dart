@@ -35,6 +35,10 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                   child: Image(
                     image: NetworkImage(_restaurant.logo!),
                     fit: BoxFit.cover,
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return Image.asset('assets/images/noimage.png');
+                    },
                   ),
                 ),
                 Padding(
@@ -335,6 +339,13 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                               height: 60,
                                               width: 60,
                                               fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (BuildContext context,
+                                                      Object exception,
+                                                      StackTrace? stackTrace) {
+                                                return Image.asset(
+                                                    'assets/images/noimage.png');
+                                              },
                                             ),
                                           ),
                                           backgroundColor: Colors.transparent,

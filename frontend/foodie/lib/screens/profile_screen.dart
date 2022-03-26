@@ -167,12 +167,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             height: 50,
                             width: 50,
                             decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: NetworkImage(
-                                        userinfo['userProfilePicture']
-                                            as String))),
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: NetworkImage(
+                                  userinfo['userProfilePicture'] as String,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
