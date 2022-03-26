@@ -70,7 +70,7 @@ class Restaurants with ChangeNotifier {
     try {
       var url = Uri.http('10.0.2.2:8000', 'restaurants/');
       http.Response response;
-      if (Provider.of<Auth>(context).isAuth) {
+      if (Provider.of<Auth>(context, listen: false).isAuth) {
         response = await http.get(
           url,
           headers: {
