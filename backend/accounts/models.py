@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
 class UserManager(BaseUserManager):
-    def create_superuser(self,username, mobile, password):
+    def create_superuser(self, username, mobile, password):
         user = self.model(
             username=username,
             mobile=mobile,
@@ -16,7 +16,7 @@ class UserManager(BaseUserManager):
         user.is_verified = True
         user.save(using=self._db)
         return user
-    
+
     def create_user(self, username, password=None):
         if not username:
             raise ValueError('Users must have an username')
@@ -26,10 +26,9 @@ class UserManager(BaseUserManager):
         )
 
         user.set_password(password)
-        
+
         user.save(using=self._db)
         return user
-
 
 
 class User(AbstractBaseUser):
@@ -55,10 +54,10 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.username
-    
+
     def has_perm(self, perm, obj=None):
         return self.is_superuser
-    
+
     def has_module_perms(self, app_label):
         return self.is_superuser
-  
+
