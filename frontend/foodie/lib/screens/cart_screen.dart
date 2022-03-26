@@ -5,6 +5,7 @@ import '../providers/foods_provider.dart';
 import './food_detail_screen.dart';
 import 'package:location/location.dart';
 import './order_screen.dart';
+import './map_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -580,28 +581,43 @@ class _CartScreenState extends State<CartScreen> {
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                             )),
-                                            TextButton(
-                                              onPressed: () {
-                                                ordercart();
-                                              },
-                                              child: Row(
-                                                children: const [
-                                                  Icon(
-                                                    Icons
-                                                        .location_searching_outlined,
-                                                    size: 20,
-                                                    color: Colors.red,
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    ordercart();
+                                                  },
+                                                  child: Row(
+                                                    children: const [
+                                                      Icon(
+                                                        Icons
+                                                            .location_searching_outlined,
+                                                        size: 20,
+                                                        color: Colors.red,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 20,
+                                                      ),
+                                                      Text(
+                                                        'Use Current Location',
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  Text(
-                                                    'Use Current Location',
-                                                    style: TextStyle(
-                                                        color: Colors.red),
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pushNamed(MapScreen
+                                                              .routeName);
+                                                    },
+                                                    child: const Text(
+                                                        'Choose Location'))
+                                              ],
                                             ),
                                             const Divider(),
                                             Text(
