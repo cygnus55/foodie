@@ -3,23 +3,24 @@
 # method DIRECT means that the order will be directly created from the food details page
 
 POST http://localhost:8000/orders/create/
-Authorization: Token f23122ffa50bdd3240992758de487643761aef96
+Authorization: Token afe59afcb8d5932a5b4ceb27943dc32465138cd4
 Content-Type: application/json
 
 {
     "method": "CART",
     "latitude": "27.7172453",
     "longitude": "85.3239605",
+    "address": "",
     "items": [
         {
             "food_id": 1,
             "quantity": 2,
-            "price": 270.00
+            "price": 180.00
         },
         {
             "food_id": 2,
             "quantity": 1,
-            "price": 120.00
+            "price": 250.00
         }
     ]
 }
@@ -39,13 +40,13 @@ Authorization: Token f23122ffa50bdd3240992758de487643761aef96
 
 ###
 
-# Geocoding for given latitude and longitude
-
-POST http://localhost:8000/orders/geocode/
-Authorization: Token f23122ffa50bdd3240992758de487643761aef96
+# Get delivery charge. send restaurant_id only for direct payment method. not required if checkout from CART.
+POST http://localhost:8000/orders/delivery-charge/
+Authorization: Token afe59afcb8d5932a5b4ceb27943dc32465138cd4
 Content-Type: application/json
 
 {
-    "latitude": "27.7172453",
-    "longitude": "85.3239605"
+    "latitude": "27.1211331",
+    "longitude": "85.1436541",
+    "restaurant_id": [1]
 }
