@@ -82,6 +82,10 @@ class Food(models.Model):
         except ObjectDoesNotExist:
             return False
 
+    @property
+    def can_be_ordered(self):
+        return self.is_available and self.restaurant.is_available and self.restaurant.open_status
+
     def __str__(self):
         return f"Food: {self.name} for restaurant {self.restaurant.user.full_name}"
 

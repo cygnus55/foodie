@@ -21,7 +21,7 @@ class Order(models.Model):
     ]
 
     customer = models.ForeignKey(Customer, related_name='order', on_delete=models.CASCADE)
-    delivery_location = ArrayField(models.CharField(max_length=100, blank=True), size=3)
+    delivery_location = ArrayField(models.CharField(max_length=500, blank=True), size=3)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Placed')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

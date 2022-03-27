@@ -7,6 +7,7 @@ from foods.serializers import FoodSerializer
 class CartItemSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="cart:cart_item")
     food_name = serializers.CharField(source='food.name', read_only=True)
+    image_url = serializers.CharField(source='food.image', read_only=True)
     quantity = serializers.IntegerField(min_value=1)
     price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     cost = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)

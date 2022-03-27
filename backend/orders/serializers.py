@@ -32,3 +32,4 @@ class DeliveryLocationSerializer(serializers.Serializer):
     longitude = serializers.CharField(max_length=20)
     address = serializers.CharField(max_length=500)
     city = serializers.CharField(max_length=100)
+    delivery_charge = serializers.DecimalField(max_digits=10, decimal_places=2)

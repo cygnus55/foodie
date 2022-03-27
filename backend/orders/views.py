@@ -1,6 +1,5 @@
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
-from rest_framework.renderers import JSONRenderer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
@@ -9,10 +8,11 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from api import customauthentication, custompermissions
 from orders.models import Order, OrderItem
 from cart.models import Cart
-from orders.custompermissions import AllowOnlyOwner, AllowOnlyOrderOwner
+from restaurants.models import Restaurant
+from orders.custompermissions import AllowOnlyOwner
 from foods.models import Food
-from orders.geocoding import get_delivery_location
-from orders.serializers import OrderSerializer, OrderItemSerializer, DeliveryLocationSerializer
+from api.utils import get_delivery_location, get_delivery_charge
+from orders.serializers import OrderSerializer, DeliveryLocationSerializer
 
 # Create your views here.
 
@@ -29,24 +29,31 @@ class OrderCreate(APIView):
     ]
 
     def post(self, request, format=None):
+        # check food availability
+        for item in request.data.get('items'):
+            food = Food.objects.get(id=item.get('food_id'))
+            if not food.can_be_ordered:
+                return Response({'error': f'{food.name} of restaurant {food.restaurant.user.full_name} is not available.'}, status=HTTP_400_BAD_REQUEST)
         # create order
         lat = request.data.get('latitude')
         lng = request.data.get('longitude')
         delivery_location = get_delivery_location(lat, lng)
-        order = Order.objects.create(customer=self.request.user.customer, delivery_location=delivery_location)
+        order = Order.objects.create(
+            customer=self.request.user.customer, delivery_location=delivery_location)
         # create order items
         for item in request.data.get('items'):
             try:
                 food = Food.objects.get(id=item.get('food_id'))
             except Exception:
                 return Response({'error': 'The food doesnot exist.'}, status=HTTP_400_BAD_REQUEST)
-            OrderItem.objects.create(order=order, food=food, quantity=item.get('quantity'), price=item.get('price'))
+            OrderItem.objects.create(order=order, food=food, quantity=item.get(
+                'quantity'), price=item.get('price'))
         # Clear cart
         if request.data.get('method') == 'CART':
-            cart = Cart.objects.filter(customer=self.request.user.customer).first()
+            cart = Cart.objects.filter(
+                customer=self.request.user.customer).first()
             cart.items.all().delete()
         return Response({'success': 'Your order has been placed.'}, status=HTTP_200_OK)
-    
 
 
 class OrderList(ListAPIView):
@@ -66,8 +73,7 @@ class OrderList(ListAPIView):
         return Order.objects.filter(customer=self.request.user.customer)
 
 
-
-class DeliveryLocation(APIView):
+class RecentDeliveryLocation(APIView):
     permission_classes = [
         IsAuthenticated,
         custompermissions.AllowOnlyCustomer,
@@ -79,7 +85,8 @@ class DeliveryLocation(APIView):
     ]
 
     def get(self, request, format=None):
-        orders = Order.objects.filter(customer=self.request.user.customer).order_by('-created')[:5]
+        orders = Order.objects.filter(
+            customer=self.request.user.customer).order_by('-created')[:5]
         delivery_locations = []
         for order in orders:
             location = {
@@ -95,11 +102,11 @@ class DeliveryLocation(APIView):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
-
-class Geocoding(APIView):
+class GetDeliveryCharge(APIView):
     permission_classes = [
         IsAuthenticated,
         custompermissions.AllowOnlyCustomer,
+
     ]
     authentication_classes = [
         TokenAuthentication,
@@ -109,11 +116,22 @@ class Geocoding(APIView):
     def post(self, request, format=None):
         lat = request.data.get('latitude')
         lng = request.data.get('longitude')
+        customer_location = [lat, lng]
+        restaurant_id = request.data.get('restaurant_id')
+        if not restaurant_id:
+            cart = Cart.objects.filter(
+                customer=self.request.user.customer).first()
+            restaurant_id = []
+            for item in cart.items.all():
+                if item.food.restaurant.id not in restaurant_id:
+                    restaurant_id.append(item.food.restaurant.id)
+        charge = get_delivery_charge(customer_location, restaurant_id)
         delivery_location = get_delivery_location(lat, lng)
         serializer = DeliveryLocationSerializer({
             'latitude': delivery_location[0],
             'longitude': delivery_location[1],
             'address': delivery_location[2],
             'city': delivery_location[2].split(',')[0],
+            'delivery_charge': charge
         })
         return Response(serializer.data, status=HTTP_200_OK)

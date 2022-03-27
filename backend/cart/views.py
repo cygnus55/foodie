@@ -80,8 +80,8 @@ class CartItemCreate(CreateAPIView):
             food = Food.objects.get(id=self.request.data["food"])
         except Exception as e:
             return Response({"error": "Food does not exist."}, status=HTTP_400_BAD_REQUEST)
-
-
+        if not food.can_be_ordered:
+            return Response({"error": "Food cannot be added to cart. Food is unvailable right now."}, status=HTTP_400_BAD_REQUEST)
         price = food.selling_price
         cart = Cart.objects.filter(customer=self.request.user.customer).first()
         if not cart:
