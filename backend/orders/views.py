@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
+from rest_framework.renderers import JSONRenderer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
@@ -73,6 +74,7 @@ class OrderList(ListAPIView):
         return Order.objects.filter(customer=self.request.user.customer)
 
 
+
 class RecentDeliveryLocation(APIView):
     permission_classes = [
         IsAuthenticated,
@@ -106,7 +108,6 @@ class GetDeliveryCharge(APIView):
     permission_classes = [
         IsAuthenticated,
         custompermissions.AllowOnlyCustomer,
-
     ]
     authentication_classes = [
         TokenAuthentication,

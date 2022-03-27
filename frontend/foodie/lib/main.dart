@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/providers/cart_provider.dart';
+import 'package:foodie/providers/restaurant_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +12,8 @@ import './screens/otpverification_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/personaldetails_screen.dart';
 import './screens/food_detail_screen.dart';
+import './screens/order_screen.dart';
+import './screens/map_screen.dart';
 
 import './providers/restaurants_provider.dart';
 import './providers/food_provider.dart';
@@ -47,6 +50,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Foods()),
         ChangeNotifierProvider(create: (context) => Restaurants()),
         ChangeNotifierProvider(create: (context) => Cart()),
+        ChangeNotifierProvider(create: (context) => Restaurant()),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
@@ -78,6 +82,8 @@ class MyApp extends StatelessWidget {
               FoodDetailScreen.routeName: (ctx) => const FoodDetailScreen(),
               RestaurantDetailScreen.routeName: (ctx) =>
                   const RestaurantDetailScreen(),
+              OrderScreen.routeName: (ctx) => const OrderScreen(),
+              MapScreen.routeName: (ctx) => MapScreen(),
             }),
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/providers/auth_provider.dart';
+import '../providers/foods_provider.dart';
+import '../providers/restaurants_provider.dart';
 import '../providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +22,7 @@ class TabScreen extends StatefulWidget {
 
 class _TabScreenState extends State<TabScreen> {
   bool _auth = false;
+  var _isLoading = true;
   List _tabs = [
     const HomeScreen(),
     const LoginScreen(),
@@ -52,9 +55,16 @@ class _TabScreenState extends State<TabScreen> {
   bool _isinit = true;
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     if (_isinit) {
-      Provider.of<Cart>(context).cartItems(context);
+      await Provider.of<Foods>(context, listen: false).getfoods(context);
+      await Provider.of<Restaurants>(context, listen: false)
+          .getrestaurants(context);
+      await Provider.of<Cart>(context, listen: false).cartItems(context);
+
+      setState(() {
+        _isLoading = false;
+      });
     }
     _isinit = false;
     super.didChangeDependencies();
@@ -143,36 +153,43 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        // extendBodyBehindAppBar: true,
-        // drawer: const Drawer(),
-        // appBar: AppBar(
-        //   leading: Builder(builder: (context) {
-        //     return IconButton(
-        //       onPressed: () => Scaffold.of(context).openDrawer(),
-        //       icon: const Icon(
-        //         Icons.menu,
-        //         size: 30,
-        //       ),
-        //     );
-        //   }),
-        //   backgroundColor: Colors.transparent,
-        //   iconTheme: const IconThemeData(color: Colors.grey),
-        //   elevation: 0,
-        // ),
-        body: _tabs[_selectedTabsIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          showUnselectedLabels: false,
-          showSelectedLabels: false,
-          onTap: _selectTab,
-          currentIndex: _selectedTabsIndex,
-          selectedItemColor: Theme.of(context).primaryColor,
-          unselectedItemColor: Colors.grey,
-          type: BottomNavigationBarType.fixed,
-          items: _list(),
-        ),
-      ),
-    );
+    return _isLoading
+        ? Scaffold(
+            body: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: const Center(child: CircularProgressIndicator())),
+          )
+        : SafeArea(
+            child: Scaffold(
+              // extendBodyBehindAppBar: true,
+              // drawer: const Drawer(),
+              // appBar: AppBar(
+              //   leading: Builder(builder: (context) {
+              //     return IconButton(
+              //       onPressed: () => Scaffold.of(context).openDrawer(),
+              //       icon: const Icon(
+              //         Icons.menu,
+              //         size: 30,
+              //       ),
+              //     );
+              //   }),
+              //   backgroundColor: Colors.transparent,
+              //   iconTheme: const IconThemeData(color: Colors.grey),
+              //   elevation: 0,
+              // ),
+              body: _tabs[_selectedTabsIndex],
+              bottomNavigationBar: BottomNavigationBar(
+                showUnselectedLabels: false,
+                showSelectedLabels: false,
+                onTap: _selectTab,
+                currentIndex: _selectedTabsIndex,
+                selectedItemColor: Theme.of(context).primaryColor,
+                unselectedItemColor: Colors.grey,
+                type: BottomNavigationBarType.fixed,
+                items: _list(),
+              ),
+            ),
+          );
   }
 }

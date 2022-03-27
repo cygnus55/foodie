@@ -4,6 +4,8 @@ import '../providers/cart_provider.dart';
 import '../providers/foods_provider.dart';
 import './food_detail_screen.dart';
 import 'package:location/location.dart';
+import './order_screen.dart';
+import './map_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -15,33 +17,81 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   Color green = const Color.fromARGB(255, 43, 164, 0);
   bool _isinit = true;
-  bool isLoading = true;
+  bool isLoading = false;
   ScrollController _scrollController = ScrollController();
   @override
-  void didChangeDependencies() {
-    if (_isinit) {
-      Provider.of<Cart>(context).cartItems(context).then((_) => setState(() {
-            isLoading = false;
-          }));
-    }
-    _isinit = false;
-    super.didChangeDependencies();
-  }
+  // void didChangeDependencies() {
+  //   if (_isinit) {
+  //     Provider.of<Cart>(context).cartItems(context).then((_) => setState(() {
+  //           isLoading = false;
+  //         }));
+  //   }
+  //   _isinit = false;
+  //   super.didChangeDependencies();
+  // }
 
-  @override
-  void setState(fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
+  // @override
+  // void setState(fn) {
+  //   if (mounted) {
+  //     super.setState(fn);
+  //   }
+  // }
 
   Future<void> ordercart() async {
+    Navigator.of(context).pop();
+    setState(() {
+      isLoading = true;
+    });
     final locaData = await Location().getLocation();
     print(locaData.latitude);
 
-    Provider.of<Cart>(context, listen: false).createorder(context,
+    await Provider.of<Cart>(context, listen: false).createorder(context,
         (locaData.latitude).toString(), (locaData.longitude).toString());
+
+    await Provider.of<Cart>(context, listen: false).cartItems(context);
+    setState(() {
+      isLoading = false;
+    });
+    Navigator.of(context).pushNamed(OrderScreen.routeName);
+
     // Navigator.of(context).pushNamed(routeName) <--- order screnn
+  }
+
+  Future<void> deleteRestaurant(String restaurantId) async {
+    Navigator.of(context).pop();
+    setState(() {
+      isLoading = true;
+    });
+    await Provider.of<Cart>(context, listen: false)
+        .deleterestaurant(context, restaurantId);
+    await Provider.of<Cart>(context, listen: false).cartItems(context);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> deleteCart() async {
+    Navigator.of(context).pop();
+    setState(() {
+      isLoading = true;
+    });
+    await Provider.of<Cart>(context, listen: false).deletecart(context);
+    await Provider.of<Cart>(context, listen: false).cartItems(context);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> deleteFood(int foodid) async {
+    Navigator.of(context).pop();
+    setState(() {
+      isLoading = true;
+    });
+    await Provider.of<Cart>(context, listen: false).deletefood(context, foodid);
+    await Provider.of<Cart>(context, listen: false).cartItems(context);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -62,13 +112,14 @@ class _CartScreenState extends State<CartScreen> {
                         Icon(
                           Icons.remove_shopping_cart,
                           size: 60,
+                          color: Colors.grey,
                         ),
                         SizedBox(
                           height: 10,
                         ),
                         Text(
-                          'Nothing to show.',
-                          style: TextStyle(fontSize: 20),
+                          'Cart is empty.',
+                          style: TextStyle(fontSize: 20, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -183,43 +234,46 @@ class _CartScreenState extends State<CartScreen> {
                                                           child: const Text(
                                                               'Okay'),
                                                           onPressed: () {
-                                                            Provider.of<Cart>(
-                                                                    context,
-                                                                    listen:
-                                                                        false)
-                                                                .deleterestaurant(
-                                                                    context,
-                                                                    list[index]
-                                                                        .restaurantid!)
-                                                                .then(
-                                                              (_) {
-                                                                setState(
-                                                                  () {
-                                                                    isLoading =
-                                                                        true;
-                                                                  },
-                                                                );
-                                                                Provider.of<Cart>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .cartItems(
-                                                                        context)
-                                                                    .then(
-                                                                  (_) {
-                                                                    setState(
-                                                                      () {
-                                                                        isLoading =
-                                                                            false;
-                                                                      },
-                                                                    );
-                                                                  },
-                                                                );
-                                                              },
-                                                            );
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
+                                                            deleteRestaurant(list[
+                                                                    index]
+                                                                .restaurantid!);
+                                                            // Provider.of<Cart>(
+                                                            //         context,
+                                                            //         listen:
+                                                            //             false)
+                                                            //     .deleterestaurant(
+                                                            //         context,
+                                                            //         list[index]
+                                                            //             .restaurantid!)
+                                                            //     .then(
+                                                            //   (_) {
+                                                            //     setState(
+                                                            //       () {
+                                                            //         isLoading =
+                                                            //             true;
+                                                            //       },
+                                                            //     );
+                                                            //     Provider.of<Cart>(
+                                                            //             context,
+                                                            //             listen:
+                                                            //                 false)
+                                                            //         .cartItems(
+                                                            //             context)
+                                                            //         .then(
+                                                            //       (_) {
+                                                            //         setState(
+                                                            //           () {
+                                                            //             isLoading =
+                                                            //                 false;
+                                                            //           },
+                                                            //         );
+                                                            //       },
+                                                            //     );
+                                                            //   },
+                                                            // );
+                                                            // Navigator.of(
+                                                            //         context)
+                                                            //     .pop();
                                                           },
                                                         )
                                                       ],
@@ -227,7 +281,7 @@ class _CartScreenState extends State<CartScreen> {
                                                   );
                                                 },
                                                 child: const Icon(
-                                                  Icons.close,
+                                                  Icons.delete,
                                                   color: Colors.red,
                                                 ),
                                               ),
@@ -257,6 +311,14 @@ class _CartScreenState extends State<CartScreen> {
                                                     height: 60,
                                                     width: 60,
                                                     fit: BoxFit.cover,
+                                                    errorBuilder:
+                                                        (BuildContext context,
+                                                            Object exception,
+                                                            StackTrace?
+                                                                stackTrace) {
+                                                      return Image.asset(
+                                                          'assets/images/noimage.png');
+                                                    },
                                                   ),
                                                 ),
                                                 backgroundColor:
@@ -352,7 +414,7 @@ class _CartScreenState extends State<CartScreen> {
                                                 children: [
                                                   GestureDetector(
                                                     child: const Icon(
-                                                      Icons.close,
+                                                      Icons.delete,
                                                       color: Colors.red,
                                                     ),
                                                     onTap: () {
@@ -369,36 +431,38 @@ class _CartScreenState extends State<CartScreen> {
                                                               child: const Text(
                                                                   'Okay'),
                                                               onPressed: () {
-                                                                Provider.of<Cart>(
-                                                                        context,
-                                                                        listen:
-                                                                            false)
-                                                                    .deletefood(
-                                                                        context,
-                                                                        food.id!)
-                                                                    .then((_) {
-                                                                  setState(() {
-                                                                    isLoading =
-                                                                        true;
-                                                                  });
-                                                                  Provider.of<Cart>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
-                                                                      .cartItems(
-                                                                          context)
-                                                                      .then(
-                                                                          (_) {
-                                                                    setState(
-                                                                        () {
-                                                                      isLoading =
-                                                                          false;
-                                                                    });
-                                                                  });
-                                                                });
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
+                                                                deleteFood(
+                                                                    food.id!);
+                                                                // Provider.of<Cart>(
+                                                                //         context,
+                                                                //         listen:
+                                                                //             false)
+                                                                //     .deletefood(
+                                                                //         context,
+                                                                //         food.id!)
+                                                                //     .then((_) {
+                                                                //   setState(() {
+                                                                //     isLoading =
+                                                                //         true;
+                                                                //   });
+                                                                //   Provider.of<Cart>(
+                                                                //           context,
+                                                                //           listen:
+                                                                //               false)
+                                                                //       .cartItems(
+                                                                //           context)
+                                                                //       .then(
+                                                                //           (_) {
+                                                                //     setState(
+                                                                //         () {
+                                                                //       isLoading =
+                                                                //           false;
+                                                                //     });
+                                                                //   });
+                                                                // });
+                                                                // Navigator.of(
+                                                                //         context)
+                                                                //     .pop();
                                                               },
                                                             )
                                                           ],
@@ -451,22 +515,38 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                               ),
                               onPressed: () {
-                                Provider.of<Cart>(context, listen: false)
-                                    .deletecart(context)
-                                    .then((_) {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  Provider.of<Cart>(context, listen: false)
-                                      .cartItems(context)
-                                      .then((_) {
-                                    setState(() {
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                    });
-                                  });
-                                });
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text('Confirm'),
+                                    content: const Text(
+                                        'Are you sure you want to delete the cart?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Okay'),
+                                        onPressed: () {
+                                          deleteCart();
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                );
+                                // Provider.of<Cart>(context, listen: false)
+                                //     .deletecart(context)
+                                //     .then((_) {
+                                //   setState(() {
+                                //     isLoading = true;
+                                //   });
+                                //   Provider.of<Cart>(context, listen: false)
+                                //       .cartItems(context)
+                                //       .then((_) {
+                                //     setState(() {
+                                //       setState(() {
+                                //         isLoading = false;
+                                //       });
+                                //     });
+                                //   });
+                                // });
                               },
                               child: Row(
                                 children: const [
@@ -501,26 +581,43 @@ class _CartScreenState extends State<CartScreen> {
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                             )),
-                                            TextButton(
-                                              onPressed: () {},
-                                              child: Row(
-                                                children: const [
-                                                  Icon(
-                                                    Icons
-                                                        .location_searching_outlined,
-                                                    size: 20,
-                                                    color: Colors.red,
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    ordercart();
+                                                  },
+                                                  child: Row(
+                                                    children: const [
+                                                      Icon(
+                                                        Icons
+                                                            .location_searching_outlined,
+                                                        size: 20,
+                                                        color: Colors.red,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 20,
+                                                      ),
+                                                      Text(
+                                                        'Use Current Location',
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  Text(
-                                                    'Use Current Location',
-                                                    style: TextStyle(
-                                                        color: Colors.red),
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pushNamed(MapScreen
+                                                              .routeName);
+                                                    },
+                                                    child: const Text(
+                                                        'Choose Location'))
+                                              ],
                                             ),
                                             const Divider(),
                                             Text(
@@ -532,28 +629,17 @@ class _CartScreenState extends State<CartScreen> {
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                             ),
-                                            const SizedBox(height: 10),
-                                            const Text('Home'),
-                                            const SizedBox(height: 10),
-                                            const Text('Office'),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               children: [
                                                 ElevatedButton(
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
                                                     child:
                                                         const Text('Cancel')),
-                                                const SizedBox(width: 20),
-                                                ElevatedButton(
-                                                    style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all(Colors.grey),
-                                                    ),
-                                                    onPressed: () {},
-                                                    child:
-                                                        const Text('Confirm')),
                                               ],
                                             )
                                           ],

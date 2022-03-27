@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/providers/auth_provider.dart';
+import 'package:foodie/providers/restaurant_provider.dart';
 import 'package:foodie/screens/food_detail_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -14,7 +16,6 @@ class RestaurantDetailScreen extends StatefulWidget {
 }
 
 class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
-  var _isfavourite = false;
   @override
   Widget build(BuildContext context) {
     final _id = ModalRoute.of(context)?.settings.arguments as int;
@@ -34,6 +35,10 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                   child: Image(
                     image: NetworkImage(_restaurant.logo!),
                     fit: BoxFit.cover,
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return Image.asset('assets/images/noimage.png');
+                    },
                   ),
                 ),
                 Padding(
@@ -237,15 +242,32 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                 child: Icon(
                                   Icons.favorite,
                                   size: 30,
-                                  color: _isfavourite
+                                  color: _restaurant.isFavourite!
                                       ? Theme.of(context).primaryColor
                                       : Theme.of(context).iconTheme.color,
                                 ),
                               ),
                               onTap: () {
                                 setState(() {
-                                  _isfavourite = !_isfavourite;
+                                  _restaurant.isFavourite =
+                                      !_restaurant.isFavourite!;
                                 });
+                                if (Provider.of<Auth>(context, listen: false)
+                                    .isAuth) {
+                                  Provider.of<Restaurant>(context,
+                                          listen: false)
+                                      .toggleFav(context, _restaurant.id!);
+                                }
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    duration: const Duration(seconds: 3),
+                                    content: _restaurant.isFavourite!
+                                        ? const Text(
+                                            'Restaurant added to favourite.')
+                                        : const Text(
+                                            'Restaurant removed from favourite.'),
+                                  ),
+                                );
                               },
                             ),
                             const Text('Favourite'),
@@ -317,6 +339,13 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                               height: 60,
                                               width: 60,
                                               fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (BuildContext context,
+                                                      Object exception,
+                                                      StackTrace? stackTrace) {
+                                                return Image.asset(
+                                                    'assets/images/noimage.png');
+                                              },
                                             ),
                                           ),
                                           backgroundColor: Colors.transparent,
