@@ -15,17 +15,33 @@ class _MapScreenState extends State<MapScreen> {
   var location = [];
   var lat = 27.6253;
   var long = 85.5561;
+  MapController mapController = MapController();
+  latLng.LatLng currentCenter = latLng.LatLng(27.6253, 85.5561);
 
   void setLocation(dynamic positio, latLng.LatLng direct) async {
     setState(() {
       lat = direct.latitude;
       long = direct.longitude;
+      currentCenter = latLng.LatLng(lat, long);
     });
+    mapController.move(currentCenter, 13);
     List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-    print(placemarks);
+    // print(placemarks);
 
     print(direct.latitude);
     print(direct.longitude);
+  }
+
+  void getlocation(place) async {
+    List<Location> locations = await locationFromAddress(place);
+    setState(() {
+      lat = locations[0].latitude;
+      long = locations[0].longitude;
+      currentCenter = latLng.LatLng(lat, long);
+    });
+    mapController.move(currentCenter, 13);
+
+    print(locations[0].latitude);
   }
 
   @override
@@ -35,9 +51,10 @@ class _MapScreenState extends State<MapScreen> {
         appBar: AppBar(title: const Text(' Set Delivery location')),
         body: Stack(children: [
           FlutterMap(
+            mapController: mapController,
             options: MapOptions(
               onTap: setLocation,
-              center: latLng.LatLng(lat, long),
+              center: currentCenter,
               zoom: 15,
             ),
             layers: [
@@ -60,6 +77,19 @@ class _MapScreenState extends State<MapScreen> {
                 ],
               ),
             ],
+          ),
+          TextField(
+            decoration: const InputDecoration(
+                label: Text('Search your location'),
+                fillColor: Colors.white,
+                filled: true,
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder()),
+            style: const TextStyle(color: Colors.black),
+            textInputAction: TextInputAction.search,
+            onSubmitted: (value) {
+              getlocation(value);
+            },
           ),
           Align(
               alignment: Alignment.bottomCenter,
