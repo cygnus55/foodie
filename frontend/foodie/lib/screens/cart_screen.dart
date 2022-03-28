@@ -3,9 +3,10 @@ import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/foods_provider.dart';
 import './food_detail_screen.dart';
-import 'package:location/location.dart';
+import 'package:location/location.dart' as loc;
 import './order_screen.dart';
 import './map_screen.dart';
+import 'package:geocoding/geocoding.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -19,7 +20,10 @@ class _CartScreenState extends State<CartScreen> {
   bool _isinit = true;
   bool isLoading = false;
   ScrollController _scrollController = ScrollController();
-  @override
+  var lat = 27.6253;
+  var long = 85.5561;
+  String address = '';
+
   // void didChangeDependencies() {
   //   if (_isinit) {
   //     Provider.of<Cart>(context).cartItems(context).then((_) => setState(() {
@@ -42,11 +46,23 @@ class _CartScreenState extends State<CartScreen> {
     setState(() {
       isLoading = true;
     });
-    final locaData = await Location().getLocation();
+    final locaData = await loc.Location().getLocation();
+    setState(() {
+      lat = locaData.latitude!;
+      long = locaData.longitude!;
+    });
     print(locaData.latitude);
-
-    await Provider.of<Cart>(context, listen: false).createorder(context,
-        (locaData.latitude).toString(), (locaData.longitude).toString());
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    setState(() {
+      address =
+          '${placemarks[0].locality!}, ${placemarks[0].subAdministrativeArea!}, ${placemarks[0].administrativeArea!},${placemarks[0].country!} ';
+    });
+    print(address);
+    await Provider.of<Cart>(context, listen: false).createorder(
+        context,
+        (locaData.latitude).toString(),
+        (locaData.longitude).toString(),
+        address);
 
     await Provider.of<Cart>(context, listen: false).cartItems(context);
     setState(() {

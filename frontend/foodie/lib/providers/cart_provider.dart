@@ -143,7 +143,8 @@ class Cart with ChangeNotifier {
     }
   }
 
-  Future<void> createorder(BuildContext context, String lat, String lng) async {
+  Future<void> createorder(
+      BuildContext context, String lat, String lng, String address) async {
     try {
       var url = Uri.http('10.0.2.2:8000', 'orders/create/');
       List<Map> body = [];
@@ -169,6 +170,7 @@ class Cart with ChangeNotifier {
             "method": "CART",
             "latitude": lat,
             "longitude": lng,
+            "address": address,
             "items": body,
           },
         ),
