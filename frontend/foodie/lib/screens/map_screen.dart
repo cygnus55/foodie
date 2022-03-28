@@ -17,6 +17,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   var lat = 27.6253;
   var long = 85.5561;
+
   String address = '';
   bool isLoading = false;
   MapController mapController = MapController();
@@ -35,6 +36,8 @@ class _MapScreenState extends State<MapScreen> {
           '${placemarks[0].locality!}, ${placemarks[0].subAdministrativeArea!}, ${placemarks[0].administrativeArea!},${placemarks[0].country!} ';
     });
 
+    // print(placemarks)
+
     print(direct.latitude);
     print(direct.longitude);
   }
@@ -45,9 +48,12 @@ class _MapScreenState extends State<MapScreen> {
       lat = locations[0].latitude;
       long = locations[0].longitude;
 
+
       currentCenter = latLng.LatLng(lat, long);
     });
     address = place;
+
+      
     mapController.move(currentCenter, 13);
 
     print(locations[0].latitude);
@@ -96,6 +102,7 @@ class _MapScreenState extends State<MapScreen> {
                               color: Colors.red,
                               size: 25,
                             ),
+
                           ),
                         ],
                       ),
