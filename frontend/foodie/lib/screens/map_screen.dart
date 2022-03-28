@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:provider/provider.dart';
+import '../providers/cart_provider.dart';
+import './order_screen.dart';
 
 class MapScreen extends StatefulWidget {
   MapScreen({Key? key}) : super(key: key);
@@ -12,9 +15,10 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  var location = [];
   var lat = 27.6253;
   var long = 85.5561;
+  String address = '';
+  bool isLoading = false;
   MapController mapController = MapController();
   latLng.LatLng currentCenter = latLng.LatLng(27.6253, 85.5561);
 
@@ -26,7 +30,10 @@ class _MapScreenState extends State<MapScreen> {
     });
     mapController.move(currentCenter, 13);
     List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-    // print(placemarks);
+    setState(() {
+      address =
+          '${placemarks[0].locality!}, ${placemarks[0].subAdministrativeArea!}, ${placemarks[0].administrativeArea!},${placemarks[0].country!} ';
+    });
 
     print(direct.latitude);
     print(direct.longitude);
@@ -37,84 +44,103 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       lat = locations[0].latitude;
       long = locations[0].longitude;
+
       currentCenter = latLng.LatLng(lat, long);
     });
+    address = place;
     mapController.move(currentCenter, 13);
 
     print(locations[0].latitude);
   }
 
+  Future<void> ordercart() async {
+    await Provider.of<Cart>(context, listen: false)
+        .createorder(context, lat.toString(), long.toString(), address);
+
+    await Provider.of<Cart>(context, listen: false).cartItems(context);
+    Navigator.of(context).pushNamed(OrderScreen.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(title: const Text(' Set Delivery location')),
-        body: Stack(children: [
-          FlutterMap(
-            mapController: mapController,
-            options: MapOptions(
-              onTap: setLocation,
-              center: currentCenter,
-              zoom: 15,
-            ),
-            layers: [
-              TileLayerOptions(
-                  urlTemplate:
-                      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                  subdomains: ['a', 'b', 'c']),
-              MarkerLayerOptions(
-                markers: [
-                  Marker(
-                    width: 80.0,
-                    height: 80.0,
-                    point: latLng.LatLng(lat, long),
-                    builder: (ctx) => const Icon(
-                      Icons.location_on,
-                      color: Colors.red,
-                      size: 25,
+    return Scaffold(
+      body: isLoading
+          ? SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: const Center(child: CircularProgressIndicator()))
+          : SafeArea(
+              child: Scaffold(
+                appBar: AppBar(title: const Text(' Set Delivery location')),
+                body: Stack(children: [
+                  FlutterMap(
+                    mapController: mapController,
+                    options: MapOptions(
+                      onTap: setLocation,
+                      center: currentCenter,
+                      zoom: 15,
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          TextField(
-            decoration: const InputDecoration(
-                label: Text('Search your location'),
-                fillColor: Colors.white,
-                filled: true,
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder()),
-            style: const TextStyle(color: Colors.black),
-            textInputAction: TextInputAction.search,
-            onSubmitted: (value) {
-              getlocation(value);
-            },
-          ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                bottomLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                                bottomRight: Radius.circular(10)),
+                    layers: [
+                      TileLayerOptions(
+                          urlTemplate:
+                              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                          subdomains: ['a', 'b', 'c']),
+                      MarkerLayerOptions(
+                        markers: [
+                          Marker(
+                            width: 80.0,
+                            height: 80.0,
+                            point: latLng.LatLng(lat, long),
+                            builder: (ctx) => const Icon(
+                              Icons.location_on,
+                              color: Colors.red,
+                              size: 25,
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                      onPressed: () {},
-                      child: const Text('Continue')),
-                ),
-              ))
-        ]),
-      ),
+                    ],
+                  ),
+                  TextField(
+                    decoration: const InputDecoration(
+                        label: Text('Search your location'),
+                        fillColor: Colors.white,
+                        filled: true,
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder()),
+                    style: const TextStyle(color: Colors.black),
+                    textInputAction: TextInputAction.search,
+                    onSubmitted: (value) {
+                      getlocation(value);
+                    },
+                  ),
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: ElevatedButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10),
+                                        bottomRight: Radius.circular(10)),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                ordercart();
+                              },
+                              child: const Text('Continue')),
+                        ),
+                      ))
+                ]),
+              ),
+            ),
     );
   }
 }

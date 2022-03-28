@@ -38,7 +38,8 @@ class OrderCreate(APIView):
         # create order
         lat = request.data.get('latitude')
         lng = request.data.get('longitude')
-        delivery_location = get_delivery_location(lat, lng)
+        address = request.data.get('address')
+        delivery_location = [lat, lng, address]
         order = Order.objects.create(
             customer=self.request.user.customer, delivery_location=delivery_location)
         # create order items
