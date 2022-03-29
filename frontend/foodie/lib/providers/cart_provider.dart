@@ -96,6 +96,33 @@ class Cart with ChangeNotifier {
     }
   }
 
+  Future<double> getDeliveryChargeFromcart(
+      BuildContext context, String lat, String long) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'orders/delivery-charge/');
+      var delivery_price = 0.0;
+      http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Token ' +
+              Provider.of<Auth>(context, listen: false).getauthToken!,
+          'Content-Type': 'application/json'
+        },
+        body: json.encode({'latitude': lat, 'longitude': long}),
+      );
+      print(response.body);
+      final data = json.decode(response.body) as Map;
+      data.forEach((key, value) {
+        if (key == 'deliverty_charge') {
+          delivery_price = value;
+        }
+      });
+      return delivery_price;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> addToCart(BuildContext context, int quantity, int foodId) async {
     var url = Uri.http('10.0.2.2:8000', 'cart/add/');
     http.Response response = await http.post(
