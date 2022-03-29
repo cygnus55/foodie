@@ -3,4 +3,4 @@ venv
 __pycache__
 .vscode
 .vim
-*test.*
+*test*

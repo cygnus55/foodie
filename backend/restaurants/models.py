@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import Avg, Count
 
 from taggit.managers import TaggableManager
+from django_better_admin_arrayfield.models.fields import ArrayField
 
 from accounts.models import User
 from api.custom_managers import AvailabilityManager
@@ -36,9 +37,7 @@ class Restaurant(models.Model):
         content_type_field="content_type",
         object_id_field="object_id",
     )
-    longitude = models.FloatField(blank=True)
-    latitude = models.FloatField(blank=True)
-    address = models.CharField(blank=True, max_length=250)
+    location = ArrayField(models.CharField(max_length=500, blank=True), size=3)
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
 
