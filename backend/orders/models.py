@@ -22,6 +22,7 @@ class Order(models.Model):
 
     customer = models.ForeignKey(Customer, related_name='order', on_delete=models.CASCADE)
     delivery_location = ArrayField(models.CharField(max_length=500, blank=True), size=3)
+    delivery_charge = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Placed')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -34,7 +35,7 @@ class Order(models.Model):
     
     @property
     def total_amount(self):
-        return sum(item.cost for item in self.items.all())
+        return round(sum(item.cost for item in self.items.all()) + self.delivery_charge, 2)
     
 
 class OrderItem(models.Model):
