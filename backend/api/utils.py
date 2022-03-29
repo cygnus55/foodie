@@ -19,7 +19,7 @@ def calculate_distance(coords1:list, coords2:list):
     for i in range(2):
         coords1[i] = float(coords1[i])
         coords2[i] = float(coords2[i])
-    return distance.distance(coords1, coords2).km
+    return distance.distance(coords1[:2], coords2[:2]).km
 
 
 def get_delivery_charge(cus, restaurant_ids):
@@ -28,9 +28,7 @@ def get_delivery_charge(cus, restaurant_ids):
         restaurant = Restaurant.objects.get(id=restaurant_id)
         loc.append([restaurant.location[0], restaurant.location[1], restaurant_id])
     if len(loc) == 1:
-        distance = calculate_distance(cus, loc[1])
-        print(distance)
-        return get_restaurant_charge(calculate_distance(cus, loc[1]))
+        return get_restaurant_charge(calculate_distance(cus, loc[0]))
     
     else:
         perm = permutations(loc)

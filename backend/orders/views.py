@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.renderers import JSONRenderer
@@ -128,12 +130,4 @@ class GetDeliveryCharge(APIView):
                 if item.food.restaurant.id not in restaurant_id:
                     restaurant_id.append(item.food.restaurant.id)
         charge = get_delivery_charge(customer_location, restaurant_id)
-        delivery_location = get_delivery_location(lat, lng)
-        serializer = DeliveryLocationSerializer({
-            'latitude': delivery_location[0],
-            'longitude': delivery_location[1],
-            'address': delivery_location[2],
-            'city': delivery_location[2].split(',')[0],
-            'delivery_charge': charge
-        })
-        return Response(serializer.data, status=HTTP_200_OK)
+        return Response({"deliverty_charge": charge}, status=HTTP_200_OK)
