@@ -1,9 +1,10 @@
 from hmac import digest
 import json
 from hashlib import md5
-import random, string
+import random
+import string
 
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -60,7 +61,8 @@ def customer_login(request):
             data["success"] = "User Login"
         except User.DoesNotExist:
             # register user
-            user = User.objects.create(username=mobile, mobile=mobile, is_verified=True)
+            user = User.objects.create(
+                username=mobile, mobile=mobile, is_verified=True)
             if reqBody.get("is_restaurant"):
                 user.is_restaurant = True
             elif reqBody.get("is_delivery_person"):
@@ -89,9 +91,49 @@ def customer_login(request):
         data["error"] = "Mobile number or OTP code not provided."
         return Response(data, status=HTTP_403_FORBIDDEN)
 
-# logout view
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def delivery_person_login(request):
+    message = {}
+    req_body = json.loads(request.body)
+
+    if "mobile" and "password" in req_body:
+        mobile = req_body["mobile"]
+        password = req_body["password"]
+
+        try:
+            user = User.objects.get(mobile=mobile)
+        except User.DoesNotExist:
+            message["error"] = "User with that credentials doesn't exist!"
+            return Response(message, status=HTTP_403_FORBIDDEN)
+
+        if not user.is_active:
+            message["error"] = "User is not active!"
+            return Response(message, status=HTTP_403_FORBIDDEN)
+
+        if not user.is_delivery_person:
+            message["error"] = "Invalid login!"
+            return Response(message, status=HTTP_403_FORBIDDEN)
+
+        user = authenticate(request, mobile=mobile, password=password)
+
+        if not user:
+            message["error"] = "Cannot log in user. Wrong credentials provided!"
+            return Response(message, status=HTTP_403_FORBIDDEN)
+
+        login(request, user)
+        token, _ = Token.objects.get_or_create(user=user)
+        message["token"] = token.key
+        message["mobile"] = mobile
+        message["success"] = "User logged in!"
+        return Response(message, status=HTTP_200_OK)
+    else:
+        message["error"] = "Required credentials for logging in not provided!"
+        return Response(message, status=HTTP_403_FORBIDDEN)
 
 
+# Logout view
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def account_logout(request):
@@ -142,7 +184,8 @@ def change_profile_pic(user):
     if user.is_customer:
         customer = user.customer
         if "ui-avatars" in customer.profile_picture or not customer.profile_picture:
-            colors = ["b88232", "3632b8", "b3452d", "b32d46", "88b02c", "4531b5", "2eab47"]
+            colors = ["b88232", "3632b8", "b3452d",
+                      "b32d46", "88b02c", "4531b5", "2eab47"]
             color = random.choice(colors)
             name = str(user.full_name.title()).replace(" ", "+")
             customer.profile_picture = f"https://ui-avatars.com/api/?background={color}&rounded=true&name={name}"

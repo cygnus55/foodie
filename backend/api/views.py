@@ -11,15 +11,16 @@ class APIRoot(GenericAPIView):
         return Response(
             {
                 "accounts": {
-                    "login (customer register)": reverse("accounts:customer_login", request=request),
+                    "customer_login_and_register": reverse("accounts:customer_login", request=request),
+                    "delivery_person_login": reverse("accounts:delivery_person_login", request=request),
                     "logout": reverse("accounts:logout", request=request),
-                    "send-otp": reverse("accounts:send_otp", request=request),
+                    "send_otp": reverse("accounts:send_otp", request=request),
                     "details": reverse("accounts:details", request=request),
                 },
                 "customer": {
-                    "my-profile": reverse("customers:profile", request=request),
-                    "my-cart": reverse("cart:detail", request=request),
-                    "add-to-cart": reverse("cart:add_item", request=request),
+                    "my_profile": reverse("customers:profile", request=request),
+                    "my_cart": reverse("cart:detail", request=request),
+                    "add_to_cart": reverse("cart:add_item", request=request),
                 },
                 "restaurants": reverse("restaurants:restaurant_list", request=request),
                 "foods": {
@@ -43,3 +44,4 @@ class APIRoot(GenericAPIView):
                 },
             }
         )
+
