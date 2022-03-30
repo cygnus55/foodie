@@ -71,4 +71,3 @@ class FoodTemplateDetailsView(RetrieveAPIView):
         TokenAuthentication,
         customauthentication.CsrfExemptSessionAuthentication
     ]
-

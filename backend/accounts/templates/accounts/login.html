@@ -1,0 +1,28 @@
+{% extends "accounts/base.html" %}
+{% load static %}
+
+{% block content %}
+    <main class="form-signin">
+        <form method="POST">
+            <img class="mb-4 mx-auto" src="{% static 'accounts/img/logo.png' %}" alt="logo" width="80"/>
+            <h4 class="h4 mb-3">Restaurant Login</h1>
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+            <div class="form-floating">
+                {{ form.mobile.label_tag }}
+                {{ form.mobile }}
+            </div>
+            <div class="form-floating">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+            </div>
+            {% csrf_token %}
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign In</button>
+        </form>
+    </main>
+{% endblock content %}
