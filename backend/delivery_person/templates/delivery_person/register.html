@@ -1,0 +1,64 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}
+Register New Delivery Person | Foodie Adminstrative
+{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">Foodie Adminstrative</a></h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">Home</a>&rsaquo; 
+        <a href="/admin/delivery_person">Delivery Persons</a>&rsaquo; 
+        <span>Register Delivery Person</span>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <h1> Register Delivery Person </h1>
+    <br/>
+    <form method="post" action="{% url 'admin:delivery_person_registerdeliveryuser_changelist' %}">
+        <table style="width: 30%;">
+            <tr>
+                <th>
+                    {{ form.full_name.label }}
+                </th>
+                <td>
+                    {{ form.full_name }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ form.username.label }}
+                </th>
+                <td>
+                    {{ form.username }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ form.phone_number.label }}
+                </th>
+                <td>
+                    {{ form.phone_number }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ form.email.label }}
+                </th>
+                <td>
+                    {{ form.email }}
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <tr>
+            {% csrf_token %}
+            <input type="submit" value="Register" />
+        </tr>
+    </form>
+{% endblock %}

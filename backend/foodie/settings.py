@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'reviews',
     'orders',
     'favourites',
+    'delivery_person',
 ]
 
 MIDDLEWARE = [
@@ -198,3 +199,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Django Taggit
 TAGGIT_CASE_INSENSITIVE = True
+
+
+# EMAIL
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
