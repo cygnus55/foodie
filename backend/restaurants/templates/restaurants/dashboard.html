@@ -1,3 +1,6 @@
 {% extends "restaurants/base.html" %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+    Dashboard
+    <a href="{% url 'accounts:restaurant_logout' %}">Logout</a>
+{% endblock content %}

@@ -143,29 +143,33 @@ def restaurant_login(request):
         next_url = request.GET.get("next")
         form = LoginForm(data=request.POST)
         if form.is_valid():
-            cd = form.cleaned_data
+            username = form.cleaned_data.get("mobile")
+            password = form.cleaned_data.get("password")
             try:
-                _user = User.objects.get(username__iexact=cd["username"])
-                if not _user.is_active:
-                    messages.error(request, "Your account is not confirmed yet. Check your email.")
-                    return redirect("accounts:restaurant_login")
-            except Exception:
-                messages.error(request,"Username or password incorrect!")
-                return redirect("accounts:restaurant_login")
-
-            user = authenticate(request, username=cd["username"], password=cd["password"])
-            if user:
-                if user.is_active:
-                    login(request, user)
-                    if next_url:
-                        return redirect(next_url)
-                    if not user.is_restaurant:
-                        return redirect("accounts:restaurant_login")
-                messages.error(request, "Your account is not confirmed yet. Check your email.")
-                return redirect("accounts:login")
-            else:
+                _user = User.objects.get(username=username)
+            except Exception as e:
+                print(e, "*")
                 messages.error(request, "Username or password incorrect!")
                 return redirect("accounts:restaurant_login")
+
+            user = authenticate(request, username=username, password=password)
+
+            if not user:
+                messages.error(request, "Username or password incorrect!")
+                return redirect("accounts:restaurant_login")
+
+            if user.is_active:
+                login(request, user)
+                if next_url:
+                    messages.success(request, "Successfully logged in user!")
+                    return redirect(next_url)
+                if not user.is_restaurant:
+                    messages.error(request, "Wrong credentials provided!")
+                    return redirect("accounts:restaurant_login")
+                messages.success(request, "Successfully logged in user!")
+                return redirect("restaurants:restaurant_home")
+            messages.error(request, "Permission denied! The user is not active!")
+            return redirect("accounts:restaurant_login")
     else:
         form = LoginForm()
 
@@ -173,6 +177,7 @@ def restaurant_login(request):
 
 
 # Logout view
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def account_logout(request):
