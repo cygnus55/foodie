@@ -5,6 +5,9 @@ import random
 import string
 
 from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
+from django.shortcuts import render, redirect
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -18,13 +21,14 @@ from rest_framework.status import (
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 
-from accounts.models import User
-from accounts import otp_verify
+from api import customauthentication
 from customers.models import Customer
 from cart.models import Cart
+from accounts import otp_verify
 from accounts.serializers import UserSerializer
 from accounts.custompermissions import IsCurrentUserOwner
-from api import customauthentication
+from accounts.models import User
+from accounts.forms import LoginForm
 
 
 @api_view(["POST"])
@@ -131,6 +135,40 @@ def delivery_person_login(request):
     else:
         message["error"] = "Required credentials for logging in not provided!"
         return Response(message, status=HTTP_403_FORBIDDEN)
+
+
+def restaurant_login(request):
+    if request.method == "POST":
+        next_url = request.GET.get("next")
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            try:
+                _user = User.objects.get(username__iexact=cd["username"])
+                if not _user.is_active:
+                    messages.error(request, "Your account is not confirmed yet. Check your email.")
+                    return redirect("accounts:restaurant_login")
+            except Exception:
+                messages.error(request,"Username or password incorrect!")
+                return redirect("accounts:restaurant_login")
+
+            user = authenticate(request, username=cd["username"], password=cd["password"])
+            if user:
+                if user.is_active:
+                    login(request, user)
+                    if next_url:
+                        return redirect(next_url)
+                    if not user.is_restaurant:
+                        return redirect("accounts:restaurant_login")
+                messages.error(request, "Your account is not confirmed yet. Check your email.")
+                return redirect("accounts:login")
+            else:
+                messages.error(request, "Username or password incorrect!")
+                return redirect("accounts:login")
+    else:
+        form = LoginForm()
+
+    return render(request, "accounts/login.html", {"form": form})
 
 
 # Logout view

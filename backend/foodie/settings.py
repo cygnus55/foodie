@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'taggit',
     'django_better_admin_arrayfield',
+    'bootstrap5',
 
     # local apps
     'accounts',
@@ -198,3 +199,5 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Django Taggit
 TAGGIT_CASE_INSENSITIVE = True
+
+LOGIN_URL = "accounts:restaurant_login"
