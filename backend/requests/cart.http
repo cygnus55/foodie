@@ -1,11 +1,11 @@
 # Add item to cart
 POST http://localhost:8000/cart/add/
-Authorization: Token 4bd26b07cb18f8f6aa770f2a655d4266296c0f17
+Authorization: Token afe59afcb8d5932a5b4ceb27943dc32465138cd4
 Content-Type: application/json
 
 
 {
-    "food": 3,
+    "food": 1,
     "quantity": 3
 }
 
@@ -19,7 +19,7 @@ Authorization: Token 4bd26b07cb18f8f6aa770f2a655d4266296c0f17
 
 # Get cart
 GET http://localhost:8000/cart/
-Authorization: Token f23122ffa50bdd3240992758de487643761aef96
+Authorization: Token afe59afcb8d5932a5b4ceb27943dc32465138cd4
 
 ###
 # patch cart item quantity. 21 is cart item id. 
