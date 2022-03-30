@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
+import 'package:khalti_flutter/khalti_flutter.dart';
 
 class DeliveryConfirmScreen extends StatelessWidget {
   const DeliveryConfirmScreen({Key? key}) : super(key: key);
@@ -178,12 +179,61 @@ class DeliveryConfirmScreen extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                        "${Provider.of<Cart>(context).totalAmount + delivery_charge}"),
+                        "${Provider.of<Cart>(context, listen: false).totalAmount + delivery_charge}"),
                   ],
                 ),
               ],
             ),
-          )
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    KhaltiScope.of(context).pay(
+                      config: PaymentConfig(
+                        amount: ((Provider.of<Cart>(context, listen: false)
+                                        .totalAmount +
+                                    delivery_charge) *
+                                100)
+                            .toInt(),
+                        productIdentity:
+                            '${Provider.of<Cart>(context, listen: false).cartId}',
+                        productName: 'Foodie',
+                      ),
+                      preferences: [
+                        PaymentPreference.khalti,
+                        PaymentPreference.eBanking,
+                        PaymentPreference.connectIPS,
+                      ],
+                      onSuccess: (su) {
+                        const successsnackBar = SnackBar(
+                          content: Text('Payment Successful'),
+                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(successsnackBar);
+                      },
+                      onFailure: (fa) {
+                        const failedsnackBar = SnackBar(
+                          content: Text('Payment Failed'),
+                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(failedsnackBar);
+                      },
+                      onCancel: () {
+                        const cancelsnackBar = SnackBar(
+                          content: Text('Payment Cancelled'),
+                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(cancelsnackBar);
+                      },
+                    );
+                  },
+                  child: const Text('Pay by khalti')),
+              ElevatedButton(
+                  onPressed: () {}, child: const Text('Cash on delivery'))
+            ],
+          ),
         ],
       ),
     );
