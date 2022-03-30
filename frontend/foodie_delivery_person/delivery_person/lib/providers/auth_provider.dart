@@ -130,4 +130,20 @@ class Auth with ChangeNotifier {
       throw HttpException('could not authenticate');
     }
   }
+   Future<void> logout() async {
+    print(authtoken);
+    print(authToken);
+
+    var url = Uri.http('10.0.2.2:8000', 'accounts/logout/');
+    await http.get(url, headers: {
+      'Authorization': 'Token ' + authToken,
+    });
+    // print(authtoken);
+
+    authtoken = null;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('userData');
+    prefs.clear();
+    notifyListeners();
+  }
 }

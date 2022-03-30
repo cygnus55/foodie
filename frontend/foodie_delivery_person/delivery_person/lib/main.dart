@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import './screens/login_screen.dart';
+import './screens/splash_screen.dart';
 import './screens/homepage_screen.dart';
 import './screens/passwordchangescreen.dart';
 import './providers/auth_provider.dart';
@@ -34,7 +35,15 @@ class MyApp extends StatelessWidget {
               iconTheme: const IconThemeData(color: Colors.black),
               dividerColor: Colors.black,
             ),
-        home:const LoginScreen(),
+        home:auth.isAuth
+                    ? const HomepageScreen()
+                    : FutureBuilder(
+                        future: auth.tryAutoLogin(),
+                        builder: (ctx, authResltSnapsot) =>
+                            authResltSnapsot.connectionState ==
+                                    ConnectionState.waiting
+                                ? const SplashScreen()
+                                : const LoginScreen()),
         routes: {
           LoginScreen.routeName: (ctx) => const LoginScreen(),
           PasswordChangeScreen.routeName: (ctx) => const PasswordChangeScreen(),

@@ -40,6 +40,7 @@ class PasswordChangeScreen extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.03,
             ),
             TextField(
+              obscureText: true,
               decoration: const InputDecoration(
                 hintText: 'Enter Your New Password ',
                 border: OutlineInputBorder(),
