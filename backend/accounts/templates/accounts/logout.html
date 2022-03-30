@@ -1,0 +1,17 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="content-section">
+            <div class="alert alert-info">
+                You have been logged out of your account!
+            </div>
+
+            <div class="pt-3">
+                <small class="text-muted">
+                    <a href="{% url 'accounts:restaurant_login' %}">Login Again</a>
+                </small>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

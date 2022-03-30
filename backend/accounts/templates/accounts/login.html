@@ -2,27 +2,40 @@
 {% load static %}
 
 {% block content %}
-    <main class="form-signin">
-        <form method="POST">
-            <img class="mb-4 mx-auto" src="{% static 'accounts/img/logo.png' %}" alt="logo" width="80"/>
-            <h4 class="h4 mb-3">Restaurant Login</h1>
+<div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="card my-5">
+          <form class="card-body cardbody-color p-lg-3 px-lg-5" method="POST">
+            <h4 class="text-center text-dark mt-5">Restaurant Login</h4>
+            <a href="">
+                <img src="{% static 'accounts/img/logo.png' %}"
+                    class="img-fluid profile-image-pic my-3"
+                    width="150px" alt="profile" />
+            </a>
             {% if messages %}
                 {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{ message }}
+                    </div>
                 {% endfor %}
             {% endif %}
-            <div class="form-floating">
+            <div class="mb-3">
                 {{ form.mobile.label_tag }}
                 {{ form.mobile }}
             </div>
-            <div class="form-floating">
+            <div class="mb-3">
                 {{ form.password.label_tag }}
                 {{ form.password }}
             </div>
-            {% csrf_token %}
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign In</button>
-        </form>
-    </main>
+            <div class="text-center">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary px-5 mb-5 w-100">Login</button>
+            </div>
+          </form>
+          <p class="text-muted">&copy Foodie (2022)</p>
+        </div>
+      </div>
+    </div>
+</div>
 {% endblock content %}
