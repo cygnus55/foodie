@@ -11,16 +11,16 @@
 
 {% block breadcrumbs %}
     <div class="breadcrumbs">
-        <a href="{% url 'admin:index' %}">Home</a>&rsaquo; 
-        <a href="/admin/delivery_person">Delivery Persons</a>&rsaquo; 
-        <span>Register Delivery Person</span>
+        <a href="{% url 'admin:index' %}">Home</a>&rsaquo;
+        <a href="/admin/restaurants">Restaurants</a>&rsaquo;
+        <span>Register Restaurants</span>
     </div>
 {% endblock %}
 
 {% block content %}
-    <h1> Register Delivery Person </h1>
+    <h1>Register Restaurants</h1>
     <br/>
-    <form method="post" action="{% url 'admin:delivery_person_registerdeliveryuser_changelist' %}">
+    <form method="post" action="{% url 'admin:restaurants_registerrestaurant_changelist' %}">
         <table style="width: 30%;">
             <tr>
                 <th>
@@ -28,14 +28,6 @@
                 </th>
                 <td>
                     {{ form.full_name }}
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    {{ form.username.label }}
-                </th>
-                <td>
-                    {{ form.username }}
                 </td>
             </tr>
             <tr>
@@ -52,6 +44,22 @@
                 </th>
                 <td>
                     {{ form.email }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ form.open_hour.label }}
+                </th>
+                <td>
+                    {{ form.open_hour }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ form.close_hour.label }}
+                </th>
+                <td>
+                    {{ form.close_hour }}
                 </td>
             </tr>
         </table>

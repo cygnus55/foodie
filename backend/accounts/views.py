@@ -26,7 +26,6 @@ from accounts.models import User
 from accounts import twilio_utils
 from customers.models import Customer
 from cart.models import Cart
-from accounts import otp_verify
 from accounts.serializers import UserSerializer
 from accounts.custompermissions import IsCurrentUserOwner
 from accounts.models import User
@@ -166,7 +165,7 @@ def restaurant_login(request):
                 return redirect("accounts:login")
             else:
                 messages.error(request, "Username or password incorrect!")
-                return redirect("accounts:login")
+                return redirect("accounts:restaurant_login")
     else:
         form = LoginForm()
 

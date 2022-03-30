@@ -1,30 +1,41 @@
-import copy
+import random
+import string
+from hashlib import md5
 
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.shortcuts import render
-from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.utils.html import strip_tags
+from django.views.generic import (
+    CreateView,
+    UpdateView,
+    DeleteView,
+    ListView,
+    DetailView,
+)
 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import (
     ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView
+    RetrieveUpdateDestroyAPIView,
 )
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
-from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 
+from accounts.models import User
 from api import customauthentication, custompermissions
 from restaurants.models import Restaurant
 from foods.models import Food
 from restaurants.serializers import RestaurantSerializer
 from restaurants.custompermissions import (
     IsCurrentUserAlreadyAnOwner,
-    IsCurrentUserOwnerOrReadOnly
+    IsCurrentUserOwnerOrReadOnly,
 )
+from restaurants.forms import RestaurantRegistrationForm
 
 
 class RestaurantList(ListCreateAPIView):
@@ -60,6 +71,64 @@ class RestaurantDetails(RetrieveUpdateDestroyAPIView):
 
 
 # Restaurant front-end
+
+def register(request):
+    if request.method == "POST":
+        form = RestaurantRegistrationForm(request.POST)
+        if form.is_valid():
+            full_name = form.cleaned_data.get("full_name")
+            phone_no = form.cleaned_data.get("phone_number")
+            email = form.cleaned_data.get("email")
+            open_hour = form.cleaned_data.get("open_hour")
+            close_hour = form.cleaned_data.get("close_hour")
+            try:
+                user = User.objects.create(
+                    full_name=full_name,
+                    mobile=phone_no,
+                    username=phone_no,
+                    email=email,
+                    is_restaurant=True,
+                    is_verified = True,
+                )
+                user.set_password(phone_no)
+                user.save()
+            except Exception as e:
+                messages.error(request, e)
+                return render(request, "restaurants/register.html", {"form": form})
+
+            strg = user.full_name.lower()
+            strg.join(random.choice(string.ascii_letters) for i in range(10))
+            digest = md5(strg.encode("utf-8")).hexdigest()
+
+            logo = f"https://www.gravatar.com/avatar/{digest}?d=retro"
+
+            try:
+                Restaurant.objects.create(
+                    user=user,
+                    logo=logo,
+                    open_hour=open_hour,
+                    close_hour=close_hour,
+                    location=[None, None, None]
+                )
+            except Exception as e:
+                user.delete()
+                messages.error(request, e)
+                return render(request, "restaurants/register.html", {"form": form})
+
+            # send email
+            subject = "Welcome to Foodie"
+            html_message = render_to_string("restaurants/account_details_email.html", {"user": user})
+            plain_message = strip_tags(html_message)
+            from_email = "Foodie Administrative <foodexpressnepal@gmail.com>"
+            to = user.email
+
+            send_mail(subject, plain_message, from_email, [to], html_message=html_message, fail_silently=False)
+            
+            messages.success(request, f"Account created for restaurant {user.full_name}.")
+            return redirect("admin:restaurants_restaurant_changelist")
+    else:
+        form = RestaurantRegistrationForm()
+    return render(request, "restaurants/register.html", {"form": form})
 
 
 @login_required
