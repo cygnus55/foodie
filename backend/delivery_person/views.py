@@ -8,9 +8,10 @@ from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from django.contrib import messages
 
-from delivery_person.forms import DeliveryPersonForm
 from accounts.models import User
+from delivery_person.forms import DeliveryPersonForm
 from delivery_person.models import DeliveryPerson
+
 
 def register(request):
     if request.method == 'POST':

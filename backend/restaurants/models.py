@@ -38,6 +38,7 @@ class Restaurant(models.Model):
         object_id_field="object_id",
     )
     location = ArrayField(models.CharField(max_length=500, blank=True), size=3)
+    has_logged_once = models.BooleanField(default=False)
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
 
