@@ -59,12 +59,18 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> ordercart() async {
+    setState(() {
+      isLoading = true;
+    });
     delivery_charge = await Provider.of<Cart>(context, listen: false)
         .getDeliveryChargeFromcart(context, lat.toString(), long.toString());
 
     // await Provider.of<Cart>(context, listen: false).cartItems(context);
     Navigator.of(context).pushNamed(DeliveryConfirmScreen.routeName,
         arguments: {'delivery_charge': delivery_charge, 'address': address});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override

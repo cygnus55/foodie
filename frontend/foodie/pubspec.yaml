@@ -42,6 +42,7 @@ dependencies:
   flutter_map: ^0.14.0
   location: ^4.3.0
   geocoding: ^2.0.4
+  khalti_flutter: ^2.0.2
 
 
 
