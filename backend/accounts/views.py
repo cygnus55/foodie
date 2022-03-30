@@ -22,6 +22,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 
 from api import customauthentication
+from accounts.models import User
+from accounts import twilio_utils
 from customers.models import Customer
 from cart.models import Cart
 from accounts import otp_verify
@@ -38,7 +40,7 @@ def send_otp_code(request):
     reqBody = json.loads(request.body)
     if "mobile" in reqBody:
         mobile = reqBody["mobile"]
-        otp_verify.send(mobile)
+        twilio_utils.send(mobile)
         data["msg"] = "OTP sent!"
         data["mobile"] = mobile
         return Response(data, status=HTTP_200_OK)
@@ -55,7 +57,7 @@ def customer_login(request):
     if "mobile" and "otp" in reqBody:
         mobile = reqBody["mobile"]
         otp_code = reqBody["otp"]
-        if not otp_verify.check(mobile, otp_code):
+        if not twilio_utils.check(mobile, otp_code):
             data["error"] = "Invalid OTP"
             return Response(data, status=HTTP_401_UNAUTHORIZED)
 

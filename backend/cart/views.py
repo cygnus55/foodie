@@ -75,7 +75,7 @@ class CartItemCreate(CreateAPIView):
     serializer_class = CartItemSerializer
     queryset = CartItem.objects.all()
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
         try:
             food = Food.objects.get(id=self.request.data["food"])
         except Exception as e:
@@ -86,7 +86,10 @@ class CartItemCreate(CreateAPIView):
         cart = Cart.objects.filter(customer=self.request.user.customer).first()
         if not cart:
             cart = Cart.objects.create(customer=self.request.user.customer)
-        serializer.save(cart=cart, price=price)
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(cart=cart, price=price)
+            return Response({"success": f"{food.name} of {food.restaurant.user.full_name} added to cart."}, status=HTTP_200_OK)
 
 
 # delete cart item by restaurant

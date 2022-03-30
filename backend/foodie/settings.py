@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'reviews',
     'orders',
     'favourites',
+    'delivery_person',
 ]
 
 MIDDLEWARE = [
@@ -201,3 +202,7 @@ CORS_ALLOW_CREDENTIALS = True
 TAGGIT_CASE_INSENSITIVE = True
 
 LOGIN_URL = "accounts:restaurant_login"
+
+# EMAIL
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
