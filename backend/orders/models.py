@@ -13,6 +13,7 @@ class Order(models.Model):
     STATUS_CHOICES = [
         ('Placed', 'Placed'),
         ('Verified', 'Verified'),
+        ('On the way to restaurant', 'On the way to restaurant'),
         ('Processing', 'Processing'),
         ('Picking', 'Picking'),
         ('On the way', 'On the way'),
@@ -20,10 +21,17 @@ class Order(models.Model):
         ('Cancelled', 'Cancelled'),
     ]
 
+    PAYMENT_METHOD_CHOICES = [
+        ('COD', 'COD'),
+        ('Khalti', 'Khalti'),
+    ]
+
     customer = models.ForeignKey(Customer, related_name='order', on_delete=models.CASCADE)
     delivery_location = ArrayField(models.CharField(max_length=500, blank=True), size=3)
     delivery_charge = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Placed')
+    payment_method = models.CharField(max_length=100, choices=PAYMENT_METHOD_CHOICES, default='COD')
+    khalti_token = models.CharField(max_length=100, blank=True)
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='Placed')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

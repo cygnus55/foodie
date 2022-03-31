@@ -23,7 +23,6 @@ isort==5.10.1
 lazy-object-proxy==1.7.1
 mccabe==0.6.1
 oauthlib==3.2.0
-pkg_resources==0.0.0
 platformdirs==2.5.1
 psycopg2-binary==2.9.3
 pycodestyle==2.8.0

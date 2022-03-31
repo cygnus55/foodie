@@ -42,8 +42,22 @@ class OrderCreate(APIView):
         lng = request.data.get('longitude')
         address = request.data.get('address')
         delivery_location = [lat, lng, address]
+        delivery_charge = request.data.get('delivery_charge')
+        payment_method = request.data.get('payment_method')
+        if payment_method == 'Khalti':
+            status = "Verified"
+            khalti_token = request.data.get('khalti_token')
+        else:
+            status = "Placed"
+            khalti_token = ""
         order = Order.objects.create(
-            customer=self.request.user.customer, delivery_location=delivery_location)
+            customer=self.request.user.customer, 
+            delivery_location=delivery_location, 
+            payment_method=payment_method, 
+            status=status, 
+            khalti_token=khalti_token, 
+            delivery_charge=delivery_charge
+        )
         # create order items
         for item in request.data.get('items'):
             try:
@@ -75,7 +89,6 @@ class OrderList(ListAPIView):
 
     def get_queryset(self):
         return Order.objects.filter(customer=self.request.user.customer)
-
 
 
 class RecentDeliveryLocation(APIView):
