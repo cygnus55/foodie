@@ -2,6 +2,7 @@
 # method CART means that the order will be created using the cart
 # method DIRECT means that the order will be directly created from the food details page
 
+# Send khalti_token only if payment method is khalti
 POST http://localhost:8000/orders/create/
 Authorization: Token afe59afcb8d5932a5b4ceb27943dc32465138cd4
 Content-Type: application/json
@@ -14,7 +15,7 @@ Content-Type: application/json
     "items": [
         {
             "food_id": 1,
-            "quantity": 2,
+            "quantity": 5,
             "price": 180.00
         },
         {
@@ -22,7 +23,10 @@ Content-Type: application/json
             "quantity": 1,
             "price": 250.00
         }
-    ]
+    ],
+    "payment_method": "Khalti",
+    "khalti_token": "fgsaghd65rfg23",
+    "delivery_charge": 120.00
 }
 
 ###
