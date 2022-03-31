@@ -1,7 +1,7 @@
 {% extends "restaurants/base.html" %}
 
-{% block content %}
-{% for food in foods %}
-    {{ food }}
-{% endfor %}
-{% endblock content %}
+{% block restaurant_content %}
+    {% for food in foods %}
+        {{ food }}
+    {% endfor %}
+{% endblock restaurant_content %}

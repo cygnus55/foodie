@@ -1,3 +1,63 @@
 {% extends "accounts/base.html" %}
 
-{% block content %}{% endblock content %}
+{% load static %}
+
+{% block content %}
+<script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'restaurants:restaurant_home' %}">
+                <img src="{{ user.restaurant.logo }}"
+                    class="rounded img-thumbnail"
+                    alt="{{ user.full_name }} logo"
+                />
+                <span class="mx-3">
+                    {{ user.full_name }}
+                </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle btn my-md-0 ms-md-3" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-gear fa-1x"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="navbarDropdown">
+                            <li>
+                                <a href="#" class="dropdown-item">
+                                    <i class="fa-solid fa-user-gear"></i> Account Settings
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item">
+                                    <i class="fa-solid fa-location-dot"></i> Edit Location
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item">
+                                    <i class="fa-solid fa-lock"></i> Change Password
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a href="{% url 'accounts:restaurant_logout' %}" class="dropdown-item">
+                                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% block restaurant_content %}{% endblock restaurant_content %}
+</div>
+{% endblock content %}

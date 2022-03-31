@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'taggit',
     'django_better_admin_arrayfield',
     'bootstrap5',
+    'fontawesomefree',
 
     # local apps
     'accounts',

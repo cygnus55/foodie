@@ -3,6 +3,7 @@ import string
 from hashlib import md5
 
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -72,6 +73,8 @@ class RestaurantDetails(RetrieveUpdateDestroyAPIView):
 
 # Restaurant front-end
 
+@staff_member_required
+@login_required
 def register(request):
     if request.method == "POST":
         form = RestaurantRegistrationForm(request.POST)
@@ -134,8 +137,13 @@ def register(request):
 @login_required
 def restaurant_dashboard(request):
     if not request.user.is_restaurant:
-        return PermissionDenied()
+        raise PermissionDenied
     return render(request, "restaurants/dashboard.html")
+
+
+@login_required
+def change_password(request):
+    pass
 
 
 class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):

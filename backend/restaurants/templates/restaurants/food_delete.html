@@ -1,6 +1,6 @@
 {% extends "restaurants/base.html" %}
 
-{% block content %}
+{% block restaurant_content %}
 <div class="my-3">
     <form method="POST">
         {% csrf_token %}
@@ -14,4 +14,4 @@
         </div>
     </form>
 </div>
-{% endblock content %}
+{% endblock restaurant_content %}

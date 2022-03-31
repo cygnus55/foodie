@@ -16,6 +16,7 @@ django-cors-headers==3.11.0
 django-rest-framework==0.1.0
 django-taggit==2.1.0
 djangorestframework==3.13.1
+fontawesomefree==6.1.1
 geographiclib==1.52
 geopy==2.2.0
 idna==3.3
@@ -23,7 +24,6 @@ isort==5.10.1
 lazy-object-proxy==1.7.1
 mccabe==0.6.1
 oauthlib==3.2.0
-pkg_resources==0.0.0
 platformdirs==2.5.1
 psycopg2-binary==2.9.3
 pycodestyle==2.8.0
