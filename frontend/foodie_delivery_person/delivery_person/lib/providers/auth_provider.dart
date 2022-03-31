@@ -36,6 +36,9 @@ class Auth with ChangeNotifier {
   bool get isAuth {
     return authtoken != null;
   }
+  bool get isNewuser {
+    return isNewusertoken;
+  }
 
   Future<bool> login(String phoneNumber, String password) async {
     try {
@@ -51,6 +54,30 @@ class Auth with ChangeNotifier {
       );
       final responseData = json.decode(response.body);
       print(responseData);
+      if (response.body.toString().contains('true')) {
+        final prefs = await SharedPreferences.getInstance();
+        final extractedData = json.decode(response.body);
+        print(extractedData['token']);
+        final _token = extractedData['token'];
+        final _userId = extractedData['mobile'];
+        authtoken = token(_token);
+        authToken = _token;
+        print(authtoken);
+        print(_token);
+        isAuth;
+        isNewusertoken = true;
+        isNewuser;
+        getauthToken;
+        notifyListeners();
+        if (_token != null) {
+          print(isAuth);
+          prefs.setString('token', _token);
+          prefs.setString('userId', _userId);
+          print(prefs.getString('userId'));
+        }
+        return true;
+      }
+
       if (response.body.toString().contains('User logged in!')) {
         final prefs = await SharedPreferences.getInstance();
         final extractedData = json.decode(response.body);
@@ -81,11 +108,11 @@ class Auth with ChangeNotifier {
   }
    Future<void> submitPassword(String password) async {
     try {
-      var url = Uri.http('10.0.2.2:8000', 'accounts/details/');
+      var url = Uri.http('10.0.2.2:8000', 'delivery-person/change-password/');
       print(password);
       // ignore: unused_local_variable
 
-      final http.Response response = await http.patch(
+      final http.Response response = await http.post(
         url,
         headers: {
           'Authorization': 'Token ' + authToken,
@@ -93,7 +120,7 @@ class Auth with ChangeNotifier {
         },
         body: json.encode(
           {
-            '[password]': password,
+            'password': password,
           },
         ),
       );

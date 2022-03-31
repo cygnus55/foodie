@@ -14,13 +14,14 @@ class PasswordChangeScreen extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.red,
         title: Text(
+          
           'Step 1 of 1',
           style: Theme.of(context)
               .textTheme
               .subtitle1
-              ?.copyWith(fontWeight: FontWeight.bold, fontSize: 20),
+              ?.copyWith(color: Colors.white ,fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
         elevation: 0,

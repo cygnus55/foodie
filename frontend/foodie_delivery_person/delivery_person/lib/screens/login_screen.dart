@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:location/location.dart' as loc;
 
 import '../providers/auth_provider.dart';
+import './homepage_screen.dart';
 import 'passwordchangescreen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -24,7 +26,21 @@ class _LoginScreenState extends State<LoginScreen> {
   final numbercontroller = TextEditingController();
   String password = '';
   final passwordcontroller = TextEditingController();
+  final _formkey = GlobalKey<FormState>();
 
+  @override
+  void initState() {
+    super.initState();
+    location();
+    
+  }
+
+  Future<void> location() async {
+    final locationData = await loc.Location().getLocation();
+    print(locationData.latitude);
+    print(locationData.longitude);
+  }
+  
   Future<void> submit(String phoneNumber, String password) async {
     try {
       setState(() {
@@ -34,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await Provider.of<Auth>(context, listen: false)
           .login(phoneNumber, password);
       if (Provider.of<Auth>(context, listen: false).isAuth) {
+        if (Provider.of<Auth>(context, listen: false).isNewuser) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (BuildContext context) => const PasswordChangeScreen()),
@@ -42,6 +59,16 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _isloading = false;
         });
+      }
+        else{
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => const HomepageScreen()),
+            ModalRoute.withName(HomepageScreen.routeName),
+          );
+          setState(() {
+            _isloading = false;
+          });
+        }
       } else {
         print('me');
         setState(() {
@@ -147,55 +174,72 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(10)),
                   margin: const EdgeInsets.fromLTRB(20, 300, 20, 10),
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 25),
-                  child: Column(
-                    children: <Widget>[
-                      TextField(
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            icon: const Icon(
-                              Icons.phone_android_sharp,
-                              color: Color(0xFFD42323),
-                            ),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade500)),
-                            labelText: "Mobile Number",
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade500)),
-                            labelStyle: const TextStyle(color: Colors.grey)),
-                        onChanged: (phone) {
-                          numbercontroller.text = phone;
-                          // ignore: avoid_print
-                          phoneNumber = phone;
-                          print(phone);
-                        },
-                      ),
-                      TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                            icon: const Icon(
-                              Icons.vpn_key,
-                              color: Color(0xFFD42323),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade500)),
-                            labelText: "Password",
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade500)),
-                            labelStyle: const TextStyle(color: Colors.grey)),
-                        onChanged: (pass) {
-                          passwordcontroller.text = pass;
-                          // ignore: avoid_print
-                          password = pass;
-                          print(pass);
-                        },
-                      )
-                    ],
+                  child: Form(
+                    key: _formkey,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          validator: (value) {
+                            if (!value!.startsWith('9') || value.isEmpty || value.length != 10) {
+                              return 'Please enter valid phone number';
+                            }
+                            return null;
+                          },
+                          maxLength: 10,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            counterText: '',
+                              icon: const Icon(
+                                Icons.phone_android_sharp,
+                                color: Color(0xFFD42323),
+                              ),
+                              border: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade500)),
+                              labelText: "Mobile Number",
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade500)),
+                              labelStyle: const TextStyle(color: Colors.grey)),
+                          onChanged: (phone) {
+                            numbercontroller.text = phone;
+                            // ignore: avoid_print
+                            phoneNumber = phone;
+                            print(phone);
+                          },
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if ( value!.isEmpty  ) {
+                              return 'Please enter valid password';
+                            }
+                            return null;
+                          },
+                          obscureText: true,
+                          decoration: InputDecoration(
+                              icon: const Icon(
+                                Icons.vpn_key,
+                                color: Color(0xFFD42323),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade500)),
+                              labelText: "Password",
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade500)),
+                              labelStyle: const TextStyle(color: Colors.grey)),
+                          onChanged: (pass) {
+                            passwordcontroller.text = pass;
+                            // ignore: avoid_print
+                            password = pass;
+                            print(pass);
+                          },
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Container(
@@ -205,7 +249,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: ElevatedButton.styleFrom(
                           primary: const Color(0xFFD42323)),
                       onPressed: () {
-                        submit(phoneNumber.toString(), password.toString())
+                        if(_formkey.currentState!.validate()){
+                          submit(phoneNumber.toString(), password.toString())
                             .catchError((error) {
                           return showDialog(
                             context: context,
@@ -223,6 +268,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           );
                         });
+                        }
+                        
                       },
                       child: const Padding(
                           padding: EdgeInsets.all(15),
