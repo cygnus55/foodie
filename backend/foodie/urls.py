@@ -27,7 +27,7 @@ urlpatterns = [
     path("reviews/", include("reviews.urls")),
     path("orders/", include("orders.urls")),
     path("favourites/", include("favourites.urls")),
-    path("delivery_person/", include("delivery_person.urls")),
+    path("delivery-person/", include("delivery_person.urls", namespace="delivery_person")),
 ]
 
 # Admin Site Configurations

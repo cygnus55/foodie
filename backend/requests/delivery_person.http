@@ -1,0 +1,53 @@
+# delivery person login
+
+POST http://localhost:8000/accounts/login/delivery-person/
+Content-Type: application/json
+
+{
+    "mobile": "9090909090",
+    "password": "password"
+}
+
+###
+
+# Change password
+
+POST http://localhost:8000/delivery-person/change-password/
+Authorization: Token <token>
+Content-Type: application/json
+
+{
+    "password": "password",
+}
+
+###
+
+# Get profile
+GET http://localhost:8000/delivery-person/profile/
+Authorization: Token <token>
+
+###
+
+# PUT profile
+
+PUT http://localhost:8000/delivery-person/profile/
+Authorization: Token <token>
+Content-Type: application/json
+
+{
+    "full_name": "John Doe",
+    "email": "john@example.com",
+    "profile_pic": "http://example.com/profile.jpg",
+}
+
+###
+
+# PATCH profile. Send only the fields you want to update
+
+PATCH http://localhost:8000/delivery-person/profile/
+Authorization: Token <token>
+Content-Type: application/json
+
+{
+    "full_name": "John Doe"
+}

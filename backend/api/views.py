@@ -42,6 +42,10 @@ class APIRoot(GenericAPIView):
                     "recent_delivery_location": reverse("orders:delivery_location", request=request),
                     "get_delivery_charge": reverse("orders:delivery_charge", request=request),
                 },
+                "delivery_person": {
+                    "change_password": reverse("delivery_person:change_password", request=request),
+                    "profile": reverse("delivery_person:profile", request=request),
+                },
             }
         )
 
