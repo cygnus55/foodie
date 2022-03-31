@@ -4,7 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
-import './order_screen.dart';
+import 'delivery_confirm_screen.dart';
 
 class MapScreen extends StatefulWidget {
   MapScreen({Key? key}) : super(key: key);
@@ -15,10 +15,11 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  var lat = 27.6253;
-  var long = 85.5561;
+  var lat = 27.6224;
+  var long = 85.5522;
+  var delivery_charge = 0.0;
 
-  String address = '';
+  String address = 'Dhulikhel Buspark';
   bool isLoading = false;
   MapController mapController = MapController();
   latLng.LatLng currentCenter = latLng.LatLng(27.6253, 85.5561);
@@ -48,23 +49,28 @@ class _MapScreenState extends State<MapScreen> {
       lat = locations[0].latitude;
       long = locations[0].longitude;
 
-
       currentCenter = latLng.LatLng(lat, long);
     });
     address = place;
 
-      
     mapController.move(currentCenter, 13);
 
     print(locations[0].latitude);
   }
 
   Future<void> ordercart() async {
-    await Provider.of<Cart>(context, listen: false)
-        .createorder(context, lat.toString(), long.toString(), address);
+    setState(() {
+      isLoading = true;
+    });
+    delivery_charge = await Provider.of<Cart>(context, listen: false)
+        .getDeliveryChargeFromcart(context, lat.toString(), long.toString());
 
-    await Provider.of<Cart>(context, listen: false).cartItems(context);
-    Navigator.of(context).pushNamed(OrderScreen.routeName);
+    // await Provider.of<Cart>(context, listen: false).cartItems(context);
+    Navigator.of(context).pushNamed(DeliveryConfirmScreen.routeName,
+        arguments: {'delivery_charge': delivery_charge, 'address': address});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -102,7 +108,6 @@ class _MapScreenState extends State<MapScreen> {
                               color: Colors.red,
                               size: 25,
                             ),
-
                           ),
                         ],
                       ),

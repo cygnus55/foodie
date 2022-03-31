@@ -1,23 +1,41 @@
-import copy
+import random
+import string
+from hashlib import md5
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.utils.html import strip_tags
+from django.views.generic import (
+    CreateView,
+    UpdateView,
+    DeleteView,
+    ListView,
+    DetailView,
+)
 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import (
     ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView
+    RetrieveUpdateDestroyAPIView,
 )
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
-from rest_framework.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 
+from accounts.models import User
 from api import customauthentication, custompermissions
 from restaurants.models import Restaurant
+from foods.models import Food
 from restaurants.serializers import RestaurantSerializer
 from restaurants.custompermissions import (
     IsCurrentUserAlreadyAnOwner,
-    IsCurrentUserOwnerOrReadOnly
+    IsCurrentUserOwnerOrReadOnly,
 )
+from restaurants.forms import RestaurantRegistrationForm
 
 
 class RestaurantList(ListCreateAPIView):
@@ -51,3 +69,137 @@ class RestaurantDetails(RetrieveUpdateDestroyAPIView):
         customauthentication.CsrfExemptSessionAuthentication
     ]
 
+
+# Restaurant front-end
+
+def register(request):
+    if request.method == "POST":
+        form = RestaurantRegistrationForm(request.POST)
+        if form.is_valid():
+            full_name = form.cleaned_data.get("full_name")
+            phone_no = form.cleaned_data.get("phone_number")
+            email = form.cleaned_data.get("email")
+            open_hour = form.cleaned_data.get("open_hour")
+            close_hour = form.cleaned_data.get("close_hour")
+            try:
+                user = User.objects.create(
+                    full_name=full_name,
+                    mobile=phone_no,
+                    username=phone_no,
+                    email=email,
+                    is_restaurant=True,
+                    is_verified = True,
+                )
+                user.set_password(phone_no)
+                user.save()
+            except Exception as e:
+                messages.error(request, e)
+                return render(request, "restaurants/register.html", {"form": form})
+
+            strg = user.full_name.lower()
+            strg.join(random.choice(string.ascii_letters) for i in range(10))
+            digest = md5(strg.encode("utf-8")).hexdigest()
+
+            logo = f"https://www.gravatar.com/avatar/{digest}?d=retro"
+
+            try:
+                Restaurant.objects.create(
+                    user=user,
+                    logo=logo,
+                    open_hour=open_hour,
+                    close_hour=close_hour,
+                    location=[None, None, None]
+                )
+            except Exception as e:
+                user.delete()
+                messages.error(request, e)
+                return render(request, "restaurants/register.html", {"form": form})
+
+            # send email
+            subject = "Welcome to Foodie"
+            html_message = render_to_string("restaurants/account_details_email.html", {"user": user})
+            plain_message = strip_tags(html_message)
+            from_email = "Foodie Administrative <foodexpressnepal@gmail.com>"
+            to = user.email
+
+            send_mail(subject, plain_message, from_email, [to], html_message=html_message, fail_silently=False)
+            
+            messages.success(request, f"Account created for restaurant {user.full_name}.")
+            return redirect("admin:restaurants_restaurant_changelist")
+    else:
+        form = RestaurantRegistrationForm()
+    return render(request, "restaurants/register.html", {"form": form})
+
+
+@login_required
+def restaurant_dashboard(request):
+    if not request.user.is_restaurant:
+        return PermissionDenied()
+    return render(request, "restaurants/dashboard.html")
+
+
+class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Food
+    fields = ["name", "description", "price", "is_available",
+              "image", "discount_percent", "is_veg"]
+
+    template_name = "restaurants/food_form.html"
+    success_url = reverse_lazy("restaurants:food_list")
+
+    def test_func(self):
+        return self.request.user.is_active and self.request.user.is_restaurant
+
+    def form_valid(self, form):
+        form.instance.restaurant = self.request.user.restaurant
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs)
+
+
+class FoodUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Food
+    fields = ["name", "description", "price", "is_available",
+              "image", "discount_percent", "is_veg"]
+    template_name = "restaurants/food_form.html"
+    success_url = reverse_lazy("restaurants:food_list")
+
+    def test_func(self):
+        return self.request.user.is_active and self.request.is_restaurant and self.get_object().restaurant == self.request.user.restaurant
+
+    def form_valid(self, form):
+        form.instance.restaurant = self.request.user.restaurant
+        return super().form_valid(form)
+
+
+class FoodDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Food
+    success_url = reverse_lazy("restaurants:food_list")
+    context_object_name = "food"
+    template_name = "restaurants/food_delete.html"
+
+    def test_func(self):
+        return self.request.user.is_active and self.request.user.is_restaurant and self.get_object().restaurant == self.request.user.restaurant
+
+
+class FoodListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Food
+    ordering = "-created"
+    template_name = "restaurants/food_list.html"
+    context_object_name = "foods"
+
+    def test_func(self):
+        return self.request.user.is_active and self.request.user.is_restaurant
+
+    def get_queryset(self, **kwargs):
+        restaurant_foods = self.model.objects.filter(restaurant=self.request.user.restaurant)
+        return restaurant_foods.all()
+
+
+class FoodDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Food
+    template = "restaurants/food_detail.html"
+    context_object_name = "food"
+
+    def test_func(self):
+        return self.request.user.is_active and self.request.user.is_restaurant and self.get_object().restaurant == self.request.user.restaurant

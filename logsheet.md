@@ -31,3 +31,17 @@
 - Food detail screen
 - Restaurant detail screen 
 - API (cart, reviews and ratings)
+
+## Week 5:
+
+- Cart screen 
+- Current Location
+- Bug fix
+
+## Week 6:
+
+- Orderpage screen
+- Khalti payment
+- Map display in Screen
+- Login and logout of delivery person
+- Design restaurant UI  

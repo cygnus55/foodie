@@ -26,4 +26,4 @@ admin.site.register(RegisterDeliveryUser, RegisterDeliveryUserAdmin)
 @admin.register(DeliveryPerson)
 class DeliveryPersonAdmin(admin.ModelAdmin):
     model = DeliveryPerson
-    list_diaplay = ['user', 'profile_picture']
+    list_display = ['user', 'profile_picture']

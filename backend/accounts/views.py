@@ -5,6 +5,9 @@ import random
 import string
 
 from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
+from django.shortcuts import render, redirect
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -18,13 +21,15 @@ from rest_framework.status import (
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 
+from api import customauthentication
 from accounts.models import User
 from accounts import twilio_utils
 from customers.models import Customer
 from cart.models import Cart
 from accounts.serializers import UserSerializer
 from accounts.custompermissions import IsCurrentUserOwner
-from api import customauthentication
+from accounts.models import User
+from accounts.forms import LoginForm
 
 
 @api_view(["POST"])
@@ -137,7 +142,46 @@ def delivery_person_login(request):
         return Response(message, status=HTTP_403_FORBIDDEN)
 
 
+def restaurant_login(request):
+    if request.method == "POST":
+        next_url = request.GET.get("next")
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get("mobile")
+            password = form.cleaned_data.get("password")
+            try:
+                _user = User.objects.get(username=username)
+            except Exception as e:
+                print(e, "*")
+                messages.error(request, "Username or password incorrect!")
+                return redirect("accounts:restaurant_login")
+
+            user = authenticate(request, username=username, password=password)
+
+            if not user:
+                messages.error(request, "Username or password incorrect!")
+                return redirect("accounts:restaurant_login")
+
+            if user.is_active:
+                login(request, user)
+                if next_url:
+                    messages.success(request, "Successfully logged in user!")
+                    return redirect(next_url)
+                if not user.is_restaurant:
+                    messages.error(request, "Wrong credentials provided!")
+                    return redirect("accounts:restaurant_login")
+                messages.success(request, "Successfully logged in user!")
+                return redirect("restaurants:restaurant_home")
+            messages.error(request, "Permission denied! The user is not active!")
+            return redirect("accounts:restaurant_login")
+    else:
+        form = LoginForm()
+
+    return render(request, "accounts/login.html", {"form": form})
+
+
 # Logout view
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def account_logout(request):

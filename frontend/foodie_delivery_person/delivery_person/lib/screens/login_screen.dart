@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth_provider.dart';
+import 'passwordchangescreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -9,15 +13,84 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool _isloading = false;
   double getSmallDiameter(BuildContext context) =>
       MediaQuery.of(context).size.width * 2 / 3;
 
   double getBiglDiameter(BuildContext context) =>
       MediaQuery.of(context).size.width * 7 / 8;
 
+  String phoneNumber = '';
+  final numbercontroller = TextEditingController();
+  String password = '';
+  final passwordcontroller = TextEditingController();
+
+  Future<void> submit(String phoneNumber, String password) async {
+    try {
+      setState(() {
+        _isloading = true;
+      });
+
+      await Provider.of<Auth>(context, listen: false)
+          .login(phoneNumber, password);
+      if (Provider.of<Auth>(context, listen: false).isAuth) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (BuildContext context) => const PasswordChangeScreen()),
+          ModalRoute.withName(PasswordChangeScreen.routeName),
+        );
+        setState(() {
+          _isloading = false;
+        });
+      } else {
+        print('me');
+        setState(() {
+          _isloading = false;
+          showDialog(
+              context: context,
+              builder: (c) {
+                return AlertDialog(
+                  title: const Text('Invalid OTP'),
+                  content: const Text('You enterned an invalid otp.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(c).pop();
+                      },
+                      child: const Text('OK'),
+                    )
+                  ],
+                );
+              });
+        });
+      }
+    } catch (error) {
+      print(error);
+      setState(() {
+        _isloading = false;
+      });
+
+      throw error;
+    }
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _isloading
+        ? Scaffold(
+          body: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: const Center(child: CircularProgressIndicator())),
+        )
+        :Scaffold(
       backgroundColor: const Color(0xFFEEEEEE),
       body: Stack(
         children: <Widget>[
@@ -77,9 +150,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: <Widget>[
                       TextField(
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             icon: const Icon(
-                              Icons.person,
+                              Icons.phone_android_sharp,
                               color: Color(0xFFD42323),
                             ),
                             border: OutlineInputBorder(
@@ -87,11 +161,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             focusedBorder: UnderlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.grey.shade500)),
-                            labelText: "Username",
+                            labelText: "Mobile Number",
                             enabledBorder: UnderlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.grey.shade500)),
                             labelStyle: const TextStyle(color: Colors.grey)),
+                        onChanged: (phone) {
+                          numbercontroller.text = phone;
+                          // ignore: avoid_print
+                          phoneNumber = phone;
+                          print(phone);
+                        },
                       ),
                       TextField(
                         obscureText: true,
@@ -108,6 +188,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 borderSide:
                                     BorderSide(color: Colors.grey.shade500)),
                             labelStyle: const TextStyle(color: Colors.grey)),
+                        onChanged: (pass) {
+                          passwordcontroller.text = pass;
+                          // ignore: avoid_print
+                          password = pass;
+                          print(pass);
+                        },
                       )
                     ],
                   ),
@@ -118,7 +204,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           primary: const Color(0xFFD42323)),
-                      onPressed: () {},
+                      onPressed: () {
+                        submit(phoneNumber.toString(), password.toString())
+                            .catchError((error) {
+                          return showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('An error occurred!'),
+                              content: const Text('Something went wrong.'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('Okay'),
+                                  onPressed: () {
+                                    Navigator.of(ctx).pop();
+                                  },
+                                )
+                              ],
+                            ),
+                          );
+                        });
+                      },
                       child: const Padding(
                           padding: EdgeInsets.all(15),
                           child: Text(

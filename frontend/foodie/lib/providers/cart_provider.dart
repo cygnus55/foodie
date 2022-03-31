@@ -8,6 +8,7 @@ class Cart with ChangeNotifier {
   String? totalPrice;
   String? restaurantname;
   String? restaurantid;
+  int? cartid;
   List<CartItem>? _items;
   List<CartItem> get items {
     return [...?_items];
@@ -35,6 +36,10 @@ class Cart with ChangeNotifier {
     return sum;
   }
 
+  int get cartId {
+    return cartid!;
+  }
+
   Future<void> cartItems(BuildContext context) async {
     try {
       var url = Uri.http('10.0.2.2:8000', 'cart/');
@@ -51,6 +56,9 @@ class Cart with ChangeNotifier {
       data.forEach((key, value) {
         if (key == 'total_price') {
           totalPrice = value;
+        }
+        if (key == 'id') {
+          cartid = value;
         }
         if (key == 'items') {
           var data1 = value as Map;
@@ -76,10 +84,13 @@ class Cart with ChangeNotifier {
                       ),
                     );
                   });
-                  cart.add(CartItem(
+                  cart.add(
+                    CartItem(
                       restaurantname: restaurantname,
                       restaurantid: restaurantid,
-                      foodlist: [...fooditem]));
+                      foodlist: [...fooditem],
+                    ),
+                  );
                   fooditem.clear();
                 }
               });
@@ -93,6 +104,33 @@ class Cart with ChangeNotifier {
       print(_items);
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<double> getDeliveryChargeFromcart(
+      BuildContext context, String lat, String long) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'orders/delivery-charge/');
+      var delivery_price = 0.0;
+      http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Token ' +
+              Provider.of<Auth>(context, listen: false).getauthToken!,
+          'Content-Type': 'application/json'
+        },
+        body: json.encode({'latitude': lat, 'longitude': long}),
+      );
+      print(response.body);
+      final data = json.decode(response.body) as Map;
+      data.forEach((key, value) {
+        if (key == 'deliverty_charge') {
+          delivery_price = value;
+        }
+      });
+      return delivery_price;
+    } catch (e) {
+      rethrow;
     }
   }
 

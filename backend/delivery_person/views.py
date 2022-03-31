@@ -15,8 +15,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 
-from delivery_person.forms import DeliveryPersonForm
 from accounts.models import User
+from delivery_person.forms import DeliveryPersonForm
 from delivery_person.models import DeliveryPerson
 from delivery_person.custompermissions import IsCurrentUserOwner
 from api import customauthentication, custompermissions
