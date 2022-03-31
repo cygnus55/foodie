@@ -1,9 +1,10 @@
+from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
+from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK
 from reviews.models import Review
 
 from reviews.serializers import ReviewSerializer
@@ -28,8 +29,11 @@ class RestaurantReviewList(ListCreateAPIView):
 
     def get_queryset(self):
         id_ = self.kwargs.get("pk")
-        restaurant = Restaurant.objects.get(id=id_)
-        return restaurant.reviews
+        try:
+            restaurant = Restaurant.objects.get(id=id_)
+            return restaurant.reviews
+        except Exception as e:
+            raise NotFound(detail="Error 404, resource not found!", code=404)
 
     def perform_create(self, serializer):
         id_ = self.kwargs.get("pk")
@@ -53,8 +57,11 @@ class FoodReviewList(ListCreateAPIView):
 
     def get_queryset(self):
         id_ = self.kwargs.get("pk")
-        food = Food.objects.get(id=id_)
-        return food.reviews
+        try:
+            food = Food.objects.get(id=id_)
+            return food.reviews
+        except Exception:
+            raise NotFound(detail="Error 404, resource not found!", code=404)
 
     def perform_create(self, serializer):
         id_ = self.kwargs.get("pk")
