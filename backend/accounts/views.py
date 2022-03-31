@@ -121,13 +121,17 @@ def delivery_person_login(request):
             message["error"] = "Invalid login!"
             return Response(message, status=HTTP_403_FORBIDDEN)
 
-        user = authenticate(request, mobile=mobile, password=password)
+        user = authenticate(request, username=mobile, password=password)
 
         if not user:
             message["error"] = "Cannot log in user. Wrong credentials provided!"
             return Response(message, status=HTTP_403_FORBIDDEN)
+        
+        message["first_login"] = not user.delivery_person.has_logged_once
 
         login(request, user)
+        user.delivery_person.has_logged_once = True
+        user.delivery_person.save()
         token, _ = Token.objects.get_or_create(user=user)
         message["token"] = token.key
         message["mobile"] = mobile
@@ -242,3 +246,11 @@ def change_profile_pic(user):
         if "gravatar" in restaurant.logo or not restaurant.logo:
             restaurant.logo = f"https://www.gravatar.com/avatar/{digest}?d=identicon"
             restaurant.save()
+    elif user.is_delivery_person:
+        strg = user.full_name.lower()
+        strg.join(random.choice(string.ascii_letters) for i in range(10))
+        digest = md5(strg.encode("utf-8")).hexdigest()
+        delivery_person = user.delivery_person
+        if "gravatar" in delivery_person.profile_picture:
+            delivery_person.profile_pic = f"https://www.gravatar.com/avatar/{digest}?d=retro"
+            delivery_person.save()

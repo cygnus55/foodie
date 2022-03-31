@@ -8,7 +8,7 @@ Content-Type: application/json
 
 ###
 
-# Login
+# Customer Login
 POST http://localhost:8000/accounts/login/
 Content-Type: application/json
 

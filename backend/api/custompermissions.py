@@ -44,3 +44,11 @@ class IsCurrentUserDeliveryPerson(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         return request.user.is_delivery_person
+
+
+class AllowOnlyDeliveryPerson(permissions.BasePermission):
+
+    message = "You must be a delivery person to access this resource."
+
+    def has_permission(self, request, view):
+        return request.user.is_delivery_person
