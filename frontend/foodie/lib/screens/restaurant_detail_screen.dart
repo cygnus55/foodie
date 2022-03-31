@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:foodie/providers/auth_provider.dart';
 import 'package:foodie/providers/restaurant_provider.dart';
@@ -6,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../providers/restaurants_provider.dart';
 import '../providers/foods_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RestaurantDetailScreen extends StatefulWidget {
   const RestaurantDetailScreen({Key? key}) : super(key: key);
@@ -16,6 +19,20 @@ class RestaurantDetailScreen extends StatefulWidget {
 }
 
 class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
+  // String url = 'https://www.facebook.com/Dalle.ktm/';
+  Future<bool> open(String url) async {
+    try {
+      await launch(
+        url,
+        enableJavaScript: true,
+      );
+      return true;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final _id = ModalRoute.of(context)?.settings.arguments as int;
@@ -188,7 +205,9 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                   color: Theme.of(context).iconTheme.color,
                                 ),
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                open(_restaurant.facebookLink.toString());
+                              },
                             ),
                             const Text('Facebook'),
                           ],
@@ -207,7 +226,9 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                   color: Theme.of(context).iconTheme.color,
                                 ),
                               ),
-                              onTap: () {},
+                              onTap: () {
+                                open(_restaurant.websiteLink.toString());
+                              },
                             ),
                             const Text('Website'),
                           ],
