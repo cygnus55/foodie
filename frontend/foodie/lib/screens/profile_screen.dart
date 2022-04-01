@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 
+import './edit_profile.dart';
 import './login_screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/profile_screen_provider.dart';
@@ -29,29 +30,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Icons.star,
     Icons.note,
     Icons.favorite,
-    Icons.location_on_rounded,
+    Icons.notifications,
   ];
 
   final List<String> _columnValues = [
     'Your Ratings',
     'Your Order',
-    'Favorite Orders',
-    'Your Locations',
-  ];
-
-  final List<IconData> _rowIcon = [
-    Icons.favorite,
-    Icons.notifications,
-    Icons.settings,
-    Icons.payment,
-  ];
-
-  final List<String> _rowValues = [
-    'Likes',
+    'Favorite ',
     'Notifications',
-    'Settings',
-    'Payment',
   ];
+
   bool isloading = true;
 
   late Map userinfo;
@@ -121,169 +109,131 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: const Center(child: CircularProgressIndicator()))
         : SafeArea(
             child: Scaffold(
-              body: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                userinfo['username'] as String,
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                              Text(userinfo['userMobile'] as String,
-                                  // Provider.of<Profile>(context).userName as String,
-                                  style: Theme.of(context).textTheme.subtitle1),
-                              Text(
-                                userinfo['userEmail'] as String,
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: GestureDetector(
-                                  onTap: () {},
-                                  child: const Text(
-                                    'View Activity',
-                                    style: TextStyle(color: Color(0xFFD42323)),
-                                  ),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  userinfo['username'] as String,
+                                  style: Theme.of(context).textTheme.subtitle1,
                                 ),
-                              ),
-                            ],
+                                Text(userinfo['userMobile'] as String,
+                                    // Provider.of<Profile>(context).userName as String,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1),
+                                Text(
+                                  userinfo['userEmail'] as String,
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Colors.purpleAccent),
+                                      shape: MaterialStateProperty.all(
+                                        const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              bottomRight: Radius.circular(10),
+                                              topLeft: Radius.circular(10),
+                                              bottomLeft: Radius.circular(10)),
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pushNamed(
+                                          EditProfileScreen.routeName,
+                                          arguments: {
+                                            'name': userinfo['username'],
+                                            'phone': userinfo['userMobile']
+                                          });
+                                    },
+                                    child: const Text('Edit Profile'))
+                              ],
+                            ),
                           ),
-                        ),
-                        InkWell(
-                          onTap: selectFile,
-                          child: Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: NetworkImage(
-                                  userinfo['userProfilePicture'] as String,
+                          InkWell(
+                            onTap: selectFile,
+                            child: Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(
+                                    userinfo['userProfilePicture'] as String,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    const Divider(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.favorite,
-                                ),
-                              ),
-                              const Text('Likes')
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  // Provider.of<Profile>(context, listen: false).getAccountDetails();
-
-                                  _getUserName();
-                                },
-                                icon: const Icon(
-                                  Icons.notifications,
-                                ),
-                              ),
-                              const Text('Notifications')
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.settings,
-                                ),
-                              ),
-                              const Text('Settings')
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.payment,
-                                ),
-                              ),
-                              const Text('Payments'),
-                            ],
-                          ),
                         ],
                       ),
-                    ),
-                    const Divider(),
-                    ListView.builder(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      itemCount: _columnIcon.length,
-                      itemBuilder: (ctx, index) {
-                        return ListTile(
-                          leading: Icon(_columnIcon[index],
-                              color: Theme.of(context).iconTheme.color),
-                          title: Text(_columnValues[index]),
-                          onTap: () {},
-                        );
-                      },
-                    ),
-                    const Divider(),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'About Us',
-                        style: Theme.of(context).textTheme.subtitle1,
+                      const SizedBox(height: 20),
+                      const Divider(),
+                      ListView.builder(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        itemCount: _columnIcon.length,
+                        itemBuilder: (ctx, index) {
+                          return ListTile(
+                            leading: Icon(_columnIcon[index],
+                                color: Theme.of(context).iconTheme.color),
+                            title: Text(_columnValues[index]),
+                            onTap: () {},
+                          );
+                        },
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Send Feedback',
-                        style: Theme.of(context).textTheme.subtitle1,
+                      const Divider(),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'About Us',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          isloading = true;
-                        });
-                        Provider.of<Auth>(context, listen: false).logout().then(
-                          (_) {
-                            Navigator.of(context)
-                                .pushReplacementNamed(LoginScreen.routeName);
-                          },
-                        );
-                      },
-                      child: Text(
-                        'Logout',
-                        style: Theme.of(context).textTheme.subtitle1,
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Send Feedback',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
                       ),
-                    ),
-                  ],
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            isloading = true;
+                          });
+                          Provider.of<Auth>(context, listen: false)
+                              .logout()
+                              .then(
+                            (_) {
+                              Navigator.of(context)
+                                  .pushReplacementNamed(LoginScreen.routeName);
+                            },
+                          );
+                        },
+                        child: Text(
+                          'Logout',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

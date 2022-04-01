@@ -15,6 +15,8 @@ import './screens/personaldetails_screen.dart';
 import './screens/food_detail_screen.dart';
 import './screens/delivery_confirm_screen.dart';
 import './screens/map_screen.dart';
+import './screens/edit_profile.dart';
+
 import './providers/restaurants_provider.dart';
 import './providers/food_provider.dart';
 import './providers/auth_provider.dart';
@@ -98,6 +100,7 @@ class MyApp extends StatelessWidget {
                   DeliveryConfirmScreen.routeName: (ctx) =>
                       const DeliveryConfirmScreen(),
                   MapScreen.routeName: (ctx) => MapScreen(),
+                  EditProfileScreen.routeName: (ctx) => EditProfileScreen()
                 },
               );
             },
