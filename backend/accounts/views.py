@@ -130,8 +130,6 @@ def delivery_person_login(request):
         message["first_login"] = not user.delivery_person.has_logged_once
 
         login(request, user)
-        user.delivery_person.has_logged_once = True
-        user.delivery_person.save()
         token, _ = Token.objects.get_or_create(user=user)
         message["token"] = token.key
         message["mobile"] = mobile

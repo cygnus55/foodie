@@ -91,6 +91,8 @@ class ChangePassword(APIView):
         password = request.data.get('password')
         user.set_password(password)
         user.save()
+        user.delivery_person.has_logged_once = True
+        user.delivery_person.save()
         return Response({"success": "Password changed successfully."},status=HTTP_200_OK)
 
 
