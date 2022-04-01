@@ -216,6 +216,31 @@ class Auth with ChangeNotifier {
     }
   }
 
+  Future<void> editName(String name) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'customers/profile/');
+      print(name);
+      // ignore: unused_local_variable
+
+      final http.Response response = await http.patch(
+        url,
+        headers: {
+          'Authorization': 'Token ' + authToken,
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            'full_name': name,
+          },
+        ),
+      );
+      final responseData = json.decode(response.body);
+      print(responseData);
+    } catch (error) {
+      print(error);
+    }
+  }
+
   Future<void> logout() async {
     print(authtoken);
     print(authToken);
