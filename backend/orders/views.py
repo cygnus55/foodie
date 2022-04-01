@@ -143,4 +143,6 @@ class GetDeliveryCharge(APIView):
                 if item.food.restaurant.id not in restaurant_id:
                     restaurant_id.append(item.food.restaurant.id)
         charge = get_delivery_charge(customer_location, restaurant_id)
+        if not charge:
+            return Response({"error": "Restaurant has no delivery location."}, status=HTTP_400_BAD_REQUEST)
         return Response({"deliverty_charge": charge}, status=HTTP_200_OK)

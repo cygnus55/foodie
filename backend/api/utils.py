@@ -26,7 +26,11 @@ def get_delivery_charge(cus, restaurant_ids):
     loc = []
     for restaurant_id in restaurant_ids:
         restaurant = Restaurant.objects.get(id=restaurant_id)
+        # check if restaurant has location
+        if not restaurant.location[0] and restaurant.location[1]:
+            return False
         loc.append([restaurant.location[0], restaurant.location[1], restaurant_id])
+        
     if len(loc) == 1:
         return get_restaurant_charge(calculate_distance(cus, loc[0]))
     
