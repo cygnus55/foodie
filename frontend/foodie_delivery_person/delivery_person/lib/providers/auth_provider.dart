@@ -89,6 +89,8 @@ class Auth with ChangeNotifier {
         print(authtoken);
         print(_token);
         isAuth;
+        isNewusertoken = false;
+        isNewuser;
         getauthToken;
         notifyListeners();
         if (_token != null) {

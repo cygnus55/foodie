@@ -1,4 +1,6 @@
+import 'package:delivery_person/datamodels/user_location.dart';
 import 'package:delivery_person/screens/login_screen.dart';
+import 'package:delivery_person/services/location_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -21,35 +23,44 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    return  MultiProvider(providers: [
-      ChangeNotifierProvider.value(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
           value: Auth(),
         ),
-    ],
+        StreamProvider<UserLocation>(
+          initialData: UserLocation(
+            latitude: 0,
+            longitude: 0,
+          ),
+          create: (context) => LocationService().locationStream,
+        ),
+      ],
       child: Consumer<Auth>(
-        builder: (ctx, auth, _) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-         title: 'Delivery Person APP',
-            theme: ThemeData(
-              primarySwatch: buildMaterialColor(const Color(0xFFD42323)),
-              iconTheme: const IconThemeData(color: Colors.black),
-              dividerColor: Colors.black,
-            ),
-        home:auth.isAuth
-                    ? const HomepageScreen()
-                    : FutureBuilder(
-                        future: auth.tryAutoLogin(),
-                        builder: (ctx, authResltSnapsot) =>
-                            authResltSnapsot.connectionState ==
-                                    ConnectionState.waiting
-                                ? const SplashScreen()
-                                : const LoginScreen()),
-        routes: {
-          LoginScreen.routeName: (ctx) => const LoginScreen(),
-          PasswordChangeScreen.routeName: (ctx) => const PasswordChangeScreen(),
-          HomepageScreen.routeName: (ctx) => const HomepageScreen(),
-        }
-      )),
+          builder: (ctx, auth, _) => MaterialApp(
+                
+                  debugShowCheckedModeBanner: false,
+                  title: 'Delivery Person APP',
+                  theme: ThemeData(
+                    primarySwatch: buildMaterialColor(const Color(0xFFD42323)),
+                    iconTheme: const IconThemeData(color: Colors.black),
+                    dividerColor: Colors.black,
+                  ),
+                  home: auth.isAuth
+                      ? const HomepageScreen()
+                      : FutureBuilder(
+                          future: auth.tryAutoLogin(),
+                          builder: (ctx, authResltSnapsot) =>
+                              authResltSnapsot.connectionState ==
+                                      ConnectionState.waiting
+                                  ? const SplashScreen()
+                                  : const LoginScreen()),
+                  routes: {
+                    LoginScreen.routeName: (ctx) => const LoginScreen(),
+                    PasswordChangeScreen.routeName: (ctx) =>
+                        const PasswordChangeScreen(),
+                    HomepageScreen.routeName: (ctx) => const HomepageScreen(),
+                  })),
     );
   }
 }
