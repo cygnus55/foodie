@@ -2,6 +2,22 @@
 
 {% load static %}
 
+{% block extrastyle %}
+            .navbar-brand{
+                font-style: normal;
+                font-weight: 700;
+                font-size: 30px;
+                line-height: 54px;
+            }
+            h3{
+                font-style: normal;
+                font-weight: 700;
+                font-size: 28px;
+                line-height: 54px;
+            }
+            {% block restaurant_extrastyle %}{% endblock %}
+{% endblock %}
+
 {% block content %}
 <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
 
@@ -25,7 +41,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle btn my-md-0 ms-md-3" href="#" id="navbarDropdown"
                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-solid fa-gear fa-1x"></i>
+                            <i class="fa-solid fa-gear fa-2x"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end"
                             aria-labelledby="navbarDropdown">
@@ -35,7 +51,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item">
+                                <a href="{% url 'restaurants:get_location' %}" class="dropdown-item">
                                     <i class="fa-solid fa-location-dot"></i> Edit Location
                                 </a>
                             </li>
@@ -58,6 +74,21 @@
             </div>
         </div>
     </nav>
-    {% block restaurant_content %}{% endblock restaurant_content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <br/>
+    <br/>
+    <div class="container">
+        {% block restaurant_content %}{% endblock restaurant_content %}
+    </div>
 </div>
 {% endblock content %}

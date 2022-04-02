@@ -85,5 +85,15 @@ class Restaurant(models.Model):
         except ObjectDoesNotExist:
             return False
 
+    def distance(self, lat, lng):
+        from geopy.distance import geodesic
+        location = self.location
+        return geodesic((location[0], location[1]), (lat, lng)).km
+    
+    @property
+    def has_location(self):
+        return all(self.location)
+    
+
     def __str__(self):
         return f"{self.user.full_name} for user {self.user.username}"
