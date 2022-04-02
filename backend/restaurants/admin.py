@@ -26,7 +26,7 @@ admin.site.register(RegisterRestaurant, RegisterRestaurantAdmin)
 
 
 @admin.register(Restaurant)
-class RestaurantAdmin(admin.ModelAdmin):
+class RestaurantAdmin(admin.ModelAdmin, DynamicArrayMixin):
     model = Restaurant
     list_display = ["user", "open_hour", "close_hour", "ratings_count", "average_ratings", "is_available", "logo"]
     list_filter = ["is_available"]

@@ -56,7 +56,7 @@ def register(request):
 
             profile_picture = f"https://www.gravatar.com/avatar/{digest}?d=retro"
 
-            DeliveryPerson.objects.create(user=user, profile_picture=profile_picture)
+            DeliveryPerson.objects.create(user=user, profile_picture=profile_picture, location=[None, None])
 
             # send email
             subject = "Welcome to Foodie"
