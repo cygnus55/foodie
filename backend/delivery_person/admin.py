@@ -3,6 +3,7 @@ from django.urls import path
 from django.db import models
 
 from delivery_person.models import DeliveryPerson
+from django_better_admin_arrayfield.admin.mixins import DynamicArrayMixin
 from delivery_person.views import register
 
 
@@ -24,6 +25,6 @@ admin.site.register(RegisterDeliveryUser, RegisterDeliveryUserAdmin)
 
 
 @admin.register(DeliveryPerson)
-class DeliveryPersonAdmin(admin.ModelAdmin):
+class DeliveryPersonAdmin(admin.ModelAdmin, DynamicArrayMixin):
     model = DeliveryPerson
     list_display = ['user', 'profile_picture']

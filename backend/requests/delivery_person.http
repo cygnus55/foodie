@@ -38,6 +38,7 @@ Content-Type: application/json
     "full_name": "John Doe",
     "email": "john@example.com",
     "profile_pic": "http://example.com/profile.jpg",
+    "location": ["latitude", "longitude"]
 }
 
 ###
