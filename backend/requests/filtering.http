@@ -1,0 +1,45 @@
+# Filtering Food
+# Always send lat and longitude while filtering food
+# Get food near customer location
+GET http://localhost:8000/foods/?lat=27.572572&lng=-82.534818
+
+###
+
+# Filter by top_rated
+GET http://localhost:8000/foods/?lat=27.572572&lng=-82.534818&filter=top_rated
+
+###
+
+# Filter by favorite. Authentication is required for this.
+GET http://localhost:8000/foods/?lat=27.572572&lng=-82.534818&filter=favorite
+Authorization: Token <token>
+
+###
+
+# Filter by veg
+GET http://localhost:8000/foods/?lat=27.572572&lng=-82.534818&filter=veg
+
+###
+
+# Filter by offers
+GET http://localhost:8000/foods/?lat=27.572572&lng=-82.534818&filter=offers
+
+###
+
+# Filtering restaurants
+# Always send lat and longitude while filtering restaurants
+# Get restaurants near customer location
+GET http://localhost:8000/restaurants/?lat=27.572572&lng=-82.534818
+
+###
+
+# Filter by top_rated
+GET http://localhost:8000/restaurants/?lat=27.572572&lng=-82.534818&filter=top_rated
+
+###
+
+# Filter by favorite. Authentication is required for this.
+GET http://localhost:8000/restaurants/?lat=27.572572&lng=-82.534818&filter=favorite
+Authorization: Token <token>
+
+###

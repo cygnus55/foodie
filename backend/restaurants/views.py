@@ -1,3 +1,4 @@
+from multiprocessing import context
 import random
 import string
 from hashlib import md5
@@ -5,9 +6,10 @@ from hashlib import md5
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -19,7 +21,6 @@ from django.views.generic import (
     ListView,
     DetailView,
 )
-
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import (
     ListCreateAPIView,
@@ -40,7 +41,6 @@ from restaurants.forms import RestaurantRegistrationForm
 
 
 class RestaurantList(ListCreateAPIView):
-    queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     permission_classes = [
         IsAuthenticatedOrReadOnly,
@@ -55,6 +55,28 @@ class RestaurantList(ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+    
+    def get_queryset(self):
+        queryset = Restaurant.objects.all()
+        latitude = self.request.query_params.get('lat', None)
+        longitude = self.request.query_params.get('lng', None)
+        filter = self.request.query_params.get('filter', None)
+        if latitude and longitude:
+            # for every queryset, calculate distance from the given lat and lng and filter if distance is less than 4km
+            for q in queryset:
+                if q.distance(latitude, longitude) > 10:
+                    queryset = queryset.exclude(id=q.id)
+        if filter:
+            if filter == "top_rated":
+                for q in queryset:
+                    if q.average_ratings <= 3:
+                        queryset = queryset.exclude(id=q.id)
+            elif filter == "favorite":
+                if self.request.user.is_authenticated and self.request.user.is_customer:
+                    for q in queryset:
+                        if q.customer_favourite_status(id=self.request.user.customer.id) == False:
+                            queryset = queryset.exclude(id=q.id)
+        return queryset
 
 
 class RestaurantDetails(RetrieveUpdateDestroyAPIView):
@@ -103,7 +125,7 @@ def register(request):
             strg.join(random.choice(string.ascii_letters) for i in range(10))
             digest = md5(strg.encode("utf-8")).hexdigest()
 
-            logo = f"https://www.gravatar.com/avatar/{digest}?d=retro"
+            logo = f"https://www.gravatar.com/avatar/{digest}?d=identicon"
 
             try:
                 Restaurant.objects.create(
@@ -135,9 +157,14 @@ def register(request):
 
 
 @login_required
+@user_passes_test(lambda u: u.is_restaurant and u.is_active)
 def restaurant_dashboard(request):
-    if not request.user.is_restaurant:
-        raise PermissionDenied
+    # if not request.user.restaurant.has_logged_once:
+    #     # change password page
+    #     return redirect("restaurants:restaurant_details")
+    if not request.user.restaurant.has_location:
+        # redirect to location page
+        return redirect("restaurants:get_location")
     return render(request, "restaurants/dashboard.html")
 
 
@@ -211,3 +238,30 @@ class FoodDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def test_func(self):
         return self.request.user.is_active and self.request.user.is_restaurant and self.get_object().restaurant == self.request.user.restaurant
+
+
+@login_required
+@user_passes_test(lambda u: u.is_restaurant and u.is_active)
+def get_location(request):
+    if request.method == "GET":
+        restaurant = request.user.restaurant
+        location = {
+            "Latitude": restaurant.location[0] or '',
+            "Longitude": restaurant.location[1] or '',
+            "Address": restaurant.location[2] or ''
+        }
+        return render(request, "restaurants/location.html", {"location": location})
+
+@login_required
+@user_passes_test(lambda u: u.is_restaurant and u.is_active)
+def update_location(request):
+    if request.method == "GET":
+        restaurant = request.user.restaurant
+        latitude = request.GET.get("latitude")
+        longitude = request.GET.get("longitude")
+        address = request.GET.get("address")
+        restaurant.location = [latitude, longitude, address]
+        restaurant.save()
+        messages.success(request, "Location updated successfully.")
+        return JsonResponse({"success": True})
+    
