@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'bootstrap5',
     'fontawesomefree',
     'django_filters',
+    'crispy_forms',
 
     # local apps
     'accounts',
@@ -205,7 +206,7 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
     'http://localhost:8000/',
 ]
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True 
+CORS_ALLOW_CREDENTIALS = True
 
 # Django Taggit
 TAGGIT_CASE_INSENSITIVE = True

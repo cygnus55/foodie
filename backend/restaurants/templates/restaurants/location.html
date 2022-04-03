@@ -1,69 +1,41 @@
 {% extends "restaurants/base.html" %}
 
-{% block restaurant_extrastyle %} 
-    .map-caption{
-        font-style: normal;
-        font-weight: 700;
-        font-size: 18px;
-        line-height: 54px;
-    }
-    .location-info{
-        font-style: normal;
-        font-weight: 700;
-        font-size: 20px;
-        line-height: 33px;
-    }
-    #map {
-        margin: 20px;
-        height: 562px;
-    }
-    #update-button{
-        width: 210px;
-        height: 70px;
-        font-style: normal;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 24px;
-        line-height: 50px;
-        background-color: #5DB93D;
-    }
+{% block restaurant_extrastyle %}
+#map {
+    height: 560px;
+}
 {% endblock %}
 
 
 {% block restaurant_content %}
-    <div class="row">
-        <h3 class="col-12 text-start">
-            Restaurant Location
-        </h3>
-    </div>
+    <div class="location-display text-start">
+        <h3>Restaurant Location</h3>
 
-    <div class="row text-start">
-        {% for key, value in location.items %} 
-            <div class="col-3">
-                <p class="location-info">{{ key }}</p>
+        <div class="location-details">
+            {% for key, value in location.items %}
+            <div class="row">
+                <div class="col-3">
+                    <p class="location-info"><b>{{ key }}</b></p>
+                </div>
+                <div class="col-9">
+                    <p class="location-info" id="{{key}}">{{ value }}</p>
+                </div>
             </div>
-            <div class="col-9">
-                <p class="location-info" id="{{key}}">{{ value }}</p>
-            </div>
-        {% endfor %}
-    </div>
-
-    <div class="row">
-        <div class="col-8">
-            <p class="text-start map-caption"> Select location on the map below: </p>
-        </div>
-        <div class="col-1"></div>
-        <div class="col-3">
-            <button id="update-button">
-                {% if location.Latitude %}
-                    Update
-                {% else %}
-                    Add
-                {% endif %}
-            </button>
+            {% endfor %}
         </div>
     </div>
-    <div id="map"></div>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <span class="map-caption"><b>Select location on the map below:</b></span>
+        <button class="btn btn-success" id="update-button">
+            {% if location.Latitude %}
+                Update
+            {% else %}
+                Set
+            {% endif %}
+        </button>
+    </div>
+    <div id="map" class="my-3"></div>
 {% endblock restaurant_content %}
 
 {% block extrascript %}
@@ -100,7 +72,7 @@
         var geocodeService = L.esri.Geocoding.geocodeService({
             apikey: 'AAPK2cf3aa2b98374a65aad068bc820a23a5QAY57PTfJEWq2woTOWfhHWwrUcswhQ8skD8IqZ4ojmmrxBAIe70s5y4u-fTTPxyG'
         });
-        
+
         if (lat != '' && lng != '') {
             var lat_lng = [lat, lng];
             show_map(lat_lng);
@@ -187,7 +159,7 @@
         );
 
         function ajax_get_coords(latitude,longitude, address){
-            
+
             $.ajax({
                 url: "{% url 'restaurants:update_location' %}",
                 data: {

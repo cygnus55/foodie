@@ -1,3 +1,21 @@
 {% extends "restaurants/base.html" %}
 
-{% block restaurant_content %}{% endblock restaurant_content %}
+{% load crispy_forms_tags %}
+
+{% block restaurant_content %}
+<div class="container text-start">
+    <h3>Add/Edit Food</h3>
+    <div class="row">
+       <div class="col-md-9">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a href="{% url 'restaurants:food_list' %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock restaurant_content %}

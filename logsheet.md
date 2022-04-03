@@ -5,7 +5,7 @@
 - Initial ER diagram draft created
 - Carried out some research about authentication using OTP with the help of Twilio
 - Did design in Figma some of which implemented in flutter
-- Setup database and basics of backend 
+- Setup database and basics of backend
 
 ## Week 2:
 
@@ -29,12 +29,12 @@
 - Fetching foods and restaurants from backend
 - Uploading image in firebase
 - Food detail screen
-- Restaurant detail screen 
+- Restaurant detail screen
 - API (cart, reviews and ratings)
 
 ## Week 5:
 
-- Cart screen 
+- Cart screen
 - Current Location
 - Bug fix
 
@@ -44,4 +44,4 @@
 - Khalti payment
 - Map display in Screen
 - Login and logout of delivery person
-- Design restaurant UI  
+- Design restaurant UI

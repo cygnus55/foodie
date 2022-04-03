@@ -3,26 +3,27 @@
 {% load static %}
 
 {% block extrastyle %}
-            .navbar-brand{
-                font-style: normal;
-                font-weight: 700;
-                font-size: 30px;
-                line-height: 54px;
-            }
-            h3{
-                font-style: normal;
-                font-weight: 700;
-                font-size: 28px;
-                line-height: 54px;
-            }
-            {% block restaurant_extrastyle %}{% endblock %}
+    .navbar-brand {
+        font-style: normal;
+        font-weight: 700;
+        font-size: 30px;
+        line-height: 54px;
+    }
+
+    h3 {
+        font-style: normal;
+        font-weight: 700;
+        font-size: 28px;
+        line-height: 54px;
+    }
+    {% block restaurant_extrastyle %}{% endblock %}
 {% endblock %}
 
 {% block content %}
 <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
 
 <div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light mb-4">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'restaurants:restaurant_home' %}">
                 <img src="{{ user.restaurant.logo }}"
@@ -46,7 +47,7 @@
                         <ul class="dropdown-menu dropdown-menu-end"
                             aria-labelledby="navbarDropdown">
                             <li>
-                                <a href="#" class="dropdown-item">
+                                <a href="{% url 'restaurants:account_settings' %}" class="dropdown-item">
                                     <i class="fa-solid fa-user-gear"></i> Account Settings
                                 </a>
                             </li>
@@ -85,8 +86,6 @@
             {% endif %}
         </div>
     </div>
-    <br/>
-    <br/>
     <div class="container">
         {% block restaurant_content %}{% endblock restaurant_content %}
     </div>
