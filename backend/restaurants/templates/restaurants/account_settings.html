@@ -1,0 +1,23 @@
+{% extends "restaurants/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block restaurant_content %}
+<div class="text-start">
+    <h3>Account Settings</h3>
+    <div class="row flex-column-reverse flex-md-row">
+        <div class="col-md-6 col-sm-12">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    {{ name_form|crispy }}
+                    {{ account_form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Update</button>
+                </div>
+            </form>
+        </div>
+   </div>
+</div>
+{% endblock restaurant_content %}

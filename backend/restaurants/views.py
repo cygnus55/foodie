@@ -37,7 +37,7 @@ from restaurants.custompermissions import (
     IsCurrentUserAlreadyAnOwner,
     IsCurrentUserOwnerOrReadOnly,
 )
-from restaurants.forms import RestaurantRegistrationForm
+from restaurants.forms import RestaurantRegistrationForm, RestaurantNameUpdateForm, RestaurantAccountUpdateForm
 
 
 class RestaurantList(ListCreateAPIView):
@@ -55,7 +55,7 @@ class RestaurantList(ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-    
+
     def get_queryset(self):
         queryset = Restaurant.objects.all()
         latitude = self.request.query_params.get('lat', None)
@@ -148,7 +148,7 @@ def register(request):
             to = user.email
 
             send_mail(subject, plain_message, from_email, [to], html_message=html_message, fail_silently=False)
-            
+
             messages.success(request, f"Account created for restaurant {user.full_name}.")
             return redirect("admin:restaurants_restaurant_changelist")
     else:
@@ -165,7 +165,45 @@ def restaurant_dashboard(request):
     if not request.user.restaurant.has_location:
         # redirect to location page
         return redirect("restaurants:get_location")
-    return render(request, "restaurants/dashboard.html")
+    foods = Food.objects.filter(restaurant=request.user.restaurant)
+    return render(request, "restaurants/dashboard.html", {"foods": foods})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_restaurant and u.is_active)
+def account_settings(request):
+    if request.method == "POST":
+        name_form = RestaurantNameUpdateForm(
+            data=request.POST,
+            files=request.FILES,
+            instance=request.user,
+        )
+        account_form = RestaurantAccountUpdateForm(
+            data=request.POST,
+            files=request.FILES,
+            instance=request.user.restaurant,
+        )
+        if name_form.is_valid() and account_form.is_valid():
+            name_form.save()
+            account_form.save()
+            messages.success(request, "Profile successfully updated!")
+            return redirect("restaurants:account_settings")
+        else:
+            messages.error(request, "Profile update failed!")
+            return redirect("restaurants:account_settings")
+
+    name_form = RestaurantNameUpdateForm(
+        instance=request.user,
+    )
+    account_form = RestaurantAccountUpdateForm(
+        instance=request.user.restaurant,
+    )
+
+    return render(
+        request,
+        "restaurants/account_settings.html",
+        {"name_form": name_form, "account_form": account_form},
+    )
 
 
 @login_required
@@ -176,7 +214,7 @@ def change_password(request):
 class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Food
     fields = ["name", "description", "price", "is_available",
-              "image", "discount_percent", "is_veg"]
+              "discount_percent", "is_veg"]
 
     template_name = "restaurants/food_form.html"
     success_url = reverse_lazy("restaurants:food_list")
@@ -194,13 +232,12 @@ class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class FoodUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Food
-    fields = ["name", "description", "price", "is_available",
-              "image", "discount_percent", "is_veg"]
+    fields = ["name", "description", "price", "is_available", "discount_percent", "is_veg"]
     template_name = "restaurants/food_form.html"
     success_url = reverse_lazy("restaurants:food_list")
 
     def test_func(self):
-        return self.request.user.is_active and self.request.is_restaurant and self.get_object().restaurant == self.request.user.restaurant
+        return self.request.user.is_active and self.request.user.is_restaurant and self.get_object().restaurant == self.request.user.restaurant
 
     def form_valid(self, form):
         form.instance.restaurant = self.request.user.restaurant
@@ -264,4 +301,4 @@ def update_location(request):
         restaurant.save()
         messages.success(request, "Location updated successfully.")
         return JsonResponse({"success": True})
-    
+

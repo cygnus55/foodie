@@ -1,9 +1,27 @@
 {% extends "restaurants/base.html" %}
 
+{% load static %}
+
 {% block restaurant_content %}
-    <div class="row">
-        <h3 class="col-12 text-start">
+    <div class="text-start">
+        <h3>
             Dashboard
         </h3>
+        <div>
+            {% if foods %}
+                {% for food in foods %}
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="{% if food.image %}{{ food.image }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" alt="{{ food.name }}" width=100>
+                      <div class="card-body">
+                        <h5 class="card-title">{{ food.name }}</h5>
+                        <p class="card-text">{{ food.description  }}</p>
+                      </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                No food added!
+                <a href="{% url 'restaurants:food_create' %}">Add Food</a>
+            {% endif %}
+        </div>
     </div>
 {% endblock restaurant_content %}
