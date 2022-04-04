@@ -1,20 +1,45 @@
 {% extends "restaurants/base.html" %}
 
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block restaurant_content %}
 <div class="container text-start">
-    <h3>Add/Edit Food</h3>
     <div class="row">
-       <div class="col-md-9">
+       <div class="col-md-8">
+           <h3>Add/Edit Food</h3>
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <button type="submit" class="btn btn-primary">Update</button>
-                <a href="{% url 'restaurants:food_list' %}" class="btn btn-secondary">
-                    Cancel
-                </a>
+                <div class="my-2">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <a href="{% url 'restaurants:food_list' %}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
             </form>
+        </div>
+        <div class="col-md-4 border border-rounded py-3">
+            <h4>Templates</h4>
+            {% if templates %}
+            <p class="text-muted">Some templates to help you with quick addition of food to your dashboard!</p>
+            {% for template in templates %}
+                <div class="card m-2" style="width: 18rem;">
+                    <a href="{% url 'restaurants:food_create_from_template' template.id %}">
+                        <img class="card-img-top" src="{% if template.image %}{{ template.image }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" alt="{{ template.name }}" width=100 />
+                    </a>
+                    <div class="card-body">
+                        <a href="{% url 'restaurants:food_create_from_template' template.id %}">
+                            <h5 class="card-title">{{ template.name }}</h5>
+                        </a>
+                        <p class="card-text">Rs. {{ template.price }}</p>
+                        <p class="card-text">{{ template.description  }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            {% else %}
+                <p class="text-muted">Sorry, no template for food available at the moment!</p>
+            {% endif %}
         </div>
     </div>
 </div>

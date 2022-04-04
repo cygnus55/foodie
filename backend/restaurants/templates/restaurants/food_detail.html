@@ -1,77 +1,65 @@
 {% extends "restaurants/base.html" %}
 
+{% load static %}
+{% load restaurants_tags %}
+
 {% block restaurant_content %}
-<div class="container" style="margin-top: 20px; margin-bottom: 20px">
-    <div class="row">
-        <div class="col-md-12">
-                {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                    </div>
-                {% endfor %}
-                {% endif %}
+<div class="text-start">
+    <h3>Food Details: {{ food.name }}</h3>
+    <div class="row my-2">
+        <div class="col-md-5 d-flex flex-column align-items-center">
+            <div class="row">
+                <img src="{% if food.image %}{{ food.image }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" alt="{{ food.name }}" width=200 height=200 />
             </div>
-    </div>
-
-    <div class="row">
-        <div class="card bg-light text-dark">
-            <div class="card-block">
-                <div class="row" style="margin-top: 20px; margin-bottom:20px;">
-                    <div class="col-lg-3 col-md-7 p-b-2">
-                        <div style="text-align: center;">
-                            <img src="{% if food.image %}{{ food.image.url }}{% else %}{% static 'base/img/no_image.png' %}{% endif %}" 
-                            alt="" width=250 height=250 style="border-radius: 8px; object-fit: cover;" />
-                        </div>
-    
-                        {% if food.discount_percent > 0 %}
-                        <div class="ribbon-wrapper">
-                                <div class="ribbon green">
-                                    {{ food.discount_percent }}% OFF
-                                </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                
-                    <div class="col-lg-8 col-md-7 offset-lg-1">
-                        <div class="row">
-                            <div class="row">
-                                <h5>
-                                    {{ food.name }} <small class="text-muted"><small>{{ food.category.name }}</small></small>
-                                    {% ratings food read_only=True %}
-                                </h5>
-                            </div>
-    
-                            {% if food.description %}
-                                <div class="row">
-                                    <p>{{ food.description }}</p>
-                                </div>
-                                <hr>
-                            {% endif %}
-    
-                            <div class="row">
-                                <p>
-                                    Rs. 
-                                    {% if food.discount_percent > 0 %}
-                                        <del class="text-muted">{{ food.price }}</del> {{ food.get_selling_price }}
-                                    {% else %}
-                                        {{ food.price }}
-                                    {% endif %}
-                                </p>
-                            </div>
-
-                            <div class="row">
-                                <span style="text-align: center;">
-                                    <a class="btn btn-outline-info" href="{% url 'restaurants:update_food' food.id %}" style="text-decoration: none;">
-                                        <i class="far fa-edit"></i> Edit Food
-                                    </a>&nbsp;
-                                    <a class="btn btn-outline-danger" href="{% url 'restaurants:delete_food' food.id %}" style="text-decoration: none;">
-                                        <i class="far fa-trash-alt"></i> Delete Food
-                                    </a>
+            <span class="my-2">
+                <a href="{% url 'restaurants:food_update' food.id %}">
+                    <i class="fa-solid fa-pen-to-square text-primary"></i>
+                </a>
+                &nbsp;
+                <a href="{% url 'restaurants:food_delete' food.id %}">
+                    <i class="fa-solid fa-trash text-danger"></i>
+                </a>
+            </span>
+        </div>
+        <div class="col-md-7">
+            <div class="row">
+                <div class="col-md-5"><b>Description</b></div>
+                <div class="col-md-7">{{ food.description }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-5"><b>Price</b></div>
+                <div class="col-md-7">
+                    Rs.
+                    {% if food.discount_percent > 0 %}
+                        <span class="text-muted"><del>{{ food.price }}</del></span> {{ food.selling_price }}
+                    {% else %}
+                        {{ food.price }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5"><b>Vegetarian</b></div>
+                <div class="col-md-7">{{ food.is_veg }}</div>
+            </div>
+            <div class="reviews my-5">
+                <h4>Reviews ({{ food.reviews.all.count }})</h4>
+                <div class="reviews-list my-2">
+                    {% for review in food.reviews.all %}
+                        <div class="d-flex align-items-center border border-secondary rounded p-2 mb-2">
+                            <img src="{% if review.customer.profile_picture %}{{ review.customer.profile_picture }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" class="rounded-circle" alt="{{ review.customer.user.full_name }}" width=75 height=75>
+                            <div class="p-2">
+                              <div>
+                                <span class="card-title"><b>{{ review.customer.user.full_name }}</b> </span>
+                                <span>
+                                  {% for i in review.ratings|times %}
+                                      <i class="fa-solid fa-star text-warning"></i>
+                                  {% endfor %}
                                 </span>
+                              </div>
+                              <p class="card-text">{{ review.comment }}</p>
                             </div>
                         </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
