@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import MinLengthValidator
 
 from restaurants.models import Restaurant
@@ -27,3 +28,6 @@ class RestaurantAccountUpdateForm(forms.ModelForm):
             "website_link", "facebook_link", "is_available",
         ]
 
+
+class CustomChangePasswordForm(PasswordChangeForm):
+    pass

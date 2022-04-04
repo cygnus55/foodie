@@ -37,7 +37,7 @@ from restaurants.custompermissions import (
     IsCurrentUserAlreadyAnOwner,
     IsCurrentUserOwnerOrReadOnly,
 )
-from restaurants.forms import RestaurantRegistrationForm, RestaurantNameUpdateForm, RestaurantAccountUpdateForm
+from restaurants.forms import RestaurantRegistrationForm, RestaurantNameUpdateForm, RestaurantAccountUpdateForm, CustomChangePasswordForm
 
 
 class RestaurantList(ListCreateAPIView):
@@ -58,9 +58,9 @@ class RestaurantList(ListCreateAPIView):
 
     def get_queryset(self):
         queryset = Restaurant.objects.all()
-        latitude = self.request.query_params.get('lat', None)
-        longitude = self.request.query_params.get('lng', None)
-        filter = self.request.query_params.get('filter', None)
+        latitude = self.request.query_params.get("lat", None)
+        longitude = self.request.query_params.get("lng", None)
+        filter = self.request.query_params.get("filter", None)
         if latitude and longitude:
             # for every queryset, calculate distance from the given lat and lng and filter if distance is less than 4km
             for q in queryset:
@@ -159,11 +159,12 @@ def register(request):
 @login_required
 @user_passes_test(lambda u: u.is_restaurant and u.is_active)
 def restaurant_dashboard(request):
-    # if not request.user.restaurant.has_logged_once:
-    #     # change password page
-    #     return redirect("restaurants:restaurant_details")
+    if not request.user.restaurant.has_logged_once:
+        # redirect the user(restaurant) to change password
+        messages.info(request, "You seem to have logged in to the dashboard for the first time. Please change your password!")
+        return redirect("restaurants:change_password")
     if not request.user.restaurant.has_location:
-        # redirect to location page
+        # redirect the user(restaurant) to change location
         return redirect("restaurants:get_location")
     foods = Food.objects.filter(restaurant=request.user.restaurant)
     return render(request, "restaurants/dashboard.html", {"foods": foods})
@@ -207,8 +208,23 @@ def account_settings(request):
 
 
 @login_required
+@user_passes_test(lambda u: u.is_restaurant and u.is_active)
 def change_password(request):
-    pass
+    if request.method == "POST":
+        form = CustomChangePasswordForm(request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            if not request.user.restaurant.has_logged_once:
+                request.user.restaurant.has_logged_once = True
+                request.user.restaurant.save()
+            messages.success(request, "Password successfully updated! Login to continue to the dashboard!")
+            return redirect("restaurants:restaurant_home")
+        else:
+            messages.error(request, "Password couldn't be updated!")
+            return redirect("restaurants:change_password")
+
+    form = CustomChangePasswordForm(request.user)
+    return render(request, "restaurants/change_password.html", {"form": form})
 
 
 class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -283,9 +299,9 @@ def get_location(request):
     if request.method == "GET":
         restaurant = request.user.restaurant
         location = {
-            "Latitude": restaurant.location[0] or '',
-            "Longitude": restaurant.location[1] or '',
-            "Address": restaurant.location[2] or ''
+            "Latitude": restaurant.location[0] or "",
+            "Longitude": restaurant.location[1] or "",
+            "Address": restaurant.location[2] or ""
         }
         return render(request, "restaurants/location.html", {"location": location})
 

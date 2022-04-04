@@ -28,6 +28,17 @@ admin.site.register(RegisterRestaurant, RegisterRestaurantAdmin)
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin, DynamicArrayMixin):
     model = Restaurant
-    list_display = ["user", "open_hour", "close_hour", "ratings_count", "average_ratings", "is_available", "logo"]
+    list_display = ["get_name", "get_phone", "open_hour", "close_hour", "ratings_count", "average_ratings", "is_available", "logo",]
+
+    def get_name(self, obj):
+        return obj.user.full_name
+    get_name.admin_order_field  = 'full_name'
+    get_name.short_description = 'Name'
+
+    def get_phone(self, obj):
+        return obj.user.mobile
+    get_phone.admin_order_field  = 'mobile'
+    get_phone.short_description = 'Phone'
+
     list_filter = ["is_available"]
     list_editable = ["is_available"]
