@@ -12,18 +12,25 @@
             <i class="fa-solid fa-add"></i> Add food
         </a>
     </div>
-    <div>
+    <div class="my-3">
         {% if foods %}
             <div class="row">
                 {% for food in foods %}
-                    <div class="card col-md-3 mx-2" style="width: 18rem;">
+                    <div class="card col-md-3 m-2" style="width: 18rem;">
                         <a href="{% url 'restaurants:food_detail' food.id %}">
-                            <img class="card-img-top" src="{% if food.image %}{{ food.image }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" alt="{{ food.name }}" width=100 />
+                            <img class="card-img-top" src="{% if food.image.url %}{{ food.image.url }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" alt="{{ food.name }}" width=100 />
                         </a>
                       <div class="card-body">
                         <a href="{% url 'restaurants:food_detail' food.id %}">
                             <h5 class="card-title">{{ food.name }}</h5>
                         </a>
+                        <p class="card-text">
+                            {% for tag in food.tags.all %}
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ tag }}
+                                </span>
+                            {% endfor %}
+                        </p>
                         <p class="card-text">
                             Rs.
                             {% if food.discount_percent > 0 %}

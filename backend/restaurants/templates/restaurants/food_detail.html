@@ -9,7 +9,7 @@
     <div class="row my-2">
         <div class="col-md-5 d-flex flex-column align-items-center">
             <div class="row">
-                <img src="{% if food.image %}{{ food.image }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" alt="{{ food.name }}" width=200 height=200 />
+                <img src="{% if food.image.url %}{{ food.image.url }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" alt="{{ food.name }}" width=200 height=200 />
             </div>
             <span class="my-2">
                 <a href="{% url 'restaurants:food_update' food.id %}">
@@ -22,6 +22,18 @@
             </span>
         </div>
         <div class="col-md-7">
+            {% if food.tags.all %}
+                <div class="row mb-2">
+                    <div class="col-md-12">
+                        {% for tag in food.tags.all %}
+                            <span class="badge rounded-pill bg-primary">
+                                {{ tag }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="row">
                 <div class="col-md-5"><b>Description</b></div>
                 <div class="col-md-7">{{ food.description }}</div>
@@ -42,24 +54,28 @@
                 <div class="col-md-7">{{ food.is_veg }}</div>
             </div>
             <div class="reviews my-5">
-                <h4>Reviews ({{ food.reviews.all.count }})</h4>
+                <h4>Reviews <small>({{ food.reviews.all.count }})</small></h4>
                 <div class="reviews-list my-2">
-                    {% for review in food.reviews.all %}
-                        <div class="d-flex align-items-center border border-secondary rounded p-2 mb-2">
-                            <img src="{% if review.customer.profile_picture %}{{ review.customer.profile_picture }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" class="rounded-circle" alt="{{ review.customer.user.full_name }}" width=75 height=75>
-                            <div class="p-2">
-                              <div>
-                                <span class="card-title"><b>{{ review.customer.user.full_name }}</b> </span>
-                                <span>
-                                  {% for i in review.ratings|times %}
-                                      <i class="fa-solid fa-star text-warning"></i>
-                                  {% endfor %}
-                                </span>
-                              </div>
-                              <p class="card-text">{{ review.comment }}</p>
+                    {% if food.reviews.all %}
+                        {% for review in food.reviews.all %}
+                            <div class="d-flex align-items-center border border-secondary rounded p-2 mb-2">
+                                <img src="{% if review.customer.profile_picture %}{{ review.customer.profile_picture }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" class="rounded-circle" alt="{{ review.customer.user.full_name }}" width=75 height=75>
+                                <div class="p-2">
+                                  <div>
+                                    <span class="card-title"><b>{{ review.customer.user.full_name }}</b> </span>
+                                    <span>
+                                      {% for i in review.ratings|times %}
+                                          <i class="fa-solid fa-star text-warning"></i>
+                                      {% endfor %}
+                                    </span>
+                                  </div>
+                                  <p class="card-text">{{ review.comment }}</p>
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Sorry, no review to show!</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

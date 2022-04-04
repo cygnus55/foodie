@@ -3,6 +3,8 @@ import random
 import string
 from hashlib import md5
 
+import cloudinary
+
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -128,6 +130,12 @@ def register(request):
             logo = f"https://www.gravatar.com/avatar/{digest}?d=identicon"
 
             try:
+                resp = cloudinary.uploader.upload(logo)
+                logo = resp["secure_url"]
+            except Exception:
+                logo = ""
+
+            try:
                 Restaurant.objects.create(
                     user=user,
                     logo=logo,
@@ -230,7 +238,7 @@ def change_password(request):
 class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Food
     fields = ["name", "description", "price", "is_available",
-              "discount_percent", "is_veg"]
+              "discount_percent", "is_veg", "image"]
 
     template_name = "restaurants/food_form.html"
     success_url = reverse_lazy("restaurants:food_list")
@@ -242,10 +250,11 @@ class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         form.instance.restaurant = self.request.user.restaurant
         return super().form_valid(form)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *args, **kwargs):
         template_id = self.kwargs.get("template_id")
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(*args, **kwargs)
         context["templates"] = FoodTemplate.objects.all()
+        context["page"] = "create"
         return context
 
     def get_initial(self):
@@ -262,13 +271,16 @@ class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
             data["price"] = template_instance.price
             data["is_available"] = template_instance.is_available
             data["is_veg"] = template_instance.is_veg
+            template_instance.usage += 1
+            template_instance.save()
 
         return data
 
 
 class FoodUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Food
-    fields = ["name", "description", "price", "is_available", "discount_percent", "is_veg"]
+    fields = ["name", "description", "price", "is_available",
+            "discount_percent", "is_veg", "image"]
     template_name = "restaurants/food_form.html"
     success_url = reverse_lazy("restaurants:food_list")
 
@@ -278,6 +290,11 @@ class FoodUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def form_valid(self, form):
         form.instance.restaurant = self.request.user.restaurant
         return super().form_valid(form)
+
+    def get_context_data(self,*args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["page"] = "update"
+        return context
 
 
 class FoodDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

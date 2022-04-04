@@ -20,6 +20,11 @@ class RestaurantSerializer(TaggitSerializer, serializers.ModelSerializer):
     open_status = serializers.BooleanField(read_only=True)
     is_favourite = serializers.SerializerMethodField("get_favourite_status")
     distance = serializers.SerializerMethodField("get_distance")
+    logo = serializers.SerializerMethodField("get_logo_url")
+
+    def get_logo_url(self, obj):
+        logo_url = obj.logo.url
+        return logo_url
 
     def get_favourite_status(self, obj):
         user = self.context["request"].user
@@ -28,7 +33,7 @@ class RestaurantSerializer(TaggitSerializer, serializers.ModelSerializer):
             is_fav = obj.customer_favourite_status(id=customer_id)
             return is_fav
         return False
-    
+
     def get_distance(self, obj):
         latitude = self.context["request"].query_params.get('lat', None)
         longitude = self.context["request"].query_params.get('lng', None)

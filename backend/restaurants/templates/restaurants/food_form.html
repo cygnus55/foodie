@@ -19,6 +19,7 @@
                 </div>
             </form>
         </div>
+        {% if page == "create" %}
         <div class="col-md-4 border border-rounded py-3">
             <h4>Templates</h4>
             {% if templates %}
@@ -26,7 +27,7 @@
             {% for template in templates %}
                 <div class="card m-2" style="width: 18rem;">
                     <a href="{% url 'restaurants:food_create_from_template' template.id %}">
-                        <img class="card-img-top" src="{% if template.image %}{{ template.image }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" alt="{{ template.name }}" width=100 />
+                        <img class="card-img-top" src="{% if template.image.url %}{{ template.image.url }}{% else %}{% static 'restaurants/img/noimage.png' %}{% endif %}" alt="{{ template.name }}" width=100 />
                     </a>
                     <div class="card-body">
                         <a href="{% url 'restaurants:food_create_from_template' template.id %}">
@@ -41,6 +42,7 @@
                 <p class="text-muted">Sorry, no template for food available at the moment!</p>
             {% endif %}
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock restaurant_content %}

@@ -26,9 +26,11 @@
     <nav class="navbar navbar-expand-lg navbar-light mb-4">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'restaurants:restaurant_home' %}">
-                <img src="{{ user.restaurant.logo }}"
-                    class="rounded img-thumbnail"
+                <img src="{{ user.restaurant.logo.url }}"
+                    class="rounded"
                     alt="{{ user.full_name }} logo"
+                    width=100
+                    height=100
                 />
                 <span class="mx-3">
                     {{ user.full_name }}
@@ -39,8 +41,11 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav d-flex align-items-center">
-                    <a href="{% url 'restaurants:food_list' %}" class="nav-link">
-                        Your Foods
+                    <a href="{% url 'restaurants:food_list' %}" class="nav-link text-primary">
+                        My Foods
+                    </a>
+                    <a href="{% url 'restaurants:food_create' %}" class="nav-link text-primary">
+                        Add Food
                     </a>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle btn my-md-0 ms-md-3" href="#" id="navbarDropdown"

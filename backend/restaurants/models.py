@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import Avg, Count
 
 from taggit.managers import TaggableManager
+from cloudinary.models import CloudinaryField
 from django_better_admin_arrayfield.models.fields import ArrayField
 
 from accounts.models import User
@@ -20,7 +21,7 @@ class Restaurant(models.Model):
     user = models.OneToOneField(User, related_name="restaurant", on_delete=models.CASCADE)
     website_link = models.URLField(max_length=200, blank=True)
     facebook_link = models.URLField(max_length=200, blank=True)
-    logo = models.URLField(blank=True, max_length=1000)
+    logo = CloudinaryField("image", blank=True, folder="media/restaurants/")
     description = models.TextField(blank=True)
     open_hour = models.TimeField(auto_now=False, auto_now_add=False)
     close_hour = models.TimeField(auto_now=False, auto_now_add=False)
@@ -89,11 +90,11 @@ class Restaurant(models.Model):
         from geopy.distance import geodesic
         location = self.location
         return geodesic((location[0], location[1]), (lat, lng)).km
-    
+
     @property
     def has_location(self):
         return all(self.location)
-    
+
 
     def __str__(self):
         return f"{self.user.full_name} for user {self.user.username}"
