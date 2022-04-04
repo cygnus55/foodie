@@ -16,6 +16,11 @@ class FoodSerializer(TaggitSerializer, serializers.ModelSerializer):
     ratings_count = serializers.IntegerField(read_only=True)
     # reviews = ReviewSerializer(read_only=True, many=True)
     is_favourite = serializers.SerializerMethodField("get_favourite_status")
+    image = serializers.SerializerMethodField("get_image_url")
+
+    def get_image_url(self, obj):
+        img_url = obj.image.url
+        return img_url
 
     def get_favourite_status(self, obj):
         user = self.context["request"].user

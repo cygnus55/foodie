@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -56,6 +60,7 @@ INSTALLED_APPS = [
     'fontawesomefree',
     'django_filters',
     'crispy_forms',
+    'cloudinary',
 
     # local apps
     'accounts',
@@ -211,7 +216,7 @@ CORS_ALLOW_CREDENTIALS = True
 # Django Taggit
 TAGGIT_CASE_INSENSITIVE = True
 
-LOGIN_URL = "accounts:restaurant_login"
+LOGIN_URL = 'accounts:restaurant_login'
 
 # EMAIL
 
@@ -226,3 +231,12 @@ MESSAGE_TAGS = {
     message_constants.WARNING: 'warning',
     message_constants.ERROR: 'danger',
 }
+
+cloudinary_config = {
+    'cloud_name': os.environ.get('CLOUD_NAME'),
+    'api_key': os.environ.get('API_KEY'),
+    'api_secret': os.environ.get('API_SECRET'),
+    'secure': True,
+}
+
+cloudinary.config(**cloudinary_config)
