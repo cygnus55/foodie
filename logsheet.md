@@ -45,3 +45,8 @@
 - Map display in Screen
 - Login and logout of delivery person
 - Design restaurant UI
+
+## Week 7:
+
+- Implement of restaurant design (views) in django
+- Upload images to cloudinary and access the url
