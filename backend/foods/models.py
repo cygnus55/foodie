@@ -111,4 +111,4 @@ class FoodTemplate(models.Model):
         ordering = ("-is_available", "-usage", "name",)
 
     def __str__(self):
-        return "Hello"
+        return f"FoodTemplate: {self.name}"
