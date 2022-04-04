@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.html import strip_tags
@@ -31,7 +31,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from accounts.models import User
 from api import customauthentication, custompermissions
 from restaurants.models import Restaurant
-from foods.models import Food
+from foods.models import Food, FoodTemplate
 from restaurants.serializers import RestaurantSerializer
 from restaurants.custompermissions import (
     IsCurrentUserAlreadyAnOwner,
@@ -243,7 +243,27 @@ class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        return super().get_context_data(**kwargs)
+        template_id = self.kwargs.get("template_id")
+        context = super().get_context_data(**kwargs)
+        context["templates"] = FoodTemplate.objects.all()
+        return context
+
+    def get_initial(self):
+        template_id = self.kwargs.get("template_id")
+        print(template_id)
+        data = super().get_initial()
+
+        if template_id:
+            template_instance = get_object_or_404(
+                FoodTemplate, id=template_id)
+            data["name"] = template_instance.name
+            data["description"] = template_instance.description
+            data["image"] = template_instance.image
+            data["price"] = template_instance.price
+            data["is_available"] = template_instance.is_available
+            data["is_veg"] = template_instance.is_veg
+
+        return data
 
 
 class FoodUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -286,7 +306,7 @@ class FoodListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 class FoodDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Food
-    template = "restaurants/food_detail.html"
+    template_name = "restaurants/food_detail.html"
     context_object_name = "food"
 
     def test_func(self):
