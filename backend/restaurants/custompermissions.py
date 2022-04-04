@@ -1,9 +1,9 @@
 from rest_framework import permissions
 
-from .models import Restaurant
+from restaurants.models import Restaurant
+
 
 class IsCurrentUserOwnerOrReadOnly(permissions.BasePermission):
-
     message = "You must be the owner of this restaurant."
 
     def has_object_permission(self, request, view, obj):
@@ -12,9 +12,7 @@ class IsCurrentUserOwnerOrReadOnly(permissions.BasePermission):
         return obj.user == request.user
 
 
-
 class IsCurrentUserAlreadyAnOwner(permissions.BasePermission):
-
     message = "You are already the owner of a restaurant. You cannot create a new one."
 
     def has_permission(self, request, view):
@@ -27,4 +25,4 @@ class IsCurrentUserAlreadyAnOwner(permissions.BasePermission):
             return False
         else:
             return True
-        
+

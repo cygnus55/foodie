@@ -1,4 +1,5 @@
-from django.urls import path
+from django.contrib.auth import views as auth_views
+from django.urls import path, reverse_lazy
 
 from restaurants.views import (
     restaurant_dashboard,
@@ -10,6 +11,7 @@ from restaurants.views import (
     FoodListView,
     FoodUpdateView,
     account_settings,
+    change_password,
     get_location,
     update_location,
 )
@@ -29,7 +31,23 @@ urlpatterns = [
     path("restaurant/foods/<int:pk>/", FoodDetailView.as_view(), name="food_detail"),
     path("restaurant/foods/edit/<int:pk>", FoodUpdateView.as_view(), name="food_update"),
     path("restaurant/foods/delete/<int:pk>", FoodDeleteView.as_view(), name="food_delete"),
-    path("restaurant/account/settings/", account_settings, name="account_settings"),
+    path("restaurant/account/settings/profile", account_settings, name="account_settings"),
+    path("restaurant/account/settings/password", change_password, name="change_password"),
+    # path(
+    #     "restaurant/account/settings/password",
+    #     auth_views.PasswordChangeView.as_view(
+    #         template_name="restaurants/change_password.html",
+    #         success_url=reverse_lazy("restaurants:password_change_success")
+    #     ),
+    #     name="change_password",
+    # ),
+    # path(
+    #     "restaurant/account/settings/password/success",
+    #     auth_views.PasswordChangeDoneView.as_view(
+    #         template_name="restaurants/password_change_success.html"
+    #     ),
+    #     name="password_change_success",
+    # ),
     path("restaurant/location/", get_location, name="get_location"),
     path("restaurant/location/update/", update_location, name="update_location"),
 ]
