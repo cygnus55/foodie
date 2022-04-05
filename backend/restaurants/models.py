@@ -95,6 +95,5 @@ class Restaurant(models.Model):
     def has_location(self):
         return all(self.location)
 
-
     def __str__(self):
         return f"{self.user.full_name} for user {self.user.username}"
