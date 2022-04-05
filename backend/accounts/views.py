@@ -62,24 +62,25 @@ def customer_login(request):
 
         try:
             user = User.objects.get(mobile=mobile)
+
+            if not user.is_customer:
+                data["error"] = "Invalid login!"
+                return Response(data, status=HTTP_403_FORBIDDEN)
+
             token, _ = Token.objects.get_or_create(user=user)
             data["success"] = "User Login"
         except User.DoesNotExist:
             # register user
             user = User.objects.create(
-                username=mobile, mobile=mobile, is_verified=True)
-            if reqBody.get("is_restaurant"):
-                user.is_restaurant = True
-            elif reqBody.get("is_delivery_person"):
-                user.is_delivery_person = True
-            else:
-                user.is_customer = True
+                username=mobile,
+                mobile=mobile,
+                is_verified=True,
+                is_customer=True,
+            )
             user.set_unusable_password()
             user.save()
-            if user.is_customer:
-                customer = Customer.objects.create(user=user)
-                customer.save()
-                Cart.objects.create(customer=customer)
+            customer = Customer.objects.create(user=user)
+            Cart.objects.create(customer=customer)
             token = Token.objects.create(user=user)
             data["success"] = "New user created"
 
@@ -126,7 +127,7 @@ def delivery_person_login(request):
         if not user:
             message["error"] = "Cannot log in user. Wrong credentials provided!"
             return Response(message, status=HTTP_403_FORBIDDEN)
-        
+
         message["first_login"] = not user.delivery_person.has_logged_once
 
         login(request, user)
