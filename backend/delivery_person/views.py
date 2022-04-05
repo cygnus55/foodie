@@ -1,6 +1,7 @@
 from hashlib import md5
 import random
 import string
+import copy
 
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
@@ -21,6 +22,8 @@ from delivery_person.models import DeliveryPerson
 from delivery_person.custompermissions import IsCurrentUserOwner
 from api import customauthentication, custompermissions
 from delivery_person.serilizers import DeliveryPersonProfileSerializer
+from orders.models import Order
+from orders.serializers import OrderSerializer
 
 
 @staff_member_required
@@ -128,3 +131,25 @@ class DeliveryPersonProfile(APIView):
             serializer.save()
             return Response(serializer.data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+class NewOrderList(APIView):
+    permission_classes = [
+        IsAuthenticated,
+        custompermissions.AllowOnlyDeliveryPerson,
+    ]
+    authentication_classes = [
+        TokenAuthentication,
+        customauthentication.CsrfExemptSessionAuthentication
+    ]
+
+    def get(self, request, format=None):
+        location = request.user.delivery_person.location
+        if location is None:
+            return Response({"error": "Location not set."}, status=HTTP_400_BAD_REQUEST)
+        orders = Order.unaccepted.all()
+        for order in orders:
+            if order.distance(location[0], location[1]) > 5:
+                orders = orders.exclude(id=order.id)
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data, status=HTTP_200_OK)

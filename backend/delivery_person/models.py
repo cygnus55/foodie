@@ -2,6 +2,7 @@ from django.db import models
 from django_better_admin_arrayfield.models.fields import ArrayField
 
 from accounts.models import User
+from orders.models import Order
 
 
 class DeliveryPerson(models.Model):
@@ -17,3 +18,10 @@ class DeliveryPerson(models.Model):
     
     def __str__(self):
         return f'{self.user.full_name} for user {self.user.username}'
+
+
+class OrderDelivery(models.Model):
+    order = models.ForeignKey(Order, related_name='delivery', on_delete=models.CASCADE)
+    delivery_person = models.ForeignKey(DeliveryPerson, related_name='orders', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
