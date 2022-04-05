@@ -82,42 +82,47 @@ class Foods with ChangeNotifier {
       } else {
         response = await http.get(url);
       }
-      final data = json.decode(response.body) as List<dynamic>;
+      final datapage = json.decode(response.body) as Map;
+
       final List<Food> foods = [];
-      data.forEach(
-        (element) {
-          var restaurant = element['restaurant'] as Map;
-          var user = restaurant['user'] as Map;
-          foods.add(
-            Food(
-              id: element['id'],
-              discountPercent: element['discount_percent'],
-              description: element['description'],
-              image: element['image'],
-              isVeg: element['is_veg'],
-              rating: double.parse(element['average_ratings']),
-              ratingCount: element['ratings_count'],
-              name: element['name'],
-              price: element['price'],
-              tags: element['tags'],
-              sellingPrice: element['selling_price'],
-              isAvailable: element['is_available'],
-              isFavourite: element['is_favourite'],
-              restaurant: Restaurant(
-                  id: restaurant['id'],
-                  closeTime: restaurant['close_hour'],
-                  description: restaurant['description'],
-                  logo: restaurant['logo'],
-                  facebookLink: restaurant['facebook_link'],
-                  isAvailable: restaurant['is_available'],
-                  openTime: restaurant['open_hour'],
-                  websiteLink: restaurant['website_link'],
-                  isFavourite: restaurant['is_favourite'],
-                  name: user['full_name']),
-            ),
-          );
-        },
-      );
+      datapage.forEach((key, value) {
+        if (key == 'results') {
+          var data = value as List;
+          for (var element in data) {
+            var restaurant = element['restaurant'] as Map;
+            var user = restaurant['user'] as Map;
+            foods.add(
+              Food(
+                id: element['id'],
+                discountPercent: element['discount_percent'],
+                description: element['description'],
+                image: element['image'],
+                isVeg: element['is_veg'],
+                rating: double.parse(element['average_ratings']),
+                ratingCount: element['ratings_count'],
+                name: element['name'],
+                price: element['price'],
+                tags: element['tags'],
+                sellingPrice: element['selling_price'],
+                isAvailable: element['is_available'],
+                isFavourite: element['is_favourite'],
+                restaurant: Restaurant(
+                    id: restaurant['id'],
+                    closeTime: restaurant['close_hour'],
+                    description: restaurant['description'],
+                    logo: restaurant['logo'],
+                    facebookLink: restaurant['facebook_link'],
+                    isAvailable: restaurant['is_available'],
+                    openTime: restaurant['open_hour'],
+                    websiteLink: restaurant['website_link'],
+                    isFavourite: restaurant['is_favourite'],
+                    name: user['full_name']),
+              ),
+            );
+          }
+        }
+      });
+
       _items = foods;
       notifyListeners();
     } catch (e) {

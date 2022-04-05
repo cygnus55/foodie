@@ -13,6 +13,8 @@ class DeliveryConfirmScreen extends StatelessWidget {
     var arg = ModalRoute.of(context)?.settings.arguments as Map;
     var delivery_charge = arg['delivery_charge'];
     var address = arg['address'];
+    var lat = arg['lat'];
+    var long = arg['long'];
 
     return Scaffold(
       appBar: AppBar(title: const Text("Confirm delivery")),
@@ -210,8 +212,12 @@ class DeliveryConfirmScreen extends StatelessWidget {
                         const successsnackBar = SnackBar(
                           content: Text('Payment Successful'),
                         );
+
                         ScaffoldMessenger.of(context)
                             .showSnackBar(successsnackBar);
+                        Provider.of<Cart>(context, listen: false)
+                            .createorderkhalti(
+                                context, lat, long, address, delivery_charge);
                       },
                       onFailure: (fa) {
                         const failedsnackBar = SnackBar(
@@ -231,7 +237,11 @@ class DeliveryConfirmScreen extends StatelessWidget {
                   },
                   child: const Text('Pay by khalti')),
               ElevatedButton(
-                  onPressed: () {}, child: const Text('Cash on delivery'))
+                  onPressed: () {
+                    Provider.of<Cart>(context, listen: false).createorderCOD(
+                        context, lat, long, address, delivery_charge);
+                  },
+                  child: const Text('Cash on delivery'))
             ],
           ),
         ],
