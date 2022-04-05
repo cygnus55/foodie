@@ -77,8 +77,13 @@ class _CartScreenState extends State<CartScreen> {
     setState(() {
       isLoading = false;
     });
-    Navigator.of(context).pushNamed(DeliveryConfirmScreen.routeName,
-        arguments: {'delivery_charge': delivery_charge, 'address': address});
+    Navigator.of(context)
+        .pushNamed(DeliveryConfirmScreen.routeName, arguments: {
+      'delivery_charge': delivery_charge,
+      'address': address,
+      'lat': lat.toString(),
+      'long': long.toString(),
+    });
 
     // Navigator.of(context).pushNamed(routeName) <--- order screnn
   }

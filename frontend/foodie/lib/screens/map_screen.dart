@@ -66,8 +66,13 @@ class _MapScreenState extends State<MapScreen> {
         .getDeliveryChargeFromcart(context, lat.toString(), long.toString());
 
     // await Provider.of<Cart>(context, listen: false).cartItems(context);
-    Navigator.of(context).pushNamed(DeliveryConfirmScreen.routeName,
-        arguments: {'delivery_charge': delivery_charge, 'address': address});
+    Navigator.of(context)
+        .pushNamed(DeliveryConfirmScreen.routeName, arguments: {
+      'delivery_charge': delivery_charge,
+      'address': address,
+      'lat': lat.toString(),
+      'long': long.toString(),
+    });
     setState(() {
       isLoading = false;
     });

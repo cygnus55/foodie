@@ -181,8 +181,8 @@ class Cart with ChangeNotifier {
     }
   }
 
-  Future<void> createorder(
-      BuildContext context, String lat, String lng, String address) async {
+  Future<void> createorderCOD(BuildContext context, String lat, String lng,
+      String address, double deliveryCharge) async {
     try {
       var url = Uri.http('10.0.2.2:8000', 'orders/create/');
       List<Map> body = [];
@@ -210,9 +210,54 @@ class Cart with ChangeNotifier {
             "longitude": lng,
             "address": address,
             "items": body,
+            "payment_method": "COD",
+            "delivery_charge": deliveryCharge,
           },
         ),
       );
+      await cartItems(context);
+
+      print(response.body);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> createorderkhalti(BuildContext context, String lat, String lng,
+      String address, double deliveryCharge) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'orders/create/');
+      List<Map> body = [];
+      for (var restaurant in items) {
+        for (var food in restaurant.foodlist!) {
+          body.add({
+            "food_id": food.foodid,
+            "quantity": food.quantity,
+            "price": food.price,
+          });
+        }
+      }
+
+      http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Token ' +
+              Provider.of<Auth>(context, listen: false).getauthToken!,
+          'Content-Type': 'application/json'
+        },
+        body: json.encode(
+          {
+            "method": "CART",
+            "latitude": lat,
+            "longitude": lng,
+            "address": address,
+            "items": body,
+            "payment_method": "khalti",
+            "delivery_charge": deliveryCharge
+          },
+        ),
+      );
+      await cartItems(context);
 
       print(response.body);
     } catch (e) {
