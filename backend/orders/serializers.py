@@ -18,6 +18,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    order_id = serializers.CharField(read_only=True)
     items = OrderItemSerializer(many=True, read_only=True)
     total_amount = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     status = serializers.ChoiceField(choices=Order.STATUS_CHOICES, read_only=True)

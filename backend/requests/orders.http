@@ -9,8 +9,8 @@ Content-Type: application/json
 
 {
     "method": "CART",
-    "latitude": "27.7172453",
-    "longitude": "85.3239605",
+    "latitude": "27.7",
+    "longitude": "85.33",
     "address": "",
     "items": [
         {

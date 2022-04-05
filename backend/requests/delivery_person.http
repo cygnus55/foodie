@@ -52,3 +52,12 @@ Content-Type: application/json
 {
     "full_name": "John Doe"
 }
+
+###
+
+# Get new orders
+
+GET http://localhost:8000/delivery-person/new-orders/
+Authorization: Token <token>
+
+###

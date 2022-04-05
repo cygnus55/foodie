@@ -62,7 +62,8 @@ class FoodList(ListCreateAPIView):
             elif filter == "offers":
                 for q in queryset:
                     if not q.discount_percent:
-                        queryset = queryset.exclude(id=q.id).order_by('-discount_percent')
+                        queryset = queryset.exclude(id=q.id)
+                queryset = queryset.order_by('-discount_percent')
         return queryset
 
 
