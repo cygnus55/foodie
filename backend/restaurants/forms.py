@@ -13,6 +13,16 @@ class RestaurantRegistrationForm(forms.Form):
     open_hour = forms.TimeField(required=True)
     close_hour = forms.TimeField(required=True)
 
+    def clean_close_hour(self):
+        ''' Validate closing time to be greater than opening time. '''
+        open_hour = self.cleaned_data.get('open_hour')
+        close_hour = self.cleaned_data.get('close_hour')
+
+        if open_hour >= close_hour:
+            raise forms.ValidationError('Closing hour should be greater than opening hour!')
+
+        return close_hour
+
 
 class RestaurantNameUpdateForm(forms.ModelForm):
     class Meta:

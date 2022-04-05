@@ -189,8 +189,8 @@ class FirstLoginRedirectMixin:
 
 
 @login_required
-@first_login_redirect("restaurants:change_password")
 @user_passes_test(lambda u: u.is_restaurant and u.is_active)
+@first_login_redirect("restaurants:change_password")
 def restaurant_dashboard(request):
     if not request.user.restaurant.has_location:
         # redirect the user(restaurant) to change location
@@ -200,8 +200,8 @@ def restaurant_dashboard(request):
 
 
 @login_required
-@first_login_redirect("restaurants:change_password")
 @user_passes_test(lambda u: u.is_restaurant and u.is_active)
+@first_login_redirect("restaurants:change_password")
 def account_settings(request):
     if request.method == "POST":
         name_form = RestaurantNameUpdateForm(
@@ -257,7 +257,7 @@ def change_password(request):
     return render(request, "restaurants/change_password.html", {"form": form})
 
 
-class FoodCreateView(FirstLoginRedirectMixin, LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, FirstLoginRedirectMixin, CreateView):
     model = Food
     fields = ["name", "description", "price", "is_available",
               "discount_percent", "is_veg", "image"]
@@ -298,7 +298,7 @@ class FoodCreateView(FirstLoginRedirectMixin, LoginRequiredMixin, UserPassesTest
         return data
 
 
-class FoodUpdateView(FirstLoginRedirectMixin, LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class FoodUpdateView(LoginRequiredMixin, UserPassesTestMixin, FirstLoginRedirectMixin, UpdateView):
     model = Food
     fields = ["name", "description", "price", "is_available",
             "discount_percent", "is_veg", "image"]
@@ -318,7 +318,7 @@ class FoodUpdateView(FirstLoginRedirectMixin, LoginRequiredMixin, UserPassesTest
         return context
 
 
-class FoodDeleteView(FirstLoginRedirectMixin, LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class FoodDeleteView(LoginRequiredMixin, UserPassesTestMixin, FirstLoginRedirectMixin, DeleteView):
     model = Food
     success_url = reverse_lazy("restaurants:food_list")
     context_object_name = "food"
@@ -328,7 +328,7 @@ class FoodDeleteView(FirstLoginRedirectMixin, LoginRequiredMixin, UserPassesTest
         return self.request.user.is_active and self.request.user.is_restaurant and self.get_object().restaurant == self.request.user.restaurant
 
 
-class FoodListView(FirstLoginRedirectMixin, LoginRequiredMixin, UserPassesTestMixin, ListView):
+class FoodListView(LoginRequiredMixin, UserPassesTestMixin, FirstLoginRedirectMixin, ListView):
     model = Food
     ordering = "-created"
     template_name = "restaurants/food_list.html"
@@ -342,7 +342,7 @@ class FoodListView(FirstLoginRedirectMixin, LoginRequiredMixin, UserPassesTestMi
         return restaurant_foods.all()
 
 
-class FoodDetailView(FirstLoginRedirectMixin, LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class FoodDetailView(LoginRequiredMixin, UserPassesTestMixin, FirstLoginRedirectMixin, DetailView):
     model = Food
     template_name = "restaurants/food_detail.html"
     context_object_name = "food"
@@ -352,8 +352,8 @@ class FoodDetailView(FirstLoginRedirectMixin, LoginRequiredMixin, UserPassesTest
 
 
 @login_required
-@first_login_redirect("restaurants:change_password")
 @user_passes_test(lambda u: u.is_restaurant and u.is_active)
+@first_login_redirect("restaurants:change_password")
 def get_location(request):
     if request.method == "GET":
         restaurant = request.user.restaurant
@@ -364,9 +364,10 @@ def get_location(request):
         }
         return render(request, "restaurants/location.html", {"location": location})
 
+
 @login_required
-@first_login_redirect("restaurants:change_password")
 @user_passes_test(lambda u: u.is_restaurant and u.is_active)
+@first_login_redirect("restaurants:change_password")
 def update_location(request):
     if request.method == "GET":
         restaurant = request.user.restaurant
