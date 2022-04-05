@@ -1,4 +1,5 @@
 import 'package:delivery_person/datamodels/user_location.dart';
+import 'package:delivery_person/providers/order_provider.dart';
 import 'package:delivery_person/screens/login_screen.dart';
 import 'package:delivery_person/services/location_service.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(
           value: Auth(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Order(),
         ),
         StreamProvider<UserLocation>(
           initialData: UserLocation(
