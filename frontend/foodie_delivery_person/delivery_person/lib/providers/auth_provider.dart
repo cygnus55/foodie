@@ -52,8 +52,6 @@ class Auth with ChangeNotifier {
           },
         ),
       );
-      final responseData = json.decode(response.body);
-      print(responseData);
       if (response.body.toString().contains('true')) {
         final prefs = await SharedPreferences.getInstance();
         final extractedData = json.decode(response.body);
@@ -62,18 +60,16 @@ class Auth with ChangeNotifier {
         final _userId = extractedData['mobile'];
         authtoken = token(_token);
         authToken = _token;
-        print(authtoken);
-        print(_token);
         isAuth;
         isNewusertoken = true;
         isNewuser;
         getauthToken;
         notifyListeners();
         if (_token != null) {
-          print(isAuth);
+          // print(isAuth);
           prefs.setString('token', _token);
           prefs.setString('userId', _userId);
-          print(prefs.getString('userId'));
+          // print(prefs.getString('userId'));
         }
         return true;
       }
@@ -86,8 +82,8 @@ class Auth with ChangeNotifier {
         final _userId = extractedData['mobile'];
         authtoken = token(_token);
         authToken = _token;
-        print(authtoken);
-        print(_token);
+        // print(authtoken);
+        // print(_token);
         isAuth;
         isNewusertoken = false;
         isNewuser;

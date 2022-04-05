@@ -1,3 +1,4 @@
+import 'package:delivery_person/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,44 +30,72 @@ class _HomepageScreenState extends State<HomepageScreen> {
             appBar: AppBar(
               title: const Text('Order Page'),
             ),
-            body: Align(
-              alignment: Alignment.center,
-              child: ListView(
-                children: <Widget>[
-                  Container(
-                      padding: const EdgeInsets.all(15),
-                      width: double.infinity,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              isloading = true;
-                            });
-                            Provider.of<Auth>(context, listen: false)
-                                .logout()
-                                .then(
-                              (_) {
-                                Navigator.of(context).pushReplacementNamed(
-                                    LoginScreen.routeName);
-                              },
-                            );
-                          },
-                          child: const Text('Log out'))),
-                  Container(
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: const Color(0xFFD42323)),
-                        onPressed: () {},
-                        child: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Text(
-                              userLocation.latitude.toString() +
-                                  " " +
-                                  userLocation.longitude.toString(),
-                              style: TextStyle(fontSize: 20),
-                            ))),
+            body: Column(
+              children: [
+                Flexible(
+                  child: ListView.builder(
+                      itemCount: 1,
+                      itemBuilder: (ctx, index) {
+                        return GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            height: 100,
+                            child: Card(
+                              elevation: 5,
+                              color: Colors.grey[400],
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(15),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text('ordernumber',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        ?.copyWith(
+                                            fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(15),
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        isloading = true;
+                      });
+                      Provider.of<Auth>(context, listen: false).logout().then(
+                        (_) {
+                          Navigator.of(context)
+                              .pushReplacementNamed(LoginScreen.routeName);
+                        },
+                      );
+                    },
+                    child: const Text('Log out'),
                   ),
-                ],
-              ),
-            ));
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: const Color(0xFFD42323)),
+                  onPressed: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Text(
+                      userLocation.latitude.toString() +
+                          " " +
+                          userLocation.longitude.toString(),
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 }

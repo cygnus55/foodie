@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:location/location.dart' as loc;
 
-import '../datamodels/user_location.dart';
+// import '../datamodels/user_location.dart';
 import '../providers/auth_provider.dart';
 import './homepage_screen.dart';
 import 'passwordchangescreen.dart';
@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var userLocation = Provider.of<UserLocation>(context);
+    // var userLocation = Provider.of<UserLocation>(context);
     return _isloading
         ? Scaffold(
             body: SizedBox(
@@ -296,22 +296,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                   style: TextStyle(fontSize: 20),
                                 ))),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(15),
-                        width: double.infinity,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: const Color(0xFFD42323)),
-                            onPressed: () {},
-                            child: Padding(
-                                padding: EdgeInsets.all(15),
-                                child: Text(
-                                  userLocation.latitude.toString() +
-                                      " " +
-                                      userLocation.longitude.toString(),
-                                  style: TextStyle(fontSize: 20),
-                                ))),
-                      ),
+                      // Container(
+                      //   padding: const EdgeInsets.all(15),
+                      //   width: double.infinity,
+                      //   child: ElevatedButton(
+                      //       style: ElevatedButton.styleFrom(
+                      //           primary: const Color(0xFFD42323)),
+                      //       onPressed: () {},
+                      //       child: Padding(
+                      //           padding: EdgeInsets.all(15),
+                      //           child: Text(
+                      //             userLocation.latitude.toString() +
+                      //                 " " +
+                      //                 userLocation.longitude.toString(),
+                      //             style: TextStyle(fontSize: 20),
+                      //           ))),
+                      // ),
                     ],
                   ),
                 )
