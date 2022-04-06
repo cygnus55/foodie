@@ -6,3 +6,11 @@ class IsCurrentUserOwner(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.user == request.user
+
+
+class HasCurrentUserAcceptedThisOrder(permissions.BasePermission):
+
+    message = "You must have accepted this order."
+
+    def has_object_permission(self, request, view, obj):
+        return obj.accepted_by == request.user.delivery_person
