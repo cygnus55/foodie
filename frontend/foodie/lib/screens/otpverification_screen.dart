@@ -77,22 +77,23 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         setState(() {
           _isloading = false;
           showDialog(
-              context: context,
-              builder: (c) {
-                return AlertDialog(
-                  title: const Text('Invalid OTP'),
-                  content: const Text('You enterned an invalid otp.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(c).pop();
-                        clearInput();
-                      },
-                      child: const Text('OK'),
-                    )
-                  ],
-                );
-              });
+            context: context,
+            builder: (c) {
+              return AlertDialog(
+                title: const Text('Invalid OTP'),
+                content: const Text('You enterned an invalid otp.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(c).pop();
+                      clearInput();
+                    },
+                    child: const Text('OK'),
+                  )
+                ],
+              );
+            },
+          );
         });
       }
     } catch (error) {

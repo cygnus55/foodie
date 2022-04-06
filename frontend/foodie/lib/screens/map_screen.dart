@@ -59,9 +59,9 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> ordercart() async {
-    setState(() {
-      isLoading = true;
-    });
+    // setState(() {
+    //   isLoading = true;
+    // });
     delivery_charge = await Provider.of<Cart>(context, listen: false)
         .getDeliveryChargeFromcart(context, lat.toString(), long.toString());
 
@@ -73,9 +73,9 @@ class _MapScreenState extends State<MapScreen> {
       'lat': lat.toString(),
       'long': long.toString(),
     });
-    setState(() {
-      isLoading = false;
-    });
+    // setState(() {
+    //   isLoading = false;
+    // });
   }
 
   @override

@@ -177,7 +177,7 @@ class AcceptOrder(APIView):
         return Response({"success": "Order accepted."}, status=HTTP_200_OK)
 
     
-class UpdateStatus(request):
+class UpdateStatus(APIView):
     permission_classes = [
         IsAuthenticated,
         custompermissions.AllowOnlyDeliveryPerson,
