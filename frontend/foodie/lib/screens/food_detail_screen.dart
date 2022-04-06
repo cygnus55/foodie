@@ -362,7 +362,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         if (Provider.of<Auth>(context,
                                                 listen: false)
                                             .isAuth) {
-                                          if (_food.restaurant!.isAvailable!) {
+                                          if (_food.restaurant!.isAvailable! &&
+                                              _food.restaurant!.openStatus!) {
                                             setState(() {
                                               _disableBack = true;
                                             });
