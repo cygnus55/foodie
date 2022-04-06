@@ -1,8 +1,7 @@
 from hashlib import md5
 import random
 import string
-import copy
-
+import datetime
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -19,7 +18,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 from accounts.models import User
 from delivery_person.forms import DeliveryPersonForm
 from delivery_person.models import DeliveryPerson
-from delivery_person.custompermissions import IsCurrentUserOwner
+from delivery_person.custompermissions import HasCurrentUserAcceptedThisOrder, IsCurrentUserOwner
 from api import customauthentication, custompermissions
 from delivery_person.serilizers import DeliveryPersonProfileSerializer
 from orders.models import Order
@@ -153,3 +152,47 @@ class NewOrderList(APIView):
                 orders = orders.exclude(id=order.id)
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=HTTP_200_OK)
+
+
+class AcceptOrder(APIView):
+    permission_classes = [
+        IsAuthenticated,
+        custompermissions.AllowOnlyDeliveryPerson,
+    ]
+    authentication_classes = [
+        TokenAuthentication,
+        customauthentication.CsrfExemptSessionAuthentication
+    ]
+
+    def post(self, request, format=True):
+        _order_id = request.data.get('order_id')
+        order_id = int(_order_id.split('-')[1])
+        order = Order.objects.get(id=order_id)
+        if order.is_accepted:
+            return Response({"error": "Order already accepted."}, status=HTTP_400_BAD_REQUEST)
+        order.accepted_by = request.user.delivery_person
+        order.is_accepted = True
+        order.accepted_on = datetime.now()
+        order.save()
+        return Response({"success": "Order accepted."}, status=HTTP_200_OK)
+
+    
+class UpdateStatus(request):
+    permission_classes = [
+        IsAuthenticated,
+        custompermissions.AllowOnlyDeliveryPerson,
+        HasCurrentUserAcceptedThisOrder
+    ]
+    authentication_classes = [
+        TokenAuthentication,
+        customauthentication.CsrfExemptSessionAuthentication
+    ]
+
+    def post(self, request, format=True):
+        _order_id = request.data.get('order_id')
+        order_id = int(_order_id.split('-')[1])
+        order = Order.objects.get(id=order_id)
+        status = request.data.get('status')
+        order.status = status
+        order.save()
+        return Response({"success": f"Order status updated to {status}"}, status=HTTP_200_OK)

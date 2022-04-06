@@ -1,9 +1,7 @@
-import profile
 from rest_framework import serializers
 
-from delivery_person.models import DeliveryPerson, OrderDelivery
+from delivery_person.models import DeliveryPerson
 from accounts.views import change_profile_pic
-from orders.serializers import OrderSerializer
 
 
 class DeliveryPersonProfileSerializer(serializers.ModelSerializer):
@@ -27,11 +25,3 @@ class DeliveryPersonProfileSerializer(serializers.ModelSerializer):
         instance.user.save()
         instance.save()
         return instance
-
-
-class OrderDeliverySerializer(serializers.ModelSerializer):
-    order = OrderSerializer(read_only=True)
-
-    class Meta:
-        model = OrderDelivery
-        exclude = ('created', 'updated', 'id')

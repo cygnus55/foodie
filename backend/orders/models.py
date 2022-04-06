@@ -3,6 +3,7 @@ from django.db.models import Q
 from django_better_admin_arrayfield.models.fields import ArrayField
 
 from customers.models import Customer
+from delivery_person.models import DeliveryPerson
 from foods.models import Food
 
 # Create your models here.
@@ -11,13 +12,12 @@ from foods.models import Food
 class UnacceptedOrderManager(models.Manager):
     """ Filter the objects on the basis of acceptance by delivery person."""
     def get_queryset(self):
-        return super().get_queryset().filter(Q(status="Placed") | Q(status="Verified"))
+        return super().get_queryset().filter(is_accepted=False)
 
 class Order(models.Model):
     STATUS_CHOICES = [
         ('Placed', 'Placed'),
         ('Verified', 'Verified'),
-        ('Accepted', 'Accepted'),
         ('On the way to restaurant', 'On the way to restaurant'),
         ('Processing', 'Processing'),
         ('Picking', 'Picking'),
@@ -39,6 +39,9 @@ class Order(models.Model):
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='Placed')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    is_accepted = models.BooleanField(default=False)
+    accepted_by = models.ForeignKey(DeliveryPerson, related_name='accepted_orders', on_delete=models.SET_NULL, null=True, blank=True)
+    accepted_on = models.DateTimeField(blank=True, null=True)
 
     objects = models.Manager()
     unaccepted = UnacceptedOrderManager()

@@ -62,22 +62,23 @@ class RestaurantList(ListCreateAPIView):
         queryset = Restaurant.objects.all()
         latitude = self.request.query_params.get("lat", None)
         longitude = self.request.query_params.get("lng", None)
-        filter = self.request.query_params.get("filter", None)
+        top_rated = self.request.query_params.get("top_rated", None)
+        favorite = self.request.query_params.get("favorite", None)
+        
         if latitude and longitude:
             # for every queryset, calculate distance from the given lat and lng and filter if distance is less than 4km
             for q in queryset:
                 if q.distance(latitude, longitude) > 10:
                     queryset = queryset.exclude(id=q.id)
-        if filter:
-            if filter == "top_rated":
+        if top_rated:
+            for q in queryset:
+                if q.average_ratings <= 3:
+                    queryset = queryset.exclude(id=q.id)
+        if favorite:
+            if self.request.user.is_authenticated and self.request.user.is_customer:
                 for q in queryset:
-                    if q.average_ratings <= 3:
+                    if q.customer_favourite_status(id=self.request.user.customer.id) == False:
                         queryset = queryset.exclude(id=q.id)
-            elif filter == "favorite":
-                if self.request.user.is_authenticated and self.request.user.is_customer:
-                    for q in queryset:
-                        if q.customer_favourite_status(id=self.request.user.customer.id) == False:
-                            queryset = queryset.exclude(id=q.id)
         return queryset
 
 

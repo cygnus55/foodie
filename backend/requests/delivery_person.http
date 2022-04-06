@@ -61,3 +61,27 @@ GET http://localhost:8000/delivery-person/new-orders/
 Authorization: Token <token>
 
 ###
+
+# Accept order
+POST http://localhost:8000/delivery-person/accept-order/
+Authorization: Token <token>
+Content-Type: application/json
+
+{
+    "order_id": "20220212-5"
+}
+
+###
+
+# Update Status
+# Status can be: "Verified", "On the way to restaurant", "Processing", "Picking", "On the way", "Delivered" or "Cancelled"
+POST http://localhost:8000/delivery-person/update-status/
+Authorization: Token <token>
+Content-Type: application/json
+
+{
+    "order_id": "20220212-5",
+    "status": "New Status"
+}
+
+###
