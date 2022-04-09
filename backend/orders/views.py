@@ -146,3 +146,20 @@ class GetDeliveryCharge(APIView):
         if not charge:
             return Response({"error": "Restaurant has no delivery location."}, status=HTTP_400_BAD_REQUEST)
         return Response({"deliverty_charge": charge}, status=HTTP_200_OK)
+
+
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseForbidden
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def order_status(request, order_id):
+    try:
+        # retrieve course with given id joined by the current user
+        order = request.user.customer.order.get(id=order_id)
+        print(order)
+    except Exception as e:
+        print(e)
+        # user is not a student of the course or course does not exist
+        return HttpResponseForbidden()
+    return render(request, 'orders/test.html', {'order': order})

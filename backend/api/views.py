@@ -46,6 +46,7 @@ class APIRoot(GenericAPIView):
                     "change_password": reverse("delivery_person:change_password", request=request),
                     "profile": reverse("delivery_person:profile", request=request),
                     "new_orders_list": reverse("delivery_person:new_orders", request=request),
+                    "accepted_orders": reverse("delivery_person:accepted_orders", request=request),
                 },
             }
         )

@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'django_filters',
     'crispy_forms',
     'cloudinary',
+    'channels',
 
     # local apps
     'accounts',
@@ -105,6 +106,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'foodie.wsgi.application'
+ASGI_APPLICATION = 'foodie.asgi.application'
 
 
 # Database
@@ -129,6 +131,16 @@ DATABASES = {
         'PORT': os.environ.get("DATABASE_PORT"),
         'OPTIONS': {'sslmode': os.environ.get("DATABASE_SSLMODE")},
     }
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        # "BACKEND": "channels_redis.core.RedisChannelLayer",
+        # "CONFIG": {
+        #     "hosts": [("127.0.0.1", 6379)],
+        # },
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
 }
 
 
