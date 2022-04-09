@@ -22,6 +22,9 @@ class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
     total_amount = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     status = serializers.ChoiceField(choices=Order.STATUS_CHOICES, read_only=True)
+    delivery_person_name = serializers.CharField(source="accepted_by.user.full_name", read_only=True)
+    accepted_on = serializers.DateTimeField(read_only=True)
+    is_accepted = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Order

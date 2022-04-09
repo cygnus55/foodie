@@ -1,6 +1,6 @@
 from django.urls import path
 
-from delivery_person.views import ChangePassword, DeliveryPersonProfile, NewOrderList, AcceptOrder, UpdateStatus
+from delivery_person.views import ChangePassword, DeliveryPersonProfile, NewOrderList, AcceptOrder, UpdateStatus, GetAcceptedOrder
 
 app_name = 'delivery_person'
 
@@ -10,4 +10,5 @@ urlpatterns = [
     path('new-orders/', NewOrderList.as_view(), name='new_orders'),
     path('accept-order/', AcceptOrder.as_view(), name='accept_order'),
     path('update-status/', UpdateStatus.as_view(), name='update_status'),
+    path('accepted-orders/', GetAcceptedOrder.as_view(), name='accepted_orders')
 ]

@@ -2,6 +2,7 @@ from hashlib import md5
 import random
 import string
 import datetime
+
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -14,6 +15,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
+import channels.layers
+from asgiref.sync import async_to_sync
 
 from accounts.models import User
 from delivery_person.forms import DeliveryPersonForm
@@ -172,10 +175,26 @@ class AcceptOrder(APIView):
             return Response({"error": "Order already accepted."}, status=HTTP_400_BAD_REQUEST)
         order.accepted_by = request.user.delivery_person
         order.is_accepted = True
-        order.accepted_on = datetime.now()
+        order.accepted_on = datetime.datetime.now()
         order.save()
         return Response({"success": "Order accepted."}, status=HTTP_200_OK)
 
+
+class GetAcceptedOrder(APIView):
+    permission_classes = [
+        IsAuthenticated,
+        custompermissions.AllowOnlyDeliveryPerson,
+        HasCurrentUserAcceptedThisOrder
+    ]
+    authentication_classes = [
+        TokenAuthentication,
+        customauthentication.CsrfExemptSessionAuthentication
+    ]
+
+    def get(self, request, format=True):
+        orders = self.request.user.delivery_person.accepted_orders.all()
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data, status=HTTP_200_OK)
     
 class UpdateStatus(APIView):
     permission_classes = [
@@ -195,4 +214,13 @@ class UpdateStatus(APIView):
         status = request.data.get('status')
         order.status = status
         order.save()
+        # Send status to the consumer
+        channel_layer = channels.layers.get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"order_{order.id}",
+            {
+                'type': 'order_status',
+                'message': f'{order.status}'
+            }
+        )
         return Response({"success": f"Order status updated to {status}"}, status=HTTP_200_OK)
