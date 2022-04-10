@@ -40,6 +40,8 @@ dependencies:
   intl_phone_field: ^3.1.0
   flutter_spinkit: ^5.1.0
   location: ^4.3.0
+  flutter_map: ^0.14.0
+
 
 dev_dependencies:
   flutter_test:

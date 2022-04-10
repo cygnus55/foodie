@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:delivery_person/providers/order_provider.dart';
 import 'package:provider/provider.dart';
 import '../providers/order_provider.dart';
+import './map_screen.dart';
 
 class OrderDetailScreen extends StatelessWidget {
   const OrderDetailScreen({Key? key}) : super(key: key);
@@ -24,17 +25,18 @@ class OrderDetailScreen extends StatelessWidget {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
+                  children: [
+                    const Text(
                       'Customer Details',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    Divider(
+                    const Divider(
                       thickness: 1,
                     ),
-                    Text('Name :'),
-                    Text('Mobile Number:')
+                    Text('Name : ${_order.customerName}'),
+                    Text('Mobile Number:${_order.mobileNumber}'),
+                    Text('Distance from your location:${_order.distance} km')
                   ],
                 ),
                 const SizedBox(
@@ -166,7 +168,14 @@ class OrderDetailScreen extends StatelessWidget {
                   ],
                 ),
                 ElevatedButton(
-                    onPressed: () {}, child: const Text('View location'))
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushNamed(MapScreen.routeName, arguments: {
+                        'latitude': _order.deliverylocation![0],
+                        'longitude': _order.deliverylocation![1]
+                      });
+                    },
+                    child: const Text('View customer location'))
               ],
             ),
           ),
