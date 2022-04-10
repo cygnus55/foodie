@@ -16,6 +16,10 @@ class Order with ChangeNotifier {
     return [..._orderItem];
   }
 
+  OrderItem findById(String id) {
+    return _orderItem.firstWhere((order) => order.orderid == id);
+  }
+
   List<OrderItem> _items = [];
   Future<void> getorder() async {
     try {

@@ -1,5 +1,6 @@
 import 'package:delivery_person/providers/order_provider.dart';
 import 'package:delivery_person/screens/splash_screen.dart';
+import './orderDetail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -98,7 +99,11 @@ class _HomepageScreenState extends State<HomepageScreen> {
                       itemCount: list.length,
                       itemBuilder: (ctx, index) {
                         return GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                OrderDetailScreen.routeName,
+                                arguments: list[index].orderid);
+                          },
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             height: 100,
