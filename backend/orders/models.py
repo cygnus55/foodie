@@ -1,3 +1,5 @@
+import decimal
+
 from django.db import models
 from django.db.models import Q
 from django_better_admin_arrayfield.models.fields import ArrayField
@@ -10,7 +12,7 @@ from foods.models import Food
 
 
 class UnacceptedOrderManager(models.Manager):
-    """ Filter the objects on the basis of acceptance by delivery person."""
+    """ Filter the objects on the basis of acceptancmodels.DecimalField(max_digits=10, decimal_places=2, default=0)e by delivery person."""
     def get_queryset(self):
         return super().get_queryset().filter(is_accepted=False)
 
@@ -63,7 +65,7 @@ class Order(models.Model):
 
     @property
     def total_amount(self):
-        return round(sum(item.cost for item in self.items.all()) + self.delivery_charge, 2)
+        return round(sum(item.cost for item in self.items.all()) + decimal.Decimal(self.delivery_charge), 2)
     
 
 class OrderItem(models.Model):

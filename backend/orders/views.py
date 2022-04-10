@@ -71,7 +71,9 @@ class OrderCreate(APIView):
             cart = Cart.objects.filter(
                 customer=self.request.user.customer).first()
             cart.items.all().delete()
-        return Response({'success': 'Your order has been placed.'}, status=HTTP_200_OK)
+        
+        serializer = OrderSerializer(order)
+        return Response(serializer.data, status=HTTP_200_OK)
 
 
 class OrderList(ListAPIView):
