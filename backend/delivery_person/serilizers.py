@@ -3,7 +3,6 @@ from rest_framework import serializers
 from delivery_person.models import DeliveryPerson
 from accounts.views import change_profile_pic
 
-
 class DeliveryPersonProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(source='user.full_name')
     email = serializers.CharField(source='user.email')

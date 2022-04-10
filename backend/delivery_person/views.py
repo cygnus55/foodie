@@ -1,3 +1,4 @@
+import copy
 from hashlib import md5
 import random
 import string
@@ -153,8 +154,24 @@ class NewOrderList(APIView):
         for order in orders:
             if order.distance(location[0], location[1]) > 5:
                 orders = orders.exclude(id=order.id)
-        serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data, status=HTTP_200_OK)
+        serializers = OrderSerializer(orders, many=True)
+        response = copy.copy(serializers.data)
+        for res in response:
+            order = Order.objects.get(id=res['id'])
+            res["customer"] = {
+                "full_name": order.customer.user.full_name,
+                "mobile": order.customer.user.mobile,
+                "distance": order.distance(location[0], location[1])
+            }
+            restaurant_location = {}
+            for item in order.items.all():
+                restaurant_location[item.food.restaurant.id] = {
+                    "name": item.food.restaurant.user.full_name,
+                    "location": item.food.restaurant.location,
+                    "distance": item.distance(location[0], location[1])
+                }
+            res["restaurant_location"] = restaurant_location
+        return Response(response, status=HTTP_200_OK)
 
 
 class AcceptOrder(APIView):
@@ -192,9 +209,26 @@ class GetAcceptedOrder(APIView):
     ]
 
     def get(self, request, format=True):
+        location = self.request.user.delivery_person.location
         orders = self.request.user.delivery_person.accepted_orders.all()
-        serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data, status=HTTP_200_OK)
+        serializers = OrderSerializer(orders, many=True)
+        response = copy.copy(serializers.data)
+        for res in response:
+            order = Order.objects.get(id=res['id'])
+            res["customer"] = {
+                "full_name": order.customer.user.full_name,
+                "mobile": order.customer.user.mobile,
+                "distance": order.distance(location[0], location[1])
+            }
+            restaurant_location = {}
+            for item in order.items.all():
+                restaurant_location[item.food.restaurant.id] = {
+                    "name": item.food.restaurant.user.full_name,
+                    "location": item.food.restaurant.location,
+                    "distance": item.distance(location[0], location[1])
+                }
+            res["restaurant_location"] = restaurant_location
+        return Response(response, status=HTTP_200_OK)
     
 class UpdateStatus(APIView):
     permission_classes = [

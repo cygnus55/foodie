@@ -59,7 +59,7 @@ class Order(models.Model):
     def distance(self, lat, lng):
             from geopy.distance import geodesic
             location = self.delivery_location
-            return geodesic((location[0], location[1]), (lat, lng)).km
+            return round(geodesic((location[0], location[1]), (lat, lng)).km)
 
     @property
     def total_amount(self):
@@ -76,6 +76,11 @@ class OrderItem(models.Model):
 
     class Meta:
         unique_together = ('order', 'food')
+
+    def distance(self, lat, lng):
+            from geopy.distance import geodesic
+            location = self.food.restaurant.location
+            return round(geodesic((location[0], location[1]), (lat, lng)).km)
     
     @property
     def cost(self):
