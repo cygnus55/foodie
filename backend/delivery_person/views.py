@@ -194,6 +194,19 @@ class AcceptOrder(APIView):
         order.is_accepted = True
         order.accepted_on = datetime.datetime.now()
         order.save()
+        # Send status to the consumer
+        channel_layer = channels.layers.get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"order_{order.id}",
+            {
+                'type': 'order_status',
+                'status': order.status,
+                'accepted_by': {
+                    'full_name': order.accepted_by.user.full_name,
+                    'mobile': order.accepted_by.user.mobile,
+                },
+            }
+        )
         return Response({"success": "Order accepted."}, status=HTTP_200_OK)
 
 
@@ -255,7 +268,11 @@ class UpdateStatus(APIView):
             f"order_{order.id}",
             {
                 'type': 'order_status',
-                'message': f'{order.status}'
+                'status': order.status,
+                'accepted_by': {
+                    'full_name': order.accepted_by.user.full_name,
+                    'mobile': order.accepted_by.user.mobile,
+                },
             }
         )
         return Response({"success": f"Order status updated to {status}"}, status=HTTP_200_OK)
