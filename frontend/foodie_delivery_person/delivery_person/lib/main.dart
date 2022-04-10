@@ -10,6 +10,7 @@ import './screens/login_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/homepage_screen.dart';
 import './screens/passwordchangescreen.dart';
+import './screens/orderDetail_screen.dart';
 import './providers/auth_provider.dart';
 import 'color.dart';
 
@@ -42,7 +43,6 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<Auth>(
           builder: (ctx, auth, _) => MaterialApp(
-                
                   debugShowCheckedModeBanner: false,
                   title: 'Delivery Person APP',
                   theme: ThemeData(
@@ -64,6 +64,8 @@ class MyApp extends StatelessWidget {
                     PasswordChangeScreen.routeName: (ctx) =>
                         const PasswordChangeScreen(),
                     HomepageScreen.routeName: (ctx) => const HomepageScreen(),
+                    OrderDetailScreen.routeName: (ctx) =>
+                        const OrderDetailScreen(),
                   })),
     );
   }

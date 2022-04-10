@@ -229,6 +229,7 @@ class GetAcceptedOrder(APIView):
                 }
             res["restaurant_location"] = restaurant_location
         return Response(response, status=HTTP_200_OK)
+
     
 class UpdateStatus(APIView):
     permission_classes = [

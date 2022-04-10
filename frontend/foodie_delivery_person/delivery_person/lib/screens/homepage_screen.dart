@@ -1,5 +1,6 @@
 import 'package:delivery_person/providers/order_provider.dart';
 import 'package:delivery_person/screens/splash_screen.dart';
+import './orderDetail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +27,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var list = Provider.of<Order>(context, listen: false).orderId as List;
+    var list = Provider.of<Order>(context, listen: false).OrderItems;
     var userLocation = Provider.of<UserLocation>(context);
     return isloading
         ? Scaffold(
@@ -56,109 +57,129 @@ class _HomepageScreenState extends State<HomepageScreen> {
                     ))
               ],
             ),
-            body: 
-            // list.isEmpty
-            //     ? Column(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         crossAxisAlignment: CrossAxisAlignment.center,
-            //         children: [
-            //           const Text(
-            //             'Nothing to show',
-            //             style: TextStyle(fontSize: 40),
-            //           ),
-            //           // Container(
-            //           //   padding: const EdgeInsets.all(15),
-            //           //   width: double.infinity,
-            //           //   child: ElevatedButton(
-            //           //     onPressed: () {},
-            //           //     child: const Text('Log out'),
-            //           //   ),
-            //           // ),
-            //           ElevatedButton(
-            //             style: ElevatedButton.styleFrom(
-            //                 primary: const Color(0xFFD42323)),
-            //             onPressed: () {},
-            //             child: Padding(
-            //               padding: const EdgeInsets.all(15),
-            //               child: Text(
-            //                 userLocation.latitude.toString() +
-            //                     " " +
-            //                     userLocation.longitude.toString(),
-            //                 style: const TextStyle(fontSize: 20),
-            //               ),
-            //             ),
-            //           ),
-            //         ],
-            //       )
-             // :
-                 Column(
-                    children: [
-                      Flexible(
-                        child: ListView.builder(
-                            itemCount: list.length,
-                            itemBuilder: (ctx, index) {
-                              return GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  height: 100,
-                                  child: Card(
-                                    elevation: 5,
-                                    color: Colors.grey[300],
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(15),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text('Order Id: ' '${list[index]}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle1
-                                              ?.copyWith(
-                                                  fontWeight: FontWeight.bold)),
-                                    ),
-                                  ),
+            body:
+                // list.isEmpty
+                //     ? Column(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         crossAxisAlignment: CrossAxisAlignment.center,
+                //         children: [
+                //           const Text(
+                //             'Nothing to show',
+                //             style: TextStyle(fontSize: 40),
+                //           ),
+                //           // Container(
+                //           //   padding: const EdgeInsets.all(15),
+                //           //   width: double.infinity,
+                //           //   child: ElevatedButton(
+                //           //     onPressed: () {},
+                //           //     child: const Text('Log out'),
+                //           //   ),
+                //           // ),
+                //           ElevatedButton(
+                //             style: ElevatedButton.styleFrom(
+                //                 primary: const Color(0xFFD42323)),
+                //             onPressed: () {},
+                //             child: Padding(
+                //               padding: const EdgeInsets.all(15),
+                //               child: Text(
+                //                 userLocation.latitude.toString() +
+                //                     " " +
+                //                     userLocation.longitude.toString(),
+                //                 style: const TextStyle(fontSize: 20),
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       )
+                // :
+                Column(
+              children: [
+                Flexible(
+                  child: ListView.builder(
+                      itemCount: list.length,
+                      itemBuilder: (ctx, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                OrderDetailScreen.routeName,
+                                arguments: list[index].orderid);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            height: 100,
+                            child: Card(
+                              elevation: 5,
+                              color: Colors.grey[300],
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(15),
                                 ),
-                              );
-                            }),
-                      ),
-                      // Container(
-                      //   padding: const EdgeInsets.all(15),
-                      //   width: double.infinity,
-                      //   child: ElevatedButton(
-                      //     onPressed: () {
-                      //       setState(() {
-                      //         isloading = true;
-                      //       });
-                      //       Provider.of<Auth>(context, listen: false)
-                      //           .logout()
-                      //           .then(
-                      //         (_) {
-                      //           Navigator.of(context).pushReplacementNamed(
-                      //               LoginScreen.routeName);
-                      //         },
-                      //       );
-                      //     },
-                      //     child: const Text('Log out'),
-                      //   ),
-                      // ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: const Color(0xFFD42323)),
-                        onPressed: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Text(
-                            userLocation.latitude.toString() +
-                                " " +
-                                userLocation.longitude.toString(),
-                            style: const TextStyle(fontSize: 20),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Delivery Charge: '
+                                      '${list[index].deliverycharge}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      'Location :'
+                                      '${list[index].deliverylocation![2]}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
+                        );
+                      }),
+                ),
+                // Container(
+                //   padding: const EdgeInsets.all(15),
+                //   width: double.infinity,
+                //   child: ElevatedButton(
+                //     onPressed: () {
+                //       setState(() {
+                //         isloading = true;
+                //       });
+                //       Provider.of<Auth>(context, listen: false)
+                //           .logout()
+                //           .then(
+                //         (_) {
+                //           Navigator.of(context).pushReplacementNamed(
+                //               LoginScreen.routeName);
+                //         },
+                //       );
+                //     },
+                //     child: const Text('Log out'),
+                //   ),
+                // ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: const Color(0xFFD42323)),
+                  onPressed: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Text(
+                      userLocation.latitude.toString() +
+                          " " +
+                          userLocation.longitude.toString(),
+                      style: const TextStyle(fontSize: 20),
+                    ),
                   ),
+                ),
+              ],
+            ),
           );
   }
 }

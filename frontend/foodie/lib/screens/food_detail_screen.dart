@@ -362,28 +362,51 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                         if (Provider.of<Auth>(context,
                                                 listen: false)
                                             .isAuth) {
-                                          setState(() {
-                                            _disableBack = true;
-                                          });
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              duration:
-                                                  const Duration(seconds: 3),
-                                              content: const Text(
-                                                  'Food added to cart'),
-                                              action: SnackBarAction(
-                                                label: 'Undo',
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _undo = true;
-                                                    _disableBack = false;
-                                                  });
-                                                },
+                                          if (_food.restaurant!.isAvailable! &&
+                                              _food.restaurant!.openStatus!) {
+                                            setState(() {
+                                              _disableBack = true;
+                                            });
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                duration:
+                                                    const Duration(seconds: 3),
+                                                content: const Text(
+                                                    'Food added to cart'),
+                                                action: SnackBarAction(
+                                                  label: 'Undo',
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _undo = true;
+                                                      _disableBack = false;
+                                                    });
+                                                  },
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                          undo(_id);
+                                            );
+                                            undo(_id);
+                                          } else {
+                                            showDialog(
+                                              context: context,
+                                              builder: (c) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      'Food Unavailable'),
+                                                  content: const Text(
+                                                      'Food you are trying to add to cart is currently unavailable.'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(c).pop();
+                                                      },
+                                                      child: const Text('OK'),
+                                                    )
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          }
                                         } else {
                                           Navigator.of(context)
                                               .pushAndRemoveUntil(
