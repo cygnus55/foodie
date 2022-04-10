@@ -292,6 +292,34 @@ class Cart with ChangeNotifier {
         ),
       );
       await cartItems(context);
+      final data = json.decode(response.body) as Map;
+      List<OrderFood> food = [];
+      RecentOrder recentorder;
+      (data['items'] as List).forEach(
+        (element) {
+          food.add(
+            OrderFood(
+              cost: element['cost'],
+              name: element['food_name'],
+              price: element['price'],
+              quantity: element['quantity'],
+              restaurantname: element['restaurant_name'],
+            ),
+          );
+        },
+      );
+      recentorder = RecentOrder(
+        orderid: data['order_id'],
+        acceptedby: data['accepted_by'],
+        deliverycharge: data['delivery_charge'],
+        deliverylocation: data['delivery_location'],
+        food: food,
+        isaccepted: data['is_accepted'],
+        paymentmethod: data['payment_method'],
+        status: data['status'],
+        totalamount: data['total_amount'],
+      );
+      _order = recentorder;
 
       print(response.body);
     } catch (e) {
