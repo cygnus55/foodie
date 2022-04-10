@@ -11,6 +11,7 @@ import './screens/splash_screen.dart';
 import './screens/homepage_screen.dart';
 import './screens/passwordchangescreen.dart';
 import './screens/orderDetail_screen.dart';
+import './screens/map_screen.dart';
 import './providers/auth_provider.dart';
 import 'color.dart';
 
@@ -66,6 +67,7 @@ class MyApp extends StatelessWidget {
                     HomepageScreen.routeName: (ctx) => const HomepageScreen(),
                     OrderDetailScreen.routeName: (ctx) =>
                         const OrderDetailScreen(),
+                    MapScreen.routeName: (ctx) => MapScreen(),
                   })),
     );
   }
