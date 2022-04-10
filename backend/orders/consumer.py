@@ -25,13 +25,15 @@ class OrderStatusConsumer(AsyncJsonWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+        status = text_data_json['status']
+        accepted_by = text_data.json['accepted_by']
         # send message to WebSocket
         await self.channel_layer.group_send (
             self.room_group_name,
             {
             'type': 'order_status',
-            'message': message,
+            'status': status,
+            'accepted_by': accepted_by
             }
         )
     

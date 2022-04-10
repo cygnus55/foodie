@@ -1,7 +1,16 @@
 from rest_framework import serializers
+from delivery_person.models import DeliveryPerson
 
 from orders.models import Order, OrderItem
 
+
+class AcceptedBySerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(source='user.full_name', read_only=True)
+    mobile = serializers.CharField(source='user.mobile', read_only=True)
+
+    class Meta:
+        model = DeliveryPerson
+        fields = ('full_name', 'mobile')
 
 class OrderItemSerializer(serializers.ModelSerializer):
     # url = serializers.HyperlinkedIdentityField(view_name="order:order_item")
@@ -22,7 +31,7 @@ class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
     total_amount = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     status = serializers.ChoiceField(choices=Order.STATUS_CHOICES, read_only=True)
-    delivery_person_name = serializers.CharField(source="accepted_by.user.full_name", read_only=True)
+    accepted_by = AcceptedBySerializer(read_only=True)
     accepted_on = serializers.DateTimeField(read_only=True)
     is_accepted = serializers.BooleanField(read_only=True)
 
@@ -36,3 +45,5 @@ class DeliveryLocationSerializer(serializers.Serializer):
     longitude = serializers.CharField(max_length=20)
     address = serializers.CharField(max_length=500)
     city = serializers.CharField(max_length=100)
+
+
