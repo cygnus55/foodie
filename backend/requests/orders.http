@@ -14,7 +14,7 @@ Content-Type: application/json
     "address": "",
     "items": [
         {
-            "food_id": 1,
+            "food_id": 3,
             "quantity": 5,
             "price": 180.00
         },

@@ -163,13 +163,13 @@ class NewOrderList(APIView):
                 "mobile": order.customer.user.mobile,
                 "distance": order.distance(location[0], location[1])
             }
-            restaurant_location = {}
+            restaurant_location = []
             for item in order.items.all():
-                restaurant_location[item.food.restaurant.id] = {
+                restaurant_location.append({
                     "name": item.food.restaurant.user.full_name,
                     "location": item.food.restaurant.location,
                     "distance": item.distance(location[0], location[1])
-                }
+                })
             res["restaurant_location"] = restaurant_location
         return Response(response, status=HTTP_200_OK)
 
@@ -233,13 +233,13 @@ class GetAcceptedOrder(APIView):
                 "mobile": order.customer.user.mobile,
                 "distance": order.distance(location[0], location[1])
             }
-            restaurant_location = {}
+            restaurant_location = []
             for item in order.items.all():
-                restaurant_location[item.food.restaurant.id] = {
+                restaurant_location.append({
                     "name": item.food.restaurant.user.full_name,
                     "location": item.food.restaurant.location,
                     "distance": item.distance(location[0], location[1])
-                }
+                })
             res["restaurant_location"] = restaurant_location
         return Response(response, status=HTTP_200_OK)
 
