@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/screens/order_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
+
+import './tab_screen.dart';
 
 class DeliveryConfirmScreen extends StatelessWidget {
   const DeliveryConfirmScreen({Key? key}) : super(key: key);
@@ -238,8 +241,17 @@ class DeliveryConfirmScreen extends StatelessWidget {
                   child: const Text('Pay by khalti')),
               ElevatedButton(
                   onPressed: () {
-                    Provider.of<Cart>(context, listen: false).createorderCOD(
-                        context, lat, long, address, delivery_charge);
+                    Provider.of<Cart>(context, listen: false)
+                        .createorderCOD(
+                            context, lat, long, address, delivery_charge)
+                        .then((_) {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const OrderScreen()),
+                        ((route) => route.isFirst),
+                      );
+                    });
                   },
                   child: const Text('Cash on delivery'))
             ],

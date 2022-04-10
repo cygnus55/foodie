@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/cart_provider.dart';
 
 class OrderScreen extends StatelessWidget {
   const OrderScreen({Key? key}) : super(key: key);
@@ -7,8 +10,10 @@ class OrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Your orders")),
-      body: const Center(child: Text('Your orders')),
+      appBar: AppBar(title: const Text("This order")),
+      body: Center(
+          child: Text(
+              '${Provider.of<Cart>(context, listen: false).order.totalamount}')),
     );
   }
 }
