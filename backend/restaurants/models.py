@@ -5,6 +5,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models import Avg, Count
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 from taggit.managers import TaggableManager
 from cloudinary.models import CloudinaryField
@@ -97,3 +99,9 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return f"{self.user.full_name} for user {self.user.username}"
+
+
+@receiver(post_delete, sender=Restaurant)
+def post_delete_callback(sender, instance, **kwargs):
+    user = User.objects.get(id=instance.user.id)
+    user.delete()
