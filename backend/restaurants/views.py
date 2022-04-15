@@ -10,8 +10,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
-from django.db.models.functions import TruncMonth, TruncDate
-from django.db.models import Count
+from django.db.models.functions import TruncMonth, TruncDate, Cast
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -41,7 +41,7 @@ from restaurants.custompermissions import (
     IsCurrentUserOwnerOrReadOnly,
 )
 from restaurants.forms import RestaurantRegistrationForm, RestaurantNameUpdateForm, RestaurantAccountUpdateForm, CustomChangePasswordForm
-from orders.models import Order
+from orders.models import OrderItem
 
 
 class RestaurantList(ListCreateAPIView):
@@ -206,24 +206,25 @@ def restaurant_dashboard(request):
         return redirect("restaurants:restaurant_home")
 
     if order_category == "month":
-        sales = Order.objects.filter(status="Delivered") \
-                                        .filter(items__food__restaurant=request.user.restaurant) \
-                                        .annotate(month=TruncMonth("created")) \
-                                        .values("month") \
-                                        .annotate(count=Count("id")) \
-                                        .order_by()
+        sales = OrderItem.objects.filter(food__restaurant=request.user.restaurant) \
+                                            .filter(order__status="Delivered") \
+                                            .annotate(item_cost=ExpressionWrapper(F("price")*F("quantity"), output_field=DecimalField())) \
+                                            .annotate(month=TruncMonth("created")) \
+                                            .values("month") \
+                                            .annotate(total_cost=Sum("item_cost")) \
+                                            .order_by()
         labels = [sale["month"].strftime("%b %Y") for sale in sales]
     else:
-        sales = Order.objects.filter(status="Delivered") \
-                                        .filter(items__food__restaurant=request.user.restaurant) \
-                                        .annotate(date=TruncDate("created")) \
-                                        .values("date") \
-                                        .annotate(count=Count("id")) \
-                                        .order_by()
-
+        sales = OrderItem.objects.filter(food__restaurant=request.user.restaurant) \
+                                            .filter(order__status="Delivered") \
+                                            .annotate(item_cost=ExpressionWrapper(F("price")*F("quantity"), output_field=DecimalField())) \
+                                            .annotate(date=TruncDate("created")) \
+                                            .values("date") \
+                                            .annotate(total_cost=Sum("item_cost")) \
+                                            .order_by()
         labels = [sale["date"].strftime("%d %b %Y") for sale in sales]
 
-    data = [sale['count'] for sale in sales]
+    data = [int(sale["total_cost"]) for sale in sales]
 
     context = {
         "order_category": order_category,
