@@ -1,4 +1,3 @@
-from multiprocessing import context
 import random
 import string
 from hashlib import md5
@@ -11,6 +10,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
+from django.db.models.functions import TruncMonth, TruncDate
+from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -40,6 +41,7 @@ from restaurants.custompermissions import (
     IsCurrentUserOwnerOrReadOnly,
 )
 from restaurants.forms import RestaurantRegistrationForm, RestaurantNameUpdateForm, RestaurantAccountUpdateForm, CustomChangePasswordForm
+from orders.models import Order
 
 
 class RestaurantList(ListCreateAPIView):
@@ -64,7 +66,7 @@ class RestaurantList(ListCreateAPIView):
         longitude = self.request.query_params.get("lng", None)
         top_rated = self.request.query_params.get("top_rated", None)
         favorite = self.request.query_params.get("favorite", None)
-        
+
         if latitude and longitude:
             # for every queryset, calculate distance from the given lat and lng and filter if distance is less than 4km
             for q in queryset:
@@ -196,8 +198,41 @@ def restaurant_dashboard(request):
     if not request.user.restaurant.has_location:
         # redirect the user(restaurant) to change location
         return redirect("restaurants:get_location")
-    foods = Food.objects.filter(restaurant=request.user.restaurant)
-    return render(request, "restaurants/dashboard.html", {"foods": foods})
+
+    allowed_categories = ["month", "date"]
+    order_category = request.GET.get("order_by", "date")
+
+    if order_category not in allowed_categories:
+        return redirect("restaurants:restaurant_home")
+
+    if order_category == "month":
+        sales = Order.objects.filter(status="Delivered") \
+                                        .filter(items__food__restaurant=request.user.restaurant) \
+                                        .annotate(month=TruncMonth("created")) \
+                                        .values("month") \
+                                        .annotate(count=Count("id")) \
+                                        .order_by()
+        labels = [sale["month"].strftime("%b %Y") for sale in sales]
+    else:
+        sales = Order.objects.filter(status="Delivered") \
+                                        .filter(items__food__restaurant=request.user.restaurant) \
+                                        .annotate(date=TruncDate("created")) \
+                                        .values("date") \
+                                        .annotate(count=Count("id")) \
+                                        .order_by()
+
+        labels = [sale["date"].strftime("%d %b %Y") for sale in sales]
+
+    data = [sale['count'] for sale in sales]
+
+    context = {
+        "order_category": order_category,
+        "labels": labels,
+        "data": data,
+        "sales": sales
+    }
+
+    return render(request, "restaurants/dashboard.html", context=context)
 
 
 @login_required
