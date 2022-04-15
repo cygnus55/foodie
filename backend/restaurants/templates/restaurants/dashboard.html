@@ -9,6 +9,10 @@
         <h3>
             Dashboard
         </h3>
+        {% comment %}
+        {{ labels }}
+        {{ data }}
+        {% endcomment %}
         <div>
             <div class="container d-flex justify-content-between">
                 <h5>Sales</h5>
@@ -23,7 +27,7 @@
                     </li>
                 </ul>
             </div>
-            <canvas id="chart" style="max-height: 70vh; width: auto;"></canvas>
+            <canvas id="chart" class="my-5" style="max-height: 70vh; width: auto;"></canvas>
         </div>
         <script>
             var data = {
@@ -42,11 +46,37 @@
                 data: data,
                 options: {
                     scales: {
+                        xAxes: [{
+                            display: true,
+                            gridLines: {
+                                display: false,
+                            },
+                            scaleLabel: {
+                                display: true,
+                                fontColor: '#3C3750',
+                                fontFamily: 'Poppins',
+                                fontSize: 14,
+                                fontStyle: 'bold',
+                                labelString: '{{ order_category | safe | title }}',
+                            }
+                        }],
                         yAxes: [{
+                            display: true,
+                            gridLines: {
+                                display: true,
+                            },
+                            scaleLabel: {
+                                display: true,
+                                fontColor: '#3C3750',
+                                fontFamily: 'Poppins',
+                                fontSize: 14,
+                                fontStyle: 'bold',
+                                labelString: 'Sales Amount (in Rs.)',
+                            },
                             ticks: {
                                 beginAtZero: true,
                                 precision: 0,
-                                stepSize: 1
+                                stepSize: 50,
                             }
                         }]
                     }
