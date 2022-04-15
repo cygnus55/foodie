@@ -48,5 +48,6 @@
 
 ## Week 7:
 
-- Implement of restaurant design (views) in django
+- Implement restaurant design (views) in django
 - Upload images to cloudinary and access the url
+- Add chart to restaurant dashboard

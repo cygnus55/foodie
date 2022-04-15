@@ -3,12 +3,60 @@
 {% load static %}
 
 {% block restaurant_content %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
     <div class="text-start">
         <h3>
             Dashboard
         </h3>
         <div>
-           Placeholder
+            <div class="container d-flex justify-content-between">
+                <h5>Sales</h5>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link {% if order_parameter == 'month' %}active{% endif %}" aria-current="page"
+                            href="?order_by=month">Month</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if order_parameter == 'date' %}active{% endif %}"
+                            href="?order_by=date">Date</a>
+                    </li>
+                </ul>
+            </div>
+            <canvas id="chart" style="max-height: 70vh; width: auto;"></canvas>
         </div>
+        <script>
+            var data = {
+                datasets: [{
+                    data: {{ data | safe }},
+                    label: 'Sales',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgb(242, 119, 148)',
+                    borderWidth: 1,
+                }],
+                labels: {{ labels | safe }}
+            };
+
+            var config = {
+                type: 'bar',
+                data: data,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                precision: 0,
+                                stepSize: 1
+                            }
+                        }]
+                    }
+                }
+            };
+
+            window.onload = function () {
+                var ctx = document.getElementById('chart').getContext('2d');
+                window.myPie = new Chart(ctx, config);
+            };
+        </script>
     </div>
 {% endblock restaurant_content %}

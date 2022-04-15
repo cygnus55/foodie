@@ -8,13 +8,12 @@ from customers.models import Customer
 from delivery_person.models import DeliveryPerson
 from foods.models import Food
 
-# Create your models here.
-
 
 class UnacceptedOrderManager(models.Manager):
     """ Filter the objects on the basis of acceptancmodels.DecimalField(max_digits=10, decimal_places=2, default=0)e by delivery person."""
     def get_queryset(self):
         return super().get_queryset().filter(is_accepted=False)
+
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -57,7 +56,7 @@ class Order(models.Model):
     @property
     def order_id(self):
         return f'{self.created.strftime("%Y%m%d")}-{self.id}'
-    
+
     def distance(self, lat, lng):
             from geopy.distance import geodesic
             location = self.delivery_location
@@ -66,7 +65,7 @@ class Order(models.Model):
     @property
     def total_amount(self):
         return round(sum(item.cost for item in self.items.all()) + decimal.Decimal(self.delivery_charge), 2)
-    
+
 
 class OrderItem(models.Model):
     food = models.ForeignKey(Food, related_name='items', on_delete=models.CASCADE)
@@ -83,7 +82,7 @@ class OrderItem(models.Model):
             from geopy.distance import geodesic
             location = self.food.restaurant.location
             return round(geodesic((location[0], location[1]), (lat, lng)).km)
-    
+
     @property
     def cost(self):
         return round(self.price * self.quantity, 2)
