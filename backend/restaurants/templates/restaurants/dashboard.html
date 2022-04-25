@@ -34,6 +34,7 @@
                 datasets: [{
                     data: {{ data | safe }},
                     label: 'Sales',
+                    fill: false,
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgb(242, 119, 148)',
                     borderWidth: 1,
@@ -42,7 +43,7 @@
             };
 
             var config = {
-                type: 'bar',
+                type: 'line',
                 data: data,
                 options: {
                     scales: {

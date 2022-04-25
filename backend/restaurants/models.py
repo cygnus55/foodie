@@ -98,7 +98,8 @@ class Restaurant(models.Model):
         return all(self.location)
 
     def __str__(self):
-        return f"{self.user.full_name} for user {self.user.username}"
+        representation =  f"{self.user.full_name} for user {self.user.username}" if self.user.full_name else self.user.username
+        return representation
 
 
 @receiver(post_delete, sender=Restaurant)
