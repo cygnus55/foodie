@@ -38,6 +38,8 @@ class Order with ChangeNotifier {
       List<OrderItem> orderitem = [];
       for (var element in data) {
         List<FoodItem> food = [];
+        List<Restaurantlocation> restaurantLocation = [];
+
         print(element);
 
         for (var ele in (element['items'] as List)) {
@@ -52,8 +54,21 @@ class Order with ChangeNotifier {
             ),
           );
         }
+
+        for (var ele in (element['restaurant_location'] as List)) {
+          print(ele);
+          restaurantLocation.add(Restaurantlocation(
+            name: ele['name'],
+            location: ele['location'],
+            distance: ele['distance'],
+          ));
+        }
+        print(restaurantLocation);
         orderitem.add(
           OrderItem(
+            customerName: element['customer']['full_name'],
+            mobileNumber: element['customer']['mobile'],
+            distance: element['customer']['distance'],
             orderid: element['order_id'],
             deliverycharge: element['delivery_charge'],
             food: [...food],
@@ -61,6 +76,7 @@ class Order with ChangeNotifier {
             paymentmethod: element['payment_method'],
             status: element['status'],
             totalamount: element['total_amount'],
+            location: [...restaurantLocation],
           ),
         );
         print(orderitem);
@@ -74,6 +90,9 @@ class Order with ChangeNotifier {
 }
 
 class OrderItem {
+  String? customerName;
+  String? mobileNumber;
+  int? distance;
   String? orderid;
   String? totalamount;
   String? deliverycharge;
@@ -81,7 +100,11 @@ class OrderItem {
   String? paymentmethod;
   String? status;
   List<FoodItem>? food;
+  List<Restaurantlocation>? location;
   OrderItem({
+    this.customerName,
+    this.mobileNumber,
+    this.distance,
     this.orderid,
     this.deliverycharge,
     this.deliverylocation,
@@ -89,6 +112,7 @@ class OrderItem {
     this.paymentmethod,
     this.status,
     this.totalamount,
+    this.location,
   });
 }
 
@@ -105,5 +129,16 @@ class FoodItem {
     this.name,
     this.cost,
     this.restaurantname,
+  });
+}
+
+class Restaurantlocation {
+  String? name;
+  List? location;
+  int? distance;
+  Restaurantlocation({
+    this.name,
+    this.location,
+    this.distance,
   });
 }

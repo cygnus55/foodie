@@ -1,4 +1,3 @@
-import copy
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.generics import (
@@ -43,6 +42,7 @@ class FoodList(ListCreateAPIView):
         favorite = self.request.query_params.get('favorite', None)
         veg = self.request.query_params.get('veg', None)
         offers = self.request.query_params.get('offers', None)
+        query = self.request.query_params.get('query', None)
 
         if latitude and longitude:
             # for every queryset, calculate distance from the given lat and lng and filter if distance is less than 4km
@@ -67,6 +67,9 @@ class FoodList(ListCreateAPIView):
                 if not q.discount_percent:
                     queryset = queryset.exclude(id=q.id)
             queryset = queryset.order_by('-discount_percent')
+        
+        if query:
+            queryset = queryset.filter(tags__name__in=[query,])
         return queryset
 
 
