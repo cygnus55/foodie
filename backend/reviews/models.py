@@ -23,7 +23,6 @@ class Review(models.Model):
     content_type = models.ForeignKey(ContentType, related_name="type", on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
-    sentiment_score = models.DecimalField(default=0, max_digits=10, decimal_places=7)
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
 
