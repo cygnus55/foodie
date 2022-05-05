@@ -42,7 +42,7 @@ class RestaurantAccountUpdateForm(forms.ModelForm):
         fields = [
             "description", "open_hour", "close_hour",
             "website_link", "facebook_link", "is_available",
-            "logo",
+            "logo", "tags",
         ]
 
 

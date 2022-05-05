@@ -15,6 +15,7 @@ from django.db.models import Sum, F, ExpressionWrapper, DecimalField
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
+from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy
 from django.utils.html import strip_tags
 from django.views.generic import (
@@ -30,6 +31,7 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
 )
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from taggit.models import Tag
 
 from accounts.models import User
 from api import customauthentication, custompermissions
@@ -253,6 +255,7 @@ def account_settings(request):
         )
         if name_form.is_valid() and account_form.is_valid():
             name_form.save()
+            name_form.save_m2m()
             account_form.save()
             messages.success(request, "Profile successfully updated!")
             return redirect("restaurants:account_settings")
@@ -297,7 +300,7 @@ def change_password(request):
 class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, FirstLoginRedirectMixin, CreateView):
     model = Food
     fields = ["name", "description", "price", "is_available",
-              "discount_percent", "is_veg", "image"]
+              "discount_percent", "is_veg", "image", "tags"]
 
     template_name = "restaurants/food_form.html"
     success_url = reverse_lazy("restaurants:food_list")
@@ -332,13 +335,14 @@ class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, FirstLoginRedirect
             template_instance.usage += 1
             template_instance.save()
 
+
         return data
 
 
 class FoodUpdateView(LoginRequiredMixin, UserPassesTestMixin, FirstLoginRedirectMixin, UpdateView):
     model = Food
     fields = ["name", "description", "price", "is_available",
-            "discount_percent", "is_veg", "image"]
+            "discount_percent", "is_veg", "image", "tags"]
     template_name = "restaurants/food_form.html"
     success_url = reverse_lazy("restaurants:food_list")
 
