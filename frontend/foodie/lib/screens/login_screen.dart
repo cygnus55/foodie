@@ -154,18 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 elevation: 5,
               ),
               const SizedBox(
-                height: 15,
-              ),
-              SignInButton(
-                Buttons.GoogleDark,
-                onPressed: () {},
-              ),
-              SignInButton(
-                Buttons.Facebook,
-                onPressed: () {},
-              ),
-              const SizedBox(
-                height: 15,
+                height: 30,
               ),
               const Text('By continuing you woluld agree to our',
                   style: TextStyle(
