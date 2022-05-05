@@ -220,7 +220,15 @@ class DeliveryConfirmScreen extends StatelessWidget {
                             .showSnackBar(successsnackBar);
                         Provider.of<Cart>(context, listen: false)
                             .createorderkhalti(
-                                context, lat, long, address, delivery_charge);
+                                context, lat, long, address, delivery_charge)
+                            .then((_) {
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const TabScreen()),
+                            ((route) => route.isFirst),
+                          );
+                        });
                       },
                       onFailure: (fa) {
                         const failedsnackBar = SnackBar(
@@ -241,6 +249,11 @@ class DeliveryConfirmScreen extends StatelessWidget {
                   child: const Text('Pay by khalti')),
               ElevatedButton(
                   onPressed: () {
+                    const successsnackBar = SnackBar(
+                      content: Text('Order Placed Successfully.'),
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(successsnackBar);
                     Provider.of<Cart>(context, listen: false)
                         .createorderCOD(
                             context, lat, long, address, delivery_charge)
@@ -248,7 +261,7 @@ class DeliveryConfirmScreen extends StatelessWidget {
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                const OrderScreen()),
+                                const TabScreen()),
                         ((route) => route.isFirst),
                       );
                     });
