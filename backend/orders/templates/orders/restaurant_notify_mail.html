@@ -1,0 +1,23 @@
+{% autoescape off %}
+Hi {{ restaurant.user.full_name }},
+
+<p>New order has been placed to your restaurant.</p>
+
+<p>Order details are as follows:</p>
+<ul>
+    <li> Order ID: {{ order.order_id }} </li> 
+    <li> Ordered by: {{ order.customer.user.full_name }}</li>  
+    <li> Accepted by: {{ order.accepted_by.user.full_name }} </li>
+    <li>Delivery Person Mobile Number: {{ order.accepted_by.user.mobile }}</li>
+</ul>
+
+<p>Order items are as follows:</p>
+<ul>
+    {% for item in items %}
+        <li> {{ item.food.name }} - {{ item.quantity }} </li>
+    {% endfor %}
+</ul>
+
+Regards,
+Foodie Administration
+{% endautoescape %}

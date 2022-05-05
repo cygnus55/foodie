@@ -7,8 +7,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from django.core.mail import send_mail
 
-from api import customauthentication, custompermissions
+from api import customauthentication, custompermissions, twilio_utils
 from orders.models import Order, OrderItem
 from cart.models import Cart
 from restaurants.models import Restaurant
@@ -71,6 +72,9 @@ class OrderCreate(APIView):
             cart = Cart.objects.filter(
                 customer=self.request.user.customer).first()
             cart.items.all().delete()
+
+        #Send SMS to user
+        twilio_utils.send_sms(order.customer.user.mobile, f'Your order has been placed. \nOrder ID: {order.order_id} \nOrder Amount: {order.total_amount} \nOrder Status: {order.status}')
         
         serializer = OrderSerializer(order)
         return Response(serializer.data, status=HTTP_200_OK)
@@ -148,20 +152,3 @@ class GetDeliveryCharge(APIView):
         if not charge:
             return Response({"error": "Restaurant has no delivery location."}, status=HTTP_400_BAD_REQUEST)
         return Response({"deliverty_charge": charge}, status=HTTP_200_OK)
-
-
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseForbidden
-from django.contrib.auth.decorators import login_required
-
-@login_required
-def order_status(request, order_id):
-    try:
-        # retrieve course with given id joined by the current user
-        order = request.user.customer.order.get(id=order_id)
-        print(order)
-    except Exception as e:
-        print(e)
-        # user is not a student of the course or course does not exist
-        return HttpResponseForbidden()
-    return render(request, 'orders/test.html', {'order': order})

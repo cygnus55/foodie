@@ -23,7 +23,7 @@ from rest_framework.views import APIView
 
 from api import customauthentication
 from accounts.models import User
-from accounts import twilio_utils
+from api import twilio_utils
 from customers.models import Customer
 from cart.models import Cart
 from accounts.serializers import UserSerializer
