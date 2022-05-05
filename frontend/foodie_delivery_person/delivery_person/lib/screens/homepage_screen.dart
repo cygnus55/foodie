@@ -115,29 +115,26 @@ class _HomepageScreenState extends State<HomepageScreen> {
                                   Radius.circular(15),
                                 ),
                               ),
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Delivery Charge: '
-                                      '${list[index].deliverycharge}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      'Location :'
-                                      '${list[index].deliverylocation![2]}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Delivery Charge: '
+                                    '${list[index].deliverycharge}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    'Location :'
+                                    '${list[index].deliverylocation![2]}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -164,20 +161,20 @@ class _HomepageScreenState extends State<HomepageScreen> {
                 //     child: const Text('Log out'),
                 //   ),
                 // ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      primary: const Color(0xFFD42323)),
-                  onPressed: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Text(
-                      userLocation.latitude.toString() +
-                          " " +
-                          userLocation.longitude.toString(),
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ),
+                // ElevatedButton(
+                //   style: ElevatedButton.styleFrom(
+                //       primary: const Color(0xFFD42323)),
+                //   onPressed: () {},
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(15),
+                //     child: Text(
+                //       userLocation.latitude.toString() +
+                //           " " +
+                //           userLocation.longitude.toString(),
+                //       style: const TextStyle(fontSize: 20),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           );

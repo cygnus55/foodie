@@ -1,6 +1,8 @@
 import 'package:delivery_person/datamodels/user_location.dart';
 import 'package:delivery_person/providers/order_provider.dart';
 import 'package:delivery_person/screens/login_screen.dart';
+import './screens/orderDetail_screen2.dart';
+import './screens/orderDetail_screen3.dart';
 import 'package:delivery_person/services/location_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -68,6 +70,10 @@ class MyApp extends StatelessWidget {
                     OrderDetailScreen.routeName: (ctx) =>
                         const OrderDetailScreen(),
                     MapScreen.routeName: (ctx) => MapScreen(),
+                    OrderDetailScreen2.routeName: (ctx) =>
+                        const OrderDetailScreen2(),
+                    OrderDetailScreen3.routeName: (ctx) =>
+                        const OrderDetailScreen3(),
                   })),
     );
   }

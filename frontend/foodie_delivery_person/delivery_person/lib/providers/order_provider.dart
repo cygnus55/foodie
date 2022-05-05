@@ -7,7 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:provider/provider.dart';
+import './auth_provider.dart';
 import '../models/httpexception.dart';
 
 class Order with ChangeNotifier {
@@ -16,8 +17,68 @@ class Order with ChangeNotifier {
     return [..._orderItem];
   }
 
+  // String? get orderid {
+  //   return OrderItem.orderid;
+  // }
+
   OrderItem findById(String id) {
     return _orderItem.firstWhere((order) => order.orderid == id);
+  }
+
+  Future<void> acceptOrder(String orderid, BuildContext context) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'delivery-person/accept-order/');
+      http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Token ' +
+              Provider.of<Auth>(context, listen: false).getauthToken!,
+          'Content-Type': 'application/json'
+        },
+        body: json.encode({'order_id': orderid}),
+      );
+      print(response.body);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> verifyOrder(String orderid, BuildContext context) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'delivery-person/update-status/');
+      http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Token ' +
+              Provider.of<Auth>(context, listen: false).getauthToken!,
+          'Content-Type': 'application/json'
+        },
+        body: json.encode({'order_id': orderid, 'status': 'Verified'}),
+      );
+
+      print(response.body);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> cancelOrder(String orderid, BuildContext context) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'delivery-person/update-status/');
+      http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Token ' +
+              Provider.of<Auth>(context, listen: false).getauthToken!,
+          'Content-Type': 'application/json'
+        },
+        body: json.encode({'order_id': orderid, 'status': 'Verified'}),
+      );
+
+      print(response.body);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   List<OrderItem> _items = [];

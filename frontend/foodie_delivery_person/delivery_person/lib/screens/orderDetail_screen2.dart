@@ -1,20 +1,20 @@
+import 'package:delivery_person/screens/homepage_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery_person/providers/order_provider.dart';
 import 'package:provider/provider.dart';
 import '../providers/order_provider.dart';
 import './map_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
-import './orderDetail_screen2.dart';
+import './orderDetail_screen3.dart';
 
-class OrderDetailScreen extends StatefulWidget {
-  const OrderDetailScreen({Key? key}) : super(key: key);
-  static const routeName = '/order_detail';
+class OrderDetailScreen2 extends StatefulWidget {
+  const OrderDetailScreen2({Key? key}) : super(key: key);
+  static const routeName = '/order_detail2';
 
   @override
-  State<OrderDetailScreen> createState() => _OrderDetailScreenState();
+  State<OrderDetailScreen2> createState() => _OrderDetailScreen2State();
 }
 
-class _OrderDetailScreenState extends State<OrderDetailScreen> {
+class _OrderDetailScreen2State extends State<OrderDetailScreen2> {
   @override
   Widget build(BuildContext context) {
     var accept = false;
@@ -23,21 +23,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final _order = Provider.of<Order>(context).findById(_id);
     var orderid = _order.orderid;
     print(_order.food);
-    Future<void> _makePhoneCall(String phoneNumber) async {
-      final Uri launchUri = Uri(
-        scheme: 'tel',
-        path: phoneNumber,
-      );
-      await Provider.of<Order>(context, listen: false)
-          .acceptOrder(orderid!, context);
-
-      await launchUrl(launchUri);
-
-      await Navigator.of(context).pushNamedAndRemoveUntil(
-        OrderDetailScreen2.routeName,
-        (Route<dynamic> route) => false,
+    verifyorder() {
+      Provider.of<Order>(context, listen: false).verifyOrder(orderid!, context);
+      Navigator.of(context).pushReplacementNamed(
+        OrderDetailScreen3.routeName,
         arguments: orderid,
       );
+    }
+
+    cancelorder() {
+      Provider.of<Order>(context, listen: false).cancelOrder(orderid!, context);
+      Navigator.of(context).pushReplacementNamed(HomepageScreen.routeName);
     }
 
     return Scaffold(
@@ -104,25 +100,32 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ),
                 Text(_order.paymentmethod!),
                 Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          _makePhoneCall(_order.mobileNumber!);
-                        },
-                        child: const Text('Accept'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed(MapScreen.routeName, arguments: {
-                            'latitude': _order.deliverylocation![0],
-                            'longitude': _order.deliverylocation![1]
-                          });
-                        },
-                        child: const Text('View customer location'),
-                      ),
-                    ]),
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        verifyorder();
+                      },
+                      child: const Text('Verify'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        cancelorder();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(MapScreen.routeName, arguments: {
+                          'latitude': _order.deliverylocation![0],
+                          'longitude': _order.deliverylocation![1]
+                        });
+                      },
+                      child: const Text('View customer location'),
+                    ),
+                  ],
+                ),
                 const Text(
                   'Food Details',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

@@ -3,18 +3,17 @@ import 'package:delivery_person/providers/order_provider.dart';
 import 'package:provider/provider.dart';
 import '../providers/order_provider.dart';
 import './map_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
-import './orderDetail_screen2.dart';
+import './homepage_screen.dart';
 
-class OrderDetailScreen extends StatefulWidget {
-  const OrderDetailScreen({Key? key}) : super(key: key);
-  static const routeName = '/order_detail';
+class OrderDetailScreen3 extends StatefulWidget {
+  const OrderDetailScreen3({Key? key}) : super(key: key);
+  static const routeName = '/order_detail3';
 
   @override
-  State<OrderDetailScreen> createState() => _OrderDetailScreenState();
+  State<OrderDetailScreen3> createState() => _OrderDetailScreen3State();
 }
 
-class _OrderDetailScreenState extends State<OrderDetailScreen> {
+class _OrderDetailScreen3State extends State<OrderDetailScreen3> {
   @override
   Widget build(BuildContext context) {
     var accept = false;
@@ -23,22 +22,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final _order = Provider.of<Order>(context).findById(_id);
     var orderid = _order.orderid;
     print(_order.food);
-    Future<void> _makePhoneCall(String phoneNumber) async {
-      final Uri launchUri = Uri(
-        scheme: 'tel',
-        path: phoneNumber,
-      );
-      await Provider.of<Order>(context, listen: false)
-          .acceptOrder(orderid!, context);
-
-      await launchUrl(launchUri);
-
-      await Navigator.of(context).pushNamedAndRemoveUntil(
-        OrderDetailScreen2.routeName,
-        (Route<dynamic> route) => false,
-        arguments: orderid,
-      );
-    }
 
     return Scaffold(
         appBar: AppBar(title: const Text('OrderDetails')),
@@ -104,13 +87,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ),
                 Text(_order.paymentmethod!),
                 Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          _makePhoneCall(_order.mobileNumber!);
+                          Navigator.of(context)
+                              .pushReplacementNamed(HomepageScreen.routeName);
                         },
-                        child: const Text('Accept'),
+                        child: const Text('Delivered'),
                       ),
                       ElevatedButton(
                         onPressed: () {
