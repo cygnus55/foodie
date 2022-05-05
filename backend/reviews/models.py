@@ -26,5 +26,8 @@ class Review(models.Model):
     created = models.TimeField(auto_now_add=True)
     updated = models.TimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ("customer", "content_type", "object_id")
+
     def __str__(self):
         return f"Review: {self.customer.user.full_name} for {self.content_object}"
