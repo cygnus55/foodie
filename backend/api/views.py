@@ -47,6 +47,8 @@ class APIRoot(GenericAPIView):
                     "profile": reverse("delivery_person:profile", request=request),
                     "new_orders_list": reverse("delivery_person:new_orders", request=request),
                     "accepted_orders": reverse("delivery_person:accepted_orders", request=request),
+                    "accept_new_order": reverse("delivery_person:accept_order", request=request),
+                    "update_order_status": reverse("delivery_person:update_status", request=request),
                 },
             }
         )

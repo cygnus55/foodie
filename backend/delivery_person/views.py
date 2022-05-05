@@ -16,14 +16,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
-import channels.layers
-from asgiref.sync import async_to_sync
 
 from accounts.models import User
 from delivery_person.forms import DeliveryPersonForm
 from delivery_person.models import DeliveryPerson
 from delivery_person.custompermissions import HasCurrentUserAcceptedThisOrder, IsCurrentUserOwner
-from api import customauthentication, custompermissions
+from api import customauthentication, custompermissions, twilio_utils
 from delivery_person.serilizers import DeliveryPersonProfileSerializer
 from orders.models import Order
 from orders.serializers import OrderSerializer
@@ -194,19 +192,13 @@ class AcceptOrder(APIView):
         order.is_accepted = True
         order.accepted_on = datetime.datetime.now()
         order.save()
-        # Send status to the consumer
-        channel_layer = channels.layers.get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"order_{order.id}",
-            {
-                'type': 'order_status',
-                'status': order.status,
-                'accepted_by': {
-                    'full_name': order.accepted_by.user.full_name,
-                    'mobile': order.accepted_by.user.mobile,
-                },
-            }
-        )
+        
+        # send sms to user
+        if order.status == "Placed":
+            message_body = f"Your order {_order_id} has been accepted by {order.accepted_by.user.full_name}.\nYou will soon receive a call from him\her."
+        elif order.status == "Verified":
+            message_body = f"Your order {_order_id} has been accepted by {order.accepted_by.user.full_name}."
+        twilio_utils.send_sms(order.customer.user.mobile,message_body)
         return Response({"success": "Order accepted."}, status=HTTP_200_OK)
 
 
@@ -262,17 +254,18 @@ class UpdateStatus(APIView):
         status = request.data.get('status')
         order.status = status
         order.save()
-        # Send status to the consumer
-        channel_layer = channels.layers.get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"order_{order.id}",
-            {
-                'type': 'order_status',
-                'status': order.status,
-                'accepted_by': {
-                    'full_name': order.accepted_by.user.full_name,
-                    'mobile': order.accepted_by.user.mobile,
-                },
-            }
-        )
+        # send sms to user
+        if order.status == "Verified" or order.status == "Delivered" or order.status == "Cancelled":
+            message_body = f"Your order {_order_id} has been {status.lower()}."
+        elif order.status == "On the way to restaurant":
+            message_body = f"Delivery person is on the way to restaurant. You will soon get your food."
+            # send email to restaurants
+            order.send_mail_to_restaurants()
+        elif order.status == "Processing":
+            message_body = f"Restaurant are preparing your food order."
+        elif order.status == "Picking":
+            message_body = f"Delivery person is picking your food."
+        elif order.status == "On the way":
+            message_body = f"Delivery person is on the way to your location."
+        twilio_utils.send_sms(order.customer.user.mobile,message_body)
         return Response({"success": f"Order status updated to {status}"}, status=HTTP_200_OK)

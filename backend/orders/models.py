@@ -3,6 +3,9 @@ import decimal
 from django.db import models
 from django.db.models import Q
 from django_better_admin_arrayfield.models.fields import ArrayField
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core.mail import send_mail
 
 from customers.models import Customer
 from delivery_person.models import DeliveryPerson
@@ -65,6 +68,25 @@ class Order(models.Model):
     @property
     def total_amount(self):
         return round(sum(item.cost for item in self.items.all()) + decimal.Decimal(self.delivery_charge), 2)
+    
+    @property
+    def restaurants(self):
+        return list(set([item.food.restaurant for item in self.items.all()]))
+    
+    def get_items(self, restaurant):
+        return [item for item in self.items.all() if item.food.restaurant == restaurant]
+    
+    def send_mail_to_restaurants(self):
+        subject = f'Order {self.order_id} has been placed'
+        for restaurant in self.restaurants:
+            items = self.get_items(restaurant)
+            html_message = render_to_string('orders/restaurant_notify_mail.html', {"order": self, "restaurant": restaurant, "items": items})
+            plain_message = strip_tags(html_message)
+            from_email = 'Foodie Adminstrative <foodexpressnepal@gmail.com>'
+            to = restaurant.user.email
+            send_mail(subject, plain_message, from_email, [to], html_message=html_message, fail_silently=False)
+
+
 
 
 class OrderItem(models.Model):
