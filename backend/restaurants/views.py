@@ -8,9 +8,8 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
-from django.db.models.functions import TruncMonth, TruncDate, Cast
+from django.db.models.functions import TruncMonth, TruncDate
 from django.db.models import Sum, F, ExpressionWrapper, DecimalField
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -127,7 +126,7 @@ def register(request):
                 return render(request, "restaurants/register.html", {"form": form})
 
             strg = user.full_name.lower()
-            strg.join(random.choice(string.ascii_letters) for i in range(10))
+            strg.join(random.choice(string.ascii_letters) for _ in range(10))
             digest = md5(strg.encode("utf-8")).hexdigest()
 
             logo = f"https://www.gravatar.com/avatar/{digest}?d=identicon"
@@ -310,7 +309,6 @@ class FoodCreateView(LoginRequiredMixin, UserPassesTestMixin, FirstLoginRedirect
         return super().form_valid(form)
 
     def get_context_data(self, *args, **kwargs):
-        template_id = self.kwargs.get("template_id")
         context = super().get_context_data(*args, **kwargs)
         context["templates"] = FoodTemplate.objects.all()
         context["page"] = "create"

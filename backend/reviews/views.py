@@ -1,10 +1,8 @@
 from rest_framework.exceptions import NotFound
-from rest_framework.views import APIView
+from rest_framework.exceptions import APIException
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.response import Response
-from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_200_OK
 from reviews.models import Review
 
 from reviews.serializers import ReviewSerializer
@@ -12,6 +10,12 @@ from reviews.custompermissions import IsCurrentUserOwner
 from api import customauthentication, custompermissions
 from foods.models import Food
 from restaurants.models import Restaurant
+from orders.models import OrderItem
+
+
+class NotAllowed(APIException):
+    status_code = 403
+    default_detail = "Not allowed to access this endpoint!"
 
 
 class RestaurantReviewList(ListCreateAPIView):
@@ -31,7 +35,7 @@ class RestaurantReviewList(ListCreateAPIView):
         id_ = self.kwargs.get("pk")
         try:
             restaurant = Restaurant.objects.get(id=id_)
-            return restaurant.reviews
+            return restaurant.reviews.all()
         except Exception as e:
             raise NotFound(detail="Error 404, resource not found!", code=404)
 
@@ -59,7 +63,7 @@ class FoodReviewList(ListCreateAPIView):
         id_ = self.kwargs.get("pk")
         try:
             food = Food.objects.get(id=id_)
-            return food.reviews
+            return food.reviews.all()
         except Exception:
             raise NotFound(detail="Error 404, resource not found!", code=404)
 
@@ -67,7 +71,11 @@ class FoodReviewList(ListCreateAPIView):
         id_ = self.kwargs.get("pk")
         content_object = Food.objects.get(id=id_)
         customer = self.request.user.customer
-        serializer.save(content_object=content_object, customer=customer, sentiment_score=0)
+        order_items = OrderItem.objects.filter(order__customer=customer)
+        already_ordered_foods = list(set(map(lambda x: x.food, order_items)))
+        if content_object not in already_ordered_foods:
+            raise NotAllowed()
+        serializer.save(content_object=content_object, customer=customer)
 
 
 class ReviewDetails(RetrieveUpdateDestroyAPIView):
