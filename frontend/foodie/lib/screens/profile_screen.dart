@@ -9,6 +9,7 @@ import 'package:path/path.dart';
 
 import './edit_profile.dart';
 import './login_screen.dart';
+import './order_screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/profile_screen_provider.dart';
 import '../firebase/firebaseapi.dart';
@@ -194,7 +195,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             leading: Icon(_columnIcon[index],
                                 color: Theme.of(context).iconTheme.color),
                             title: Text(_columnValues[index]),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(OrderScreen.routeName);
+                            },
                           );
                         },
                       ),

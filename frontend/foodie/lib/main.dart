@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/providers/cart_provider.dart';
+import 'package:foodie/providers/order_provider.dart';
 import 'package:foodie/providers/restaurant_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,6 +17,8 @@ import './screens/food_detail_screen.dart';
 import './screens/delivery_confirm_screen.dart';
 import './screens/map_screen.dart';
 import './screens/edit_profile.dart';
+import './screens/order_screen.dart';
+import './screens/orderhistorydetail_sreen.dart';
 
 import './providers/restaurants_provider.dart';
 import './providers/food_provider.dart';
@@ -53,6 +56,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Restaurants()),
         ChangeNotifierProvider(create: (context) => Cart()),
         ChangeNotifierProvider(create: (context) => Restaurant()),
+        ChangeNotifierProvider(create: (context) => Order()),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) {
@@ -100,7 +104,9 @@ class MyApp extends StatelessWidget {
                   DeliveryConfirmScreen.routeName: (ctx) =>
                       const DeliveryConfirmScreen(),
                   MapScreen.routeName: (ctx) => MapScreen(),
-                  EditProfileScreen.routeName: (ctx) => EditProfileScreen()
+                  EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
+                  OrderScreen.routeName: (ctx) => OrderScreen(),
+                  OrderDetailScreen.routeName: (ctx) => OrderDetailScreen()
                 },
               );
             },

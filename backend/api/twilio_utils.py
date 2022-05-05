@@ -25,8 +25,11 @@ def check(phone, code):
 
 
 def send_sms(phone, message):
-    client.messages.create(
-        to=phone,
-        from_=os.environ.get('TWILIO_PHONE_NUMBER'),
-        body=message,
-    )
+    try:
+        client.messages.create(
+            to=phone,
+            from_=os.environ.get('TWILIO_PHONE_NUMBER'),
+            body=message,
+        )
+    except:
+        print(message)
