@@ -52,11 +52,11 @@ class OrderCreate(APIView):
             status = "Placed"
             khalti_token = ""
         order = Order.objects.create(
-            customer=self.request.user.customer, 
-            delivery_location=delivery_location, 
-            payment_method=payment_method, 
-            status=status, 
-            khalti_token=khalti_token, 
+            customer=self.request.user.customer,
+            delivery_location=delivery_location,
+            payment_method=payment_method,
+            status=status,
+            khalti_token=khalti_token,
             delivery_charge=delivery_charge
         )
         # create order items
@@ -75,7 +75,10 @@ class OrderCreate(APIView):
 
         #Send SMS to user
         twilio_utils.send_sms(order.customer.user.mobile, f'Your order has been placed. \nOrder ID: {order.order_id} \nOrder Amount: {order.total_amount} \nOrder Status: {order.status}')
-        
+        if order.status == "Verified":
+            # send email to restaurants
+            order.send_mail_to_restaurants()
+
         serializer = OrderSerializer(order)
         return Response(serializer.data, status=HTTP_200_OK)
 

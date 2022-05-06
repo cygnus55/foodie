@@ -70,7 +70,7 @@ def register(request):
             to = user.email
 
             send_mail(subject, plain_message, from_email, [to], html_message=html_message, fail_silently=False)
-            
+
             messages.success(request, f"Account created for delivery person {user.full_name}.")
             return redirect('admin:delivery_person_deliveryperson_changelist')
     else:
@@ -192,7 +192,7 @@ class AcceptOrder(APIView):
         order.is_accepted = True
         order.accepted_on = datetime.datetime.now()
         order.save()
-        
+
         # send sms to user
         if order.status == "Placed":
             message_body = f"Your order {_order_id} has been accepted by {order.accepted_by.user.full_name}.\nYou will soon receive a call from him\her."
@@ -235,7 +235,7 @@ class GetAcceptedOrder(APIView):
             res["restaurant_location"] = restaurant_location
         return Response(response, status=HTTP_200_OK)
 
-    
+
 class UpdateStatus(APIView):
     permission_classes = [
         IsAuthenticated,
@@ -255,17 +255,9 @@ class UpdateStatus(APIView):
         order.status = status
         order.save()
         # send sms to user
-        if order.status == "Verified" or order.status == "Delivered" or order.status == "Cancelled":
-            message_body = f"Your order {_order_id} has been {status.lower()}."
-        elif order.status == "On the way to restaurant":
-            message_body = f"Delivery person is on the way to restaurant. You will soon get your food."
+        if order.status == "Verified":
             # send email to restaurants
             order.send_mail_to_restaurants()
-        elif order.status == "Processing":
-            message_body = f"Restaurant are preparing your food order."
-        elif order.status == "Picking":
-            message_body = f"Delivery person is picking your food."
-        elif order.status == "On the way":
-            message_body = f"Delivery person is on the way to your location."
+        message_body = f"Your order {_order_id} has been {status.lower()}."
         twilio_utils.send_sms(order.customer.user.mobile,message_body)
         return Response({"success": f"Order status updated to {status}"}, status=HTTP_200_OK)
