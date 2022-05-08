@@ -72,7 +72,26 @@ class Order with ChangeNotifier {
               Provider.of<Auth>(context, listen: false).getauthToken!,
           'Content-Type': 'application/json'
         },
-        body: json.encode({'order_id': orderid, 'status': 'Verified'}),
+        body: json.encode({'order_id': orderid, 'status': 'Cancelled'}),
+      );
+
+      print(response.body);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deliverOrder(String orderid, BuildContext context) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'delivery-person/update-status/');
+      http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Token ' +
+              Provider.of<Auth>(context, listen: false).getauthToken!,
+          'Content-Type': 'application/json'
+        },
+        body: json.encode({'order_id': orderid, 'status': 'Delivered'}),
       );
 
       print(response.body);
