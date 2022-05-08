@@ -190,7 +190,7 @@ class _OrderDetailScreen2State extends State<OrderDetailScreen2> {
                       ],
                     );
                   },
-                  itemCount: _order.food!.length,
+                  itemCount: 1,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

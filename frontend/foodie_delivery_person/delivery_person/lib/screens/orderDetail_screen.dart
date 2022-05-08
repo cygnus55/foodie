@@ -187,7 +187,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       ],
                     );
                   },
-                  itemCount: _order.food!.length,
+                  itemCount: 1,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
