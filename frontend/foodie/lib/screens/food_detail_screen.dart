@@ -352,11 +352,14 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         ),
                         TextButton(
                           onPressed: () => showModalBottomSheet(
+                              isScrollControlled: true,
                               context: context,
                               builder: (BuildContext context) {
-                                return GiveReview();
+                                return Padding(
+                                  padding: MediaQuery.of(context).viewInsets,
+                                  child: GiveReview(),
+                                );
                               }),
-
                           child: Text(
                             'Give Reviews',
                             style: Theme.of(context)
