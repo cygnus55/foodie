@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND
 
 from foods.models import Food
 from restaurants.models import Restaurant
@@ -67,18 +67,18 @@ class Search(APIView):
 
     def get(self, request, format=None):
         query = self.request.query_params.get("query", None)
-        foods = Food.objects.all()
-        restaurants = Restaurant.objects.all()
 
         if query:
-            
-            foods = foods.filter(tags__name__icontains=query).distinct() | \
-                            foods.filter(name__icontains=query).distinct()
-            restaurants = restaurants.filter(tags__name__icontains=query).distinct() | \
-                            restaurants.filter(user__full_name__icontains=query).distinct()
+            foods = Food.available.filter(tags__name__icontains=query).distinct() | \
+                            Food.available.filter(name__icontains=query).distinct()
+            restaurants = Restaurant.available.filter(tags__name__icontains=query).distinct() | \
+                            Restaurant.available.filter(user__full_name__icontains=query).distinct()
+
+            return Response({
+                "foods": FoodSerializer(instance=foods, many=True, context={'request': request}).data,
+                "restaurants": RestaurantSerializer(instance=restaurants, many=True, context={'request': request}).data
+            }, status=HTTP_200_OK)
 
         return Response({
-            "foods": FoodSerializer(instance=foods, many=True, context={'request': request}).data,
-            "restaurants": RestaurantSerializer(instance=restaurants, many=True, context={'request': request}).data
-        }, status=HTTP_200_OK)
-        
+            "error": "You need to submit non-empty query!"
+        }, status=HTTP_404_NOT_FOUND)

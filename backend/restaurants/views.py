@@ -255,7 +255,7 @@ def account_settings(request):
         )
         if name_form.is_valid() and account_form.is_valid():
             name_form.save()
-            name_form.save_m2m()
+            # name_form.save_m2m()
             account_form.save()
             messages.success(request, "Profile successfully updated!")
             return redirect("restaurants:account_settings")
