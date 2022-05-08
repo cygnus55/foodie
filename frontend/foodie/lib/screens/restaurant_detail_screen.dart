@@ -39,6 +39,9 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
     final _restaurant = Provider.of<Restaurants>(context).findById(_id);
     final _restaurantmenu =
         Provider.of<Foods>(context).getFoodByRestaurantId(_id);
+    final _favoritemenu =
+        Provider.of<Foods>(context).getfavoriteFoodByRestaurantId(_id);
+
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -345,7 +348,56 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                   body: TabBarView(
                       children: _restaurantmenu.isNotEmpty
                           ? [
-                              const Center(child: Text('my favourite')),
+                              _favoritemenu.isEmpty
+                                  ? const Center(
+                                      child: Text(" No Favorite Food"))
+                                  : ListView.builder(
+                                      itemCount: _favoritemenu.length,
+                                      itemBuilder: (context, i) {
+                                        return Column(
+                                          children: [
+                                            ListTile(
+                                              leading: CircleAvatar(
+                                                radius: 30,
+                                                child: ClipOval(
+                                                  child: Image.network(
+                                                    '${_favoritemenu[i].image}',
+                                                    height: 60,
+                                                    width: 60,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder:
+                                                        (BuildContext context,
+                                                            Object exception,
+                                                            StackTrace?
+                                                                stackTrace) {
+                                                      return Image.asset(
+                                                          'assets/images/noimage.png');
+                                                    },
+                                                  ),
+                                                ),
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                              ),
+                                              title: Text(
+                                                '${_favoritemenu[i].name}',
+                                              ),
+                                              trailing: Text(
+                                                  '${_favoritemenu[i].sellingPrice}'),
+                                              onTap: () => Navigator.of(context)
+                                                  .pushNamed(
+                                                      FoodDetailScreen
+                                                          .routeName,
+                                                      arguments:
+                                                          _favoritemenu[i].id),
+                                            ),
+                                            const Divider(
+                                              thickness: 2.5,
+                                              color: Colors.grey,
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
                               ListView.builder(
                                 itemCount: _restaurantmenu.length,
                                 itemBuilder: (context, i) {
@@ -392,7 +444,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                               ),
                             ]
                           : const [
-                              Center(child: Text('my favourite')),
+                              Center(child: Text('No Favorite Food')),
                               Center(child: Text('No dish to show')),
                             ]),
                 ),

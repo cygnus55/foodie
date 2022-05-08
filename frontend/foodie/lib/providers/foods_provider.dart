@@ -58,6 +58,12 @@ class Foods with ChangeNotifier {
     return _items.where((food) => food.restaurant?.id == id).toList();
   }
 
+  List<Food> getfavoriteFoodByRestaurantId(int id) {
+    return _items
+        .where((food) => food.restaurant?.id == id && food.isFavourite == true)
+        .toList();
+  }
+
   List<Food> get getFavoritefood {
     return _items.where((food) => food.isFavourite == true).toList();
   }
