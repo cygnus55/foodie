@@ -12,6 +12,8 @@ from favourites.custompermissions import AllowOnlyOwner
 from favourites.models import Favourite
 from restaurants.models import Restaurant
 from foods.models import Food
+from restaurants.serializers import RestaurantSerializer
+from foods.serializers import FoodSerializer
 
 
 class FoodFavourite(APIView):
@@ -104,3 +106,34 @@ class RestaurantFavourite(APIView):
                 }, 
                 status=HTTP_201_CREATED
             )
+
+
+class MyFavourites(APIView):
+    permission_classes = [
+        IsAuthenticated,
+        custompermissions.AllowOnlyCustomer,
+        AllowOnlyOwner,
+    ]
+    authentication_classes = [
+        TokenAuthentication,
+        customauthentication.CsrfExemptSessionAuthentication
+    ]
+
+    def get(self, request):
+        customer = self.request.user.customer
+        items = customer.favourite
+        restaurant_favs = items.filter(content_type__id=11)
+        food_favs = items.filter(content_type__id=12)
+        foods = [f.content_object for f in food_favs]
+        restaurants = [r.content_object for r in restaurant_favs]
+        
+        if foods or restaurants:
+            return Response({
+                "foods": FoodSerializer(instance=foods, many=True, context={'request': request}).data,
+                "restaurants": RestaurantSerializer(instance=restaurants, many=True, context={'request': request}).data
+            }, status=HTTP_200_OK)
+        else:
+            return Response({
+                "error": "You have not bookmarked any foods or restaurants"
+            }, status=HTTP_404_NOT_FOUND)
+        
