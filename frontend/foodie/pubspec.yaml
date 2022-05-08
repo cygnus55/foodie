@@ -45,6 +45,7 @@ dependencies:
   url_launcher: ^6.0.9
 
   khalti_flutter: ^2.0.2
+  carousel_slider: ^4.1.1
 
 
 
