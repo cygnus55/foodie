@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/providers/review_provider.dart';
+import 'package:foodie/providers/reviews_provider.dart';
 import 'package:foodie/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -7,6 +9,8 @@ import '../providers/foods_provider.dart';
 import '../providers/food_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/auth_provider.dart';
+
+import '../widgets/review_widget.dart';
 
 // ignore: must_be_immutable
 class FoodDetailScreen extends StatefulWidget {
@@ -21,7 +25,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   Color green = const Color.fromARGB(255, 43, 164, 0);
   int _quantity = 1;
   var _isLoading = false;
-
+  late int _id;
   var _undo = false;
   var _disableBack = false;
 
@@ -45,9 +49,17 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    Provider.of<Reviews>(context, listen: false).getReviews(context, _id);
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    int _id = ModalRoute.of(context)?.settings.arguments as int;
+    _id = ModalRoute.of(context)?.settings.arguments as int;
     final _food = Provider.of<Foods>(context).findById(_id);
+
     // print(_food.id);
     return _isLoading
         ? Scaffold(
@@ -320,38 +332,21 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: () => showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Container();
-                              }),
-                          child: Text(
-                            'View Reviews',
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1
-                                ?.copyWith(fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () => showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Container();
-                              }),
-                          child: Text(
-                            'Give Reviews',
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1
-                                ?.copyWith(fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                      ],
+
+                    TextButton(
+                      onPressed: () => showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ReviewWidget(_food.id);
+                          }),
+                      child: Text(
+                        'View Reviews',
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1
+                            ?.copyWith(fontWeight: FontWeight.w700),
+                      ),
+
                     ),
                     Expanded(
                       child: Column(
