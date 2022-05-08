@@ -479,7 +479,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                 return ViewReviews(_food.id);
                               }),
                           child: Text(
-                            'View Reviews',
+                            'View Reviews ››',
                             style: Theme.of(context)
                                 .textTheme
                                 .subtitle1
@@ -494,7 +494,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                                 return submit_review(_food.id);
                               }),
                           child: Text(
-                            'Give Reviews',
+                            'Give Reviews ››',
                             style: Theme.of(context)
                                 .textTheme
                                 .subtitle1

@@ -21,7 +21,15 @@ class _ViewReviewsState extends State<ViewReviews> {
         child: reviews.isNotEmpty
             ? Column(
                 children: [
-                  const Text('Reviews'),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Reviews',
+                    style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 10),
                   const Divider(
                     thickness: 2.5,
                     color: Colors.grey,
@@ -84,10 +92,14 @@ class _ViewReviewsState extends State<ViewReviews> {
                   ),
                 ],
               )
-            : Column(
-                children: const [
-                  Text('No reviews to show'),
-                ],
+            : Center(
+                child: Text(
+                  'No reviews to show',
+                  style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
+                ),
               ));
   }
 }

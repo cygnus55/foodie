@@ -20,7 +20,7 @@ class _FoodsRowState extends State<FoodsRow> {
 
     return SizedBox(
       child: list.isEmpty
-          ? const Text('No search for Food ')
+          ? const Text('No Favorite Food ')
           : SizedBox(
               height: MediaQuery.of(context).size.height * 0.2,
               width: double.infinity,
