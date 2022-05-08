@@ -6,6 +6,7 @@ import cloudinary
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
@@ -229,9 +230,9 @@ def restaurant_dashboard(request):
 
     context = {
         "order_category": order_category,
-        "labels": labels,
-        "data": data,
-        "sales": sales
+        "labels": labels[::-1],
+        "data": data[::-1],
+        "sales": sales[::-1]
     }
 
     return render(request, "restaurants/dashboard.html", context=context)
@@ -283,10 +284,11 @@ def change_password(request):
         form = CustomChangePasswordForm(request.user, data=request.POST)
         if form.is_valid():
             form.save()
+            update_session_auth_hash(request, form.user)
             if not request.user.restaurant.has_logged_once:
                 request.user.restaurant.has_logged_once = True
                 request.user.restaurant.save()
-            messages.success(request, "Password successfully updated! Login to continue to the dashboard!")
+            messages.success(request, "Password successfully updated!")
             return redirect("restaurants:restaurant_home")
         else:
             messages.error(request, "Password couldn't be updated!")

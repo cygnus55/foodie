@@ -1,8 +1,15 @@
 from rest_framework.reverse import reverse
 from rest_framework.generics import GenericAPIView
+from rest_framework.views import APIView
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
+
+from foods.models import Food
+from restaurants.models import Restaurant
+from foods.serializers import FoodSerializer
+from restaurants.serializers import RestaurantSerializer
 
 
 @permission_classes([AllowAny])
@@ -53,3 +60,25 @@ class APIRoot(GenericAPIView):
             }
         )
 
+
+class Search(APIView):
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+        query = self.request.query_params.get("query", None)
+        foods = Food.objects.all()
+        restaurants = Restaurant.objects.all()
+
+        if query:
+            
+            foods = foods.filter(tags__name__icontains=query).distinct() | \
+                            foods.filter(name__icontains=query).distinct()
+            restaurants = restaurants.filter(tags__name__icontains=query).distinct() | \
+                            restaurants.filter(user__full_name__icontains=query).distinct()
+
+        return Response({
+            "foods": FoodSerializer(instance=foods, many=True, context={'request': request}).data,
+            "restaurants": RestaurantSerializer(instance=restaurants, many=True, context={'request': request}).data
+        }, status=HTTP_200_OK)
+        

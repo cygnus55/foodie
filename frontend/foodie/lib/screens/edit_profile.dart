@@ -43,7 +43,8 @@ class EditProfileScreen extends StatelessWidget {
                       onPressed: () {
                         Provider.of<Auth>(context, listen: false)
                             .editName(name.text);
-                        Navigator.of(context).pop();
+                        Navigator.of(context)
+                            .pushReplacementNamed(TabScreen.routeName);
                       },
                       child: const Text('Save')))
             ],

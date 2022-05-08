@@ -81,12 +81,7 @@ class _TabScreenState extends State<TabScreen> {
     if (Provider.of<Auth>(context, listen: false).isAuth) {
       setState(() {
         _auth = true;
-        _tabs = [
-          const HomeScreen(),
-          const CartScreen(),
-          const OfferScreen(),
-          ProfileScreen()
-        ];
+        _tabs = [const HomeScreen(), const CartScreen(), ProfileScreen()];
       });
     } else {
       setState(() {
@@ -115,13 +110,6 @@ class _TabScreenState extends State<TabScreen> {
             child: const Icon(Icons.shopping_cart),
           ),
           label: 'Shopping_cart',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(
-            Icons.local_offer,
-            size: 30,
-          ),
-          label: 'offer',
         ),
         const BottomNavigationBarItem(
           icon: Icon(

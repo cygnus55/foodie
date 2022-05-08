@@ -40,6 +40,16 @@
                                 {{ food.price }}
                             {% endif %}
                         </p>
+                        <p class="card-text">
+                            {% if food.is_veg %}
+                                <img src="{% static 'restaurants/img/veg.svg' %}" width=20>
+                                <span class="text-muted"> Vegetarian</span>
+                            {% else %}
+                                <img src="{% static 'restaurants/img/non-veg.svg' %}" width=20>
+                                <span class="text-muted"> Non-vegetarian</span>
+                            {% endif %}
+                        </p>
+
                         <p class="card-text">{{ food.description  }}</p>
                         <span>
                             <a href="{% url 'restaurants:food_update' food.id %}">
