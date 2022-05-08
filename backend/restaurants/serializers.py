@@ -35,10 +35,13 @@ class RestaurantSerializer(TaggitSerializer, serializers.ModelSerializer):
         return False
 
     def get_distance(self, obj):
-        latitude = self.context["request"].query_params.get('lat', None)
-        longitude = self.context["request"].query_params.get('lng', None)
-        if latitude and longitude:
-            return round(obj.distance(latitude, longitude))
+        try:
+            latitude = self.context["request"].query_params.get('lat', None)
+            longitude = self.context["request"].query_params.get('lng', None)
+            if latitude and longitude:
+                return round(obj.distance(latitude, longitude))
+        except AttributeError:
+            return None
 
     def validate(self, data):
         if data["open_hour"] > data["close_hour"]:

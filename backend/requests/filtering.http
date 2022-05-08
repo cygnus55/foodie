@@ -1,3 +1,7 @@
+# Searching foods and restaurants
+GET http://127.0.0.1:8000/api/search/?query=dhido
+###
+
 # Filtering Food
 # Always send lat and longitude while filtering food
 # Get food near customer location
