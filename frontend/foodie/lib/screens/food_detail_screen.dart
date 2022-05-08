@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodie/providers/review_provider.dart';
 import 'package:foodie/providers/reviews_provider.dart';
 import 'package:foodie/screens/login_screen.dart';
+import 'package:foodie/widgets/give_review.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -350,7 +351,12 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () => showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return GiveReview();
+                              }),
+
                           child: Text(
                             'Give Reviews',
                             style: Theme.of(context)
