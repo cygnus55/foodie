@@ -12,26 +12,27 @@ class Reviews with ChangeNotifier {
 
   Future<void> getReviews(BuildContext context, int id) async {
     try {
-      print(id);
       var url = Uri.http('10.0.2.2:8000', 'reviews/foods/$id/');
       late http.Response response;
       response = await http.get(
         url,
       );
-      print(response.body);
+      // print(response.body);
       final datapage = json.decode(response.body) as Map;
 
       final List<Review> reviews = [];
       datapage.forEach((key, value) {
-        var data = value['results'];
         if (key == 'results') {
-          reviews.add(
-            Review(
-              comment: value['comment'],
-              rating: value['ratings'],
-              name: value['customer']['full_name'],
-            ),
-          );
+          var data = value as List;
+          data.forEach((element) {
+            reviews.add(
+              Review(
+                comment: element['comment'],
+                rating: element['ratings'],
+                name: element['customer']['full_name'],
+              ),
+            );
+          });
         }
       });
 
