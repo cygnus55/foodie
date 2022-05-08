@@ -356,6 +356,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               builder: (BuildContext context) {
                                 return GiveReview();
                               }),
+
                           child: Text(
                             'Give Reviews',
                             style: Theme.of(context)
