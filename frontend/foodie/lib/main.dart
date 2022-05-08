@@ -16,6 +16,7 @@ import './screens/splash_screen.dart';
 import './screens/personaldetails_screen.dart';
 import './screens/food_detail_screen.dart';
 import './screens/delivery_confirm_screen.dart';
+import './screens/search_screen.dart';
 import './screens/map_screen.dart';
 import './screens/edit_profile.dart';
 import './screens/order_screen.dart';
@@ -26,8 +27,12 @@ import './providers/food_provider.dart';
 import './providers/auth_provider.dart';
 import './providers/foods_provider.dart';
 import './providers/profile_screen_provider.dart';
+
+import './providers/search_providers.dart';
+
 import './providers/review_provider.dart';
 import './providers/reviews_provider.dart';
+
 
 import './color.dart';
 
@@ -60,8 +65,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Cart()),
         ChangeNotifierProvider(create: (context) => Restaurant()),
         ChangeNotifierProvider(create: (context) => Order()),
+
+        ChangeNotifierProvider(create: (context) => Search()),
         ChangeNotifierProvider(create: (context) => Reviews()),
         ChangeNotifierProvider(create: (context) => Review()),
+
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) {
@@ -111,7 +119,8 @@ class MyApp extends StatelessWidget {
                   MapScreen.routeName: (ctx) => MapScreen(),
                   EditProfileScreen.routeName: (ctx) => EditProfileScreen(),
                   OrderScreen.routeName: (ctx) => OrderScreen(),
-                  OrderDetailScreen.routeName: (ctx) => OrderDetailScreen()
+                  OrderDetailScreen.routeName: (ctx) => OrderDetailScreen(),
+                  SearchScreen.routeName: (ctx) => SearchScreen(),
                 },
               );
             },

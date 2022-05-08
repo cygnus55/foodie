@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/widgets/foods_row.dart';
 import 'package:foodie/widgets/restaurants_row.dart';
+import 'package:provider/provider.dart';
+import './search_screen.dart';
+import '../providers/search_providers.dart';
 
 import '../widgets/filter.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
   static const routeName = '/home';
+
+  // Future<void> searchFood(value)async{
+  //   await Provider.of<Foods>(context,listen: false).searchfoods(context, value)
+
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +45,12 @@ class HomeScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                 child: TextFormField(
+                  onFieldSubmitted: (value) async {
+                    await Provider.of<Search>(context, listen: false)
+                        .searchfoods(context, value);
+                    Navigator.of(context).pushNamed(SearchScreen.routeName,
+                        arguments: {'value': value});
+                  },
                   cursorColor: Colors.black,
                   style: const TextStyle(height: 2),
                   decoration: const InputDecoration(

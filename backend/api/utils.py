@@ -62,4 +62,4 @@ def get_restaurant_charge(min_distance):
         charge += 100 + (min_distance - 1) * 20
     else:
         charge += 100 + (min_distance - 1) * 20 + (min_distance - 5) * 10
-    return round(charge, 2)
+    return round(float(charge), 2)
