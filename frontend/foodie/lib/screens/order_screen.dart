@@ -14,12 +14,6 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<Order>(context, listen: false).getorder(context);
-  }
-
   Color getcolor(status) {
     if (status == 'Delivered') {
       return Colors.green[200]!;

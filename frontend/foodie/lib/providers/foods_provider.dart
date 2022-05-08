@@ -131,4 +131,17 @@ class Foods with ChangeNotifier {
       print(e);
     }
   }
+
+  Future<void> searchfoods(BuildContext context, value) async {
+    try {
+      var url = Uri.http('10.0.2.2:8000', 'api/search/', {'query': value});
+      late http.Response response;
+      response = await http.get(url);
+      print(response.body);
+
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
 }

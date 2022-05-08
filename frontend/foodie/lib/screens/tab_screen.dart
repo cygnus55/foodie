@@ -3,12 +3,14 @@ import 'package:foodie/providers/auth_provider.dart';
 import '../providers/foods_provider.dart';
 import '../providers/restaurants_provider.dart';
 import '../providers/cart_provider.dart';
+import '../providers/order_provider.dart';
 import 'package:provider/provider.dart';
 
 import './login_screen.dart';
 import './profile_screen.dart';
 import './home_screen.dart';
 import './offer_screen.dart';
+
 import './cart_screen.dart';
 import 'package:badges/badges.dart';
 
@@ -61,6 +63,7 @@ class _TabScreenState extends State<TabScreen> {
       await Provider.of<Restaurants>(context, listen: false)
           .getrestaurants(context);
       await Provider.of<Cart>(context, listen: false).cartItems(context);
+      await Provider.of<Order>(context, listen: false).getorder(context);
 
       setState(() {
         _isLoading = false;
