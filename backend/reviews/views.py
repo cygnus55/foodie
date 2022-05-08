@@ -1,3 +1,4 @@
+import string
 from rest_framework.exceptions import NotFound
 from rest_framework.exceptions import APIException
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
@@ -71,7 +72,7 @@ class FoodReviewList(ListCreateAPIView):
         id_ = self.kwargs.get("pk")
         content_object = Food.objects.get(id=id_)
         customer = self.request.user.customer
-        order_items = OrderItem.objects.filter(order__customer=customer)
+        order_items = OrderItem.objects.filter(order__customer=customer, order__status = "Delivered")
         already_ordered_foods = list(set(map(lambda x: x.food, order_items)))
         if content_object not in already_ordered_foods:
             raise NotAllowed()

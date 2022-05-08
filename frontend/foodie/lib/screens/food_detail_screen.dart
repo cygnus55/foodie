@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:foodie/providers/review_provider.dart';
 import 'package:foodie/providers/reviews_provider.dart';
 import 'package:foodie/screens/login_screen.dart';
-import 'package:foodie/widgets/give_review.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../providers/foods_provider.dart';
 import '../providers/food_provider.dart';
@@ -28,6 +29,141 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   var _isLoading = false;
   var _undo = false;
   var _disableBack = false;
+
+  Widget submit_review(foodid) {
+    var rate = 1.0;
+    var comment = '';
+
+    Future<void> submitName(String comment, double rate, int foodid) async {
+      try {
+        var url = Uri.http('10.0.2.2:8000', 'reviews/foods/$foodid/');
+        // ignore: unused_local_variable
+
+        final http.Response response = await http.post(
+          url,
+          headers: {
+            'Authorization': 'Token ' +
+                Provider.of<Auth>(context, listen: false).getauthToken!,
+            'Content-Type': 'application/json',
+          },
+          body: json.encode(
+            {"rating": rate, "comment": comment},
+          ),
+        );
+        if (response.statusCode == 201) {
+          Navigator.of(context).pop();
+          const successsnackBar = SnackBar(
+            content: Text('Food Review Given Successfully.'),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(successsnackBar);
+        } else if (response.statusCode == 403) {
+          Navigator.of(context).pop();
+          const failsnacbar = SnackBar(
+            content: Text('You have not ordered the food to give review.'),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(failsnacbar);
+        }
+        final responseData = json.decode(response.body);
+      } catch (error) {
+        print(error);
+      }
+    }
+
+    return Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: SingleChildScrollView(
+        child: Wrap(
+          children: [
+            Column(children: [
+              const SizedBox(height: 10),
+              Text(
+                "Review",
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                    fontWeight: FontWeight.w500, color: Colors.black),
+              ),
+              const Divider(
+                thickness: 1,
+              ),
+              const SizedBox(height: 10),
+              Text("Rate"),
+              const SizedBox(height: 10),
+              RatingBar.builder(
+                ignoreGestures: false,
+                itemSize: 30,
+                initialRating: 1.0,
+                minRating: 1,
+                direction: Axis.horizontal,
+                allowHalfRating: true,
+                itemCount: 5,
+                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, _) => const Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                ),
+                onRatingUpdate: (rating) {
+                  rate = rating;
+                  print(rate);
+                },
+              ),
+              const SizedBox(height: 20),
+              Text("Comment"),
+              const SizedBox(height: 20),
+              Container(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  child: TextFormField(
+                    onChanged: (value) {
+                      comment = value;
+                    },
+                    onFieldSubmitted: (value) async {
+                      if (Provider.of<Auth>(context, listen: false).isAuth) {
+                        await submitName(comment, rate, foodid!);
+                      } else {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const LoginScreen()),
+                            ((route) => route.isFirst));
+                      }
+                    },
+                    cursorColor: Colors.black,
+                    style: const TextStyle(height: 2),
+                    decoration: const InputDecoration(
+                      hintText: 'Give your comments...',
+                      contentPadding: EdgeInsets.all(10),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    if (Provider.of<Auth>(context, listen: false).isAuth) {
+                      await submitName(comment, rate, foodid!);
+                    } else {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const LoginScreen()),
+                          ((route) => route.isFirst));
+                    }
+                  },
+                  child: const Text('Submit'))
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
 
   void undo(_id) async {
     Future.delayed(const Duration(seconds: 3), () async {
@@ -355,10 +491,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                               isScrollControlled: true,
                               context: context,
                               builder: (BuildContext context) {
-                                return Padding(
-                                  padding: MediaQuery.of(context).viewInsets,
-                                  child: GiveReview(),
-                                );
+                                return submit_review(_food.id);
                               }),
                           child: Text(
                             'Give Reviews',

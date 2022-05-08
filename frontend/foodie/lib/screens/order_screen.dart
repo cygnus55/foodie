@@ -47,9 +47,9 @@ class _OrderScreenState extends State<OrderScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Delivery charge: ${list[index].deliverycharge}'),
+                    Text('Total Amount: ${list[index].totalamount}'),
                     Text('Status: ${list[index].status}'),
-                    Text('Payment method: ${list[index].paymentmethod}')
+                    Text('Payment Method: ${list[index].paymentmethod}')
                   ],
                 ),
                 elevation: 5,
