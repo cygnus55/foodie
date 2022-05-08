@@ -22,7 +22,7 @@ class _MapScreenState extends State<MapScreen> {
     double lat = double.parse(args['latitude']);
     double long = double.parse(args['longitude']);
     return Scaffold(
-      appBar: AppBar(title: const Text('view Locations')),
+      appBar: AppBar(title: const Text('View Locations')),
       body: FlutterMap(
         options: MapOptions(
           center: latLng.LatLng(lat, long),

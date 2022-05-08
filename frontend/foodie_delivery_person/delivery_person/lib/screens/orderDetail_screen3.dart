@@ -90,7 +90,9 @@ class _OrderDetailScreen3State extends State<OrderDetailScreen3> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          await Provider.of<Order>(context, listen: false)
+                              .deliverOrder(orderid!, context);
                           Navigator.of(context)
                               .pushReplacementNamed(HomepageScreen.routeName);
                         },
