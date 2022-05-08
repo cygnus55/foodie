@@ -66,6 +66,12 @@ class Restaurants with ChangeNotifier {
     return _items.firstWhere((restaurant) => restaurant.id == id);
   }
 
+  List<Restaurant> get getfavoriteRestaurant {
+    return _items
+        .where((restaurant) => restaurant.isFavourite == true)
+        .toList();
+  }
+
   Future<void> getrestaurants(BuildContext context) async {
     try {
       var url = Uri.http('10.0.2.2:8000', 'restaurants/');
