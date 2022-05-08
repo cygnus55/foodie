@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import './edit_profile.dart';
 import './login_screen.dart';
 import './order_screen.dart';
+import './favorite_screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/profile_screen_provider.dart';
 import '../firebase/firebaseapi.dart';
@@ -27,17 +28,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
 //String imageUrl = '';
   String image = '';
   // final List<Map> _hello = [
-  final List<IconData> _columnIcon = [
-    Icons.star,
-    Icons.note,
-    Icons.favorite,
-  ];
+  // final List<IconData> _columnIcon = [
+  //   Icons.star,
+  //   Icons.note,
+  //   Icons.favorite,
+  // ];
 
-  final List<String> _columnValues = [
-    'Your Ratings',
-    'Your Order',
-    'Favorites ',
-  ];
+  // final List<String> _columnValues = [
+  //   'Your Ratings',
+  //   'Your Order',
+  //   'Favorites ',
+  // ];
 
   bool isloading = true;
 
@@ -184,22 +185,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 20),
                       const Divider(),
-                      ListView.builder(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        itemCount: _columnIcon.length,
-                        itemBuilder: (ctx, index) {
-                          return ListTile(
-                            leading: Icon(_columnIcon[index],
-                                color: Theme.of(context).iconTheme.color),
-                            title: Text(_columnValues[index]),
-                            onTap: () {
-                              Navigator.of(context)
-                                  .pushNamed(OrderScreen.routeName);
-                            },
-                          );
-                        },
-                      ),
+                      // ListView.builder(
+                      //   padding: EdgeInsets.zero,
+                      //   shrinkWrap: true,
+                      //   itemCount: _columnIcon.length,
+                      //   itemBuilder: (ctx, index) {
+                      //     return ListTile(
+                      //       leading: Icon(_columnIcon[index],
+                      //           color: Theme.of(context).iconTheme.color),
+                      //       title: Text(_columnValues[index]),
+                      //       onTap: () {
+                      //         Navigator.of(context)
+                      //             .pushNamed(OrderScreen.routeName);
+                      //       },
+                      //     );
+                      //   },
+                      // ),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(Favorite_screen.routeName);
+                          },
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.favorite,
+                                color: Colors.black,
+                              ),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Text(
+                                'Favorites',
+                                style: TextStyle(color: Colors.black),
+                              )
+                            ],
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(OrderScreen.routeName);
+                          },
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.note,
+                                color: Colors.black,
+                              ),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Text('Your orders',
+                                  style: TextStyle(color: Colors.black))
+                            ],
+                          )),
                       const Divider(),
                       TextButton(
                         onPressed: () {
