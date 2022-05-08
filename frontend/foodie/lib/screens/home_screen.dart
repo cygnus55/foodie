@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/widgets/foods_row.dart';
 import 'package:foodie/widgets/restaurants_row.dart';
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
 import './search_screen.dart';
 import '../providers/search_providers.dart';
@@ -23,6 +25,7 @@ class HomeScreen extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Text(
@@ -70,8 +73,18 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
-              Expanded(
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Center(
+                  child: Image(
+                    image: AssetImage("assets/images/3.jpg"),
+                  ),
+                ),
+              ),
+              Flexible(
                 child: ListView(
                   children: [
                     Container(
