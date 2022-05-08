@@ -24,50 +24,52 @@ class Order with ChangeNotifier {
 
   List<OrderItem> _items = [];
   Future<void> getorder(BuildContext context) async {
-    try {
-      var url = Uri.http('10.0.2.2:8000', 'orders/');
-      http.Response response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Token ' +
-              Provider.of<Auth>(context, listen: false).getauthToken!,
-        },
-      );
-      final data = json.decode(response.body) as Map<String, dynamic>;
+    if (Provider.of<Auth>(context, listen: false).isAuth) {
+      try {
+        var url = Uri.http('10.0.2.2:8000', 'orders/');
+        http.Response response = await http.get(
+          url,
+          headers: {
+            'Authorization': 'Token ' +
+                Provider.of<Auth>(context, listen: false).getauthToken!,
+          },
+        );
+        final data = json.decode(response.body) as Map<String, dynamic>;
 
-      List<OrderItem> orderitem = [];
-      for (var element in data['results']) {
-        List<FoodItem> food = [];
+        List<OrderItem> orderitem = [];
+        for (var element in data['results']) {
+          List<FoodItem> food = [];
 
-        print(element);
+          print(element);
 
-        for (var ele in (element['items'] as List)) {
-          print(ele);
-          food.add(
-            FoodItem(
-              cost: ele['cost'],
-              name: ele['food_name'],
-              price: ele['price'],
-              quantity: ele['quantity'],
-              restaurantname: ele['restaurant_name'],
-            ),
-          );
+          for (var ele in (element['items'] as List)) {
+            print(ele);
+            food.add(
+              FoodItem(
+                cost: ele['cost'],
+                name: ele['food_name'],
+                price: ele['price'],
+                quantity: ele['quantity'],
+                restaurantname: ele['restaurant_name'],
+              ),
+            );
+          }
+          orderitem.add(OrderItem(
+              orderid: element['order_id'],
+              totalamount: element['total_amount'],
+              deliverycharge: element['delivery_charge'],
+              paymentmethod: element['payment_method'],
+              deliverylocation: element['delivery_location'],
+              food: [...food],
+              status: element['status']));
+          print(food);
         }
-        orderitem.add(OrderItem(
-            orderid: element['order_id'],
-            totalamount: element['total_amount'],
-            deliverycharge: element['delivery_charge'],
-            paymentmethod: element['payment_method'],
-            deliverylocation: element['delivery_location'],
-            food: [...food],
-            status: element['status']));
-        print(food);
+        _orderItem = orderitem;
+        print(orderitem);
+        notifyListeners();
+      } catch (error) {
+        throw HttpException("Couldn't get the order");
       }
-      _orderItem = orderitem;
-      print(orderitem);
-      notifyListeners();
-    } catch (error) {
-      throw HttpException("Couldn't get the order");
     }
   }
 }
