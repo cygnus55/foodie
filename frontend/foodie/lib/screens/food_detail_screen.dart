@@ -320,161 +320,141 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                         ),
                       ],
                     ),
-                    TextButton(
-                      onPressed: () => showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Container();
-                          }),
-                      child: Text(
-                        'View Reviews',
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1
-                            ?.copyWith(fontWeight: FontWeight.w700),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () => showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container();
+                              }),
+                          child: Text(
+                            'View Reviews',
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container();
+                              }),
+                          child: Text(
+                            'Give Reviews',
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ],
                     ),
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 18, horizontal: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  flex: 20,
-                                  child: ConstrainedBox(
-                                    constraints: const BoxConstraints.tightFor(
-                                        height: 50),
-                                    child: ElevatedButton(
-                                      style: ButtonStyle(
-                                        shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(60, 0, 0, 0),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 18, horizontal: 10),
+                              child: ConstrainedBox(
+                                constraints:
+                                    const BoxConstraints.tightFor(height: 50),
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.6,
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.all(
+                                        RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
                                         ),
                                       ),
-                                      onPressed: () {
-                                        if (Provider.of<Auth>(context,
-                                                listen: false)
-                                            .isAuth) {
-                                          if (_food.restaurant!.isAvailable! &&
-                                              _food.restaurant!.openStatus!) {
-                                            setState(() {
-                                              _disableBack = true;
-                                            });
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                duration:
-                                                    const Duration(seconds: 3),
-                                                content: const Text(
-                                                    'Food added to cart'),
-                                                action: SnackBarAction(
-                                                  label: 'Undo',
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      _undo = true;
-                                                      _disableBack = false;
-                                                    });
-                                                  },
-                                                ),
+                                    ),
+                                    onPressed: () {
+                                      if (Provider.of<Auth>(context,
+                                              listen: false)
+                                          .isAuth) {
+                                        if (_food.restaurant!.isAvailable! &&
+                                            _food.restaurant!.openStatus!) {
+                                          setState(() {
+                                            _disableBack = true;
+                                          });
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              duration:
+                                                  const Duration(seconds: 3),
+                                              content: const Text(
+                                                  'Food added to cart'),
+                                              action: SnackBarAction(
+                                                label: 'Undo',
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _undo = true;
+                                                    _disableBack = false;
+                                                  });
+                                                },
                                               ),
-                                            );
-                                            undo(_id);
-                                          } else {
-                                            showDialog(
-                                              context: context,
-                                              builder: (c) {
-                                                return AlertDialog(
-                                                  title: const Text(
-                                                      'Food Unavailable'),
-                                                  content: const Text(
-                                                      'Food you are trying to add to cart is currently unavailable.'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(c).pop();
-                                                      },
-                                                      child: const Text('OK'),
-                                                    )
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          }
+                                            ),
+                                          );
+                                          undo(_id);
                                         } else {
-                                          Navigator.of(context)
-                                              .pushAndRemoveUntil(
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        const LoginScreen()),
-                                            ModalRoute.withName(
-                                                LoginScreen.routeName),
+                                          showDialog(
+                                            context: context,
+                                            builder: (c) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    'Food Unavailable'),
+                                                content: const Text(
+                                                    'Food you are trying to add to cart is currently unavailable.'),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(c).pop();
+                                                    },
+                                                    child: const Text('OK'),
+                                                  )
+                                                ],
+                                              );
+                                            },
                                           );
                                         }
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: const [
-                                          CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            child: Icon(Icons.shopping_bag),
-                                          ),
-                                          Text(
-                                            'Add to cart',
-                                            style: TextStyle(fontSize: 15),
-                                          )
-                                        ],
-                                      ),
+                                      } else {
+                                        Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const LoginScreen()),
+                                          ModalRoute.withName(
+                                              LoginScreen.routeName),
+                                        );
+                                      }
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: const [
+                                        CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          child: Icon(Icons.shopping_bag),
+                                        ),
+                                        Text(
+                                          'Add to cart',
+                                          style: TextStyle(fontSize: 15),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
-                                const Expanded(flex: 1, child: SizedBox()),
-                                Expanded(
-                                  flex: 20,
-                                  child: ConstrainedBox(
-                                    constraints: const BoxConstraints.tightFor(
-                                        height: 50),
-                                    child: ElevatedButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(green),
-                                        shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () {},
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          const Text(
-                                            'Proceed to pay',
-                                            style: TextStyle(fontSize: 15),
-                                          ),
-                                          CircleAvatar(
-                                              backgroundColor: Colors.white,
-                                              child: Icon(
-                                                Icons.arrow_forward_rounded,
-                                                size: 30,
-                                                color: green,
-                                              )),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
+                              ),
                             ),
                           )
                         ],

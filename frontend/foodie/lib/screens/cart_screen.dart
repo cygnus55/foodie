@@ -532,16 +532,6 @@ class _CartScreenState extends State<CartScreen> {
                                                       'Choose Location'))
                                             ],
                                           ),
-                                          const Divider(),
-                                          Text(
-                                            'Recent Location',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle1
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,

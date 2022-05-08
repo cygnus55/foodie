@@ -105,8 +105,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
                                 arguments: list[index].orderid);
                           },
                           child: Container(
-                            padding: const EdgeInsets.all(10),
-                            height: 100,
+                            padding: const EdgeInsets.all(20),
+                            height: 150,
                             child: Card(
                               elevation: 5,
                               color: Colors.grey[300],
@@ -115,26 +115,34 @@ class _HomepageScreenState extends State<HomepageScreen> {
                                   Radius.circular(15),
                                 ),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Delivery Charge: '
-                                    '${list[index].deliverycharge}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        ?.copyWith(fontWeight: FontWeight.bold),
+                              child: Center(
+                                child: Container(
+                                  margin: EdgeInsets.fromLTRB(20, 20, 10, 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Delivery Charge: '
+                                        '${list[index].deliverycharge}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        'Location: '
+                                        '${list[index].deliverylocation![2]}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    'Location :'
-                                    '${list[index].deliverylocation![2]}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        ?.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
                           ),

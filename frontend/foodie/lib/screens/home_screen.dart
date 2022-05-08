@@ -56,7 +56,6 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const Filter(),
 
               Expanded(
                 child: ListView(

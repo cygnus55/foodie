@@ -31,14 +31,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Icons.star,
     Icons.note,
     Icons.favorite,
-    Icons.notifications,
   ];
 
   final List<String> _columnValues = [
     'Your Ratings',
     'Your Order',
-    'Favorite ',
-    'Notifications',
+    'Favorites ',
   ];
 
   bool isloading = true;
@@ -203,20 +201,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                       ),
                       const Divider(),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'About Us',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'Send Feedback',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      ),
                       TextButton(
                         onPressed: () {
                           setState(() {

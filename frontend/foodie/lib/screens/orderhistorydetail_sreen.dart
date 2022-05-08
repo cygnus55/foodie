@@ -133,7 +133,7 @@ class OrderDetailScreen extends StatelessWidget {
                       ],
                     );
                   },
-                  itemCount: _order.food!.length,
+                  itemCount: 1,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
