@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/providers/review_provider.dart';
+import 'package:foodie/providers/reviews_provider.dart';
 import 'package:foodie/screens/login_screen.dart';
+import 'package:foodie/widgets/give_review.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -7,6 +10,8 @@ import '../providers/foods_provider.dart';
 import '../providers/food_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/auth_provider.dart';
+
+import '../widgets/view_review.dart';
 
 // ignore: must_be_immutable
 class FoodDetailScreen extends StatefulWidget {
@@ -21,7 +26,6 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   Color green = const Color.fromARGB(255, 43, 164, 0);
   int _quantity = 1;
   var _isLoading = false;
-
   var _undo = false;
   var _disableBack = false;
 
@@ -45,9 +49,18 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
   }
 
   @override
+  void didChangeDependencies() async {
+    var _id = ModalRoute.of(context)?.settings.arguments as int;
+    // TODO: implement didChangeDependencies
+    await Provider.of<Reviews>(context, listen: false).getReviews(context, _id);
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    int _id = ModalRoute.of(context)?.settings.arguments as int;
+    var _id = ModalRoute.of(context)?.settings.arguments as int;
     final _food = Provider.of<Foods>(context).findById(_id);
+
     // print(_food.id);
     return _isLoading
         ? Scaffold(
@@ -327,7 +340,7 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           onPressed: () => showModalBottomSheet(
                               context: context,
                               builder: (BuildContext context) {
-                                return Container();
+                                return ViewReviews(_food.id);
                               }),
                           child: Text(
                             'View Reviews',
@@ -341,8 +354,9 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                           onPressed: () => showModalBottomSheet(
                               context: context,
                               builder: (BuildContext context) {
-                                return Container();
+                                return GiveReview();
                               }),
+
                           child: Text(
                             'Give Reviews',
                             style: Theme.of(context)

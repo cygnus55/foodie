@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodie/providers/cart_provider.dart';
 import 'package:foodie/providers/order_provider.dart';
 import 'package:foodie/providers/restaurant_provider.dart';
+import 'package:foodie/providers/review_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +27,12 @@ import './providers/food_provider.dart';
 import './providers/auth_provider.dart';
 import './providers/foods_provider.dart';
 import './providers/profile_screen_provider.dart';
+
 import './providers/search_providers.dart';
+
+import './providers/review_provider.dart';
+import './providers/reviews_provider.dart';
+
 
 import './color.dart';
 
@@ -59,7 +65,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Cart()),
         ChangeNotifierProvider(create: (context) => Restaurant()),
         ChangeNotifierProvider(create: (context) => Order()),
+
         ChangeNotifierProvider(create: (context) => Search()),
+        ChangeNotifierProvider(create: (context) => Reviews()),
+        ChangeNotifierProvider(create: (context) => Review()),
+
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) {
