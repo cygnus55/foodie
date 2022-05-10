@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/widgets/foods_row.dart';
 import 'package:foodie/widgets/restaurants_row.dart';
+import 'package:foodie/widgets/discountfood.dart';
+import 'package:foodie/widgets/Vegeterianfood.dart';
+import 'package:foodie/widgets/toprated.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
@@ -73,17 +76,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.3,
-                child: Center(
-                  child: Image(
-                    image: AssetImage("assets/images/3.jpg"),
-                  ),
-                ),
-              ),
+
               Flexible(
                 child: ListView(
                   children: [
@@ -105,6 +101,33 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     const RestaurantsRow(),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                      child: Text(
+                        'Offer Food',
+                        style: Theme.of(context).textTheme.headline5?.copyWith(
+                            fontWeight: FontWeight.w500, color: Colors.black),
+                      ),
+                    ),
+                    const DiscountFood(),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                      child: Text(
+                        'Vegeterian Food',
+                        style: Theme.of(context).textTheme.headline5?.copyWith(
+                            fontWeight: FontWeight.w500, color: Colors.black),
+                      ),
+                    ),
+                    const VegeterianFood(),
+                    // Container(
+                    //   margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                    //   child: Text(
+                    //     'Top Rated Food',
+                    //     style: Theme.of(context).textTheme.headline5?.copyWith(
+                    //         fontWeight: FontWeight.w500, color: Colors.black),
+                    //   ),
+                    // ),
+                    // const TopRatedFood(),
                   ],
                 ),
               ),

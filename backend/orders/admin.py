@@ -14,6 +14,6 @@ class OrderItemInline(admin.TabularInline):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin, DynamicArrayMixin):
     inlines = [OrderItemInline]
-    list_display = ['customer', 'delivery_location', 'status', 'total_amount']
+    list_display = ['customer', 'delivery_location', 'status', 'total_amount', 'created']
     list_filter = ['status']
     list_editable = ['status']

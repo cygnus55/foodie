@@ -68,6 +68,18 @@ class Foods with ChangeNotifier {
     return _items.where((food) => food.isFavourite == true).toList();
   }
 
+  List<Food> get getDiscountedfood {
+    return _items.where((food) => food.discountPercent! > 0).toList();
+  }
+
+  List<Food> get getVegeterianfood {
+    return _items.where((food) => food.isVeg == true).toList();
+  }
+
+  List<Food> get getTopRatedfood {
+    return _items.where((food) => food.rating! > 1.0).toList();
+  }
+
   void addFood(value) {
     _items.add(value);
     notifyListeners();

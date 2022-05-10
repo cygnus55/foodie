@@ -4,17 +4,17 @@ import 'package:provider/provider.dart';
 import '../screens/food_detail_screen.dart';
 import '../providers/foods_provider.dart';
 
-class FoodsRow extends StatefulWidget {
-  const FoodsRow({Key? key}) : super(key: key);
+class VegeterianFood extends StatefulWidget {
+  const VegeterianFood({Key? key}) : super(key: key);
 
   @override
-  State<FoodsRow> createState() => _FoodsRowState();
+  State<VegeterianFood> createState() => _VegeterianFoodState();
 }
 
-class _FoodsRowState extends State<FoodsRow> {
+class _VegeterianFoodState extends State<VegeterianFood> {
   @override
   Widget build(BuildContext context) {
-    var list = Provider.of<Foods>(context, listen: false).items;
+    var list = Provider.of<Foods>(context, listen: false).getVegeterianfood;
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.2,
       width: double.infinity,

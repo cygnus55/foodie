@@ -131,15 +131,28 @@ class _HomepageScreenState extends State<HomepageScreen> {
                                             ?.copyWith(
                                                 fontWeight: FontWeight.bold),
                                       ),
-                                      Text(
-                                        'Location: '
-                                        '${list[index].deliverylocation![2]}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1
-                                            ?.copyWith(
-                                                fontWeight: FontWeight.bold),
-                                      ),
+                                      list[index].deliverylocation![2].length <=
+                                              26
+                                          ? Text(
+                                              'Location: '
+                                              '${list[index].deliverylocation![2]}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                            )
+                                          : Text(
+                                              'Location: '
+                                              '${list[index].deliverylocation![2].substring(0, 250)}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle1
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                            ),
                                     ],
                                   ),
                                 ),
