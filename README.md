@@ -48,3 +48,10 @@ Restaurant interface
 ![Restaurant-Foods Page](screenshots/restaurants/restaurant_foods.png)
 ![Restaurant-Add Food Page](screenshots/restaurants/restaurant_add_foods.png)
 ![Restaurant-Set/Change Location Page](screenshots/restaurants/restaurant_location.png)
+
+## Developers
+- [Shrawak Bhattarai](https://github.com/Shrawak)
+- [Ramraj Chimouriya](https://github.com/RamrajCh)
+- [Deependra Kumar Gupta](https://github.com/Deependra12)
+- [Bishal Joshi](https://github.com/bishaljoshi08)
+- [Shreyam Pokharel](https://github.com/pshreyam)
