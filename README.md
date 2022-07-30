@@ -39,3 +39,12 @@ python manage.py createsuperuser
 ```
 
 API can be accessed through the base url `http://localhost:8000`.
+
+## Screenshots
+
+Restaurant interface
+
+![Restaurant-Home Page](screenshots/restaurants/restaurant.png)
+![Restaurant-Foods Page](screenshots/restaurants/restaurant_foods.png)
+![Restaurant-Add Food Page](screenshots/restaurants/restaurant_add_foods.png)
+![Restaurant-Set/Change Location Page](screenshots/restaurants/restaurant_location.png)
