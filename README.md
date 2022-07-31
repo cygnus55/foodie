@@ -42,7 +42,12 @@ API can be accessed through the base url `http://localhost:8000`.
 
 ## Screenshots
 
-Restaurant interface
+### Customer Interface
+
+![Image 1](screenshots/customer/1.png)
+![Image 2](screenshots/customer/2.png)
+
+### Restaurant Interface
 
 ![Restaurant-Home Page](screenshots/restaurants/restaurant.png)
 ![Restaurant-Foods Page](screenshots/restaurants/restaurant_foods.png)
