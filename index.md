@@ -1,37 +1,39 @@
-## Welcome to GitHub Pages
+# Introduction 
 
-You can use the [editor on GitHub](https://github.com/dr-sbs/foodie/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+***Foodie*** is a mobile/web application-based online food delivery service, that aims to provide restaurants and customers with a common platform to sell and buy cuisines.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+It has a web interface for restaurants and mobile apps for customers and delivery persons respectively.
 
-### Markdown
+# Getting Started
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Frontend
 
-```markdown
-Syntax highlighted code block
+Run the project using:
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```
+flutter run
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+## Backend
 
-### Jekyll Themes
+Set up virtual environment and install the dependencies using the commands:
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/dr-sbs/foodie/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
-### Support or Contact
+Then run the Django development server using:
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+```
+python manage.py runserver
+```
+
+To create a superuser (admin) account, run:
+
+```
+python manage.py createsuperuser
+```
+
+API can be accessed through the base url `http://localhost:8000`.
